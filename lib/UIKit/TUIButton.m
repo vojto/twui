@@ -155,6 +155,10 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 	return r;
 }
 
+- (CGSize)sizeThatFits:(CGSize)size {
+	return self.currentImage.size;
+}
+
 
 - (void)drawRect:(CGRect)r
 {

@@ -50,6 +50,7 @@ typedef NSUInteger TUIControlState;
 		unsigned int selected:1;
 		unsigned int acceptsFirstMouse:1;
 		unsigned int tracking:1;
+		unsigned int highlighted:1;
 	} _controlFlags;
 }
 
@@ -58,6 +59,7 @@ typedef NSUInteger TUIControlState;
 @property(nonatomic,readonly) TUIControlState state;
 @property(nonatomic,readonly,getter=isTracking) BOOL tracking;
 @property(nonatomic,assign) BOOL selected;
+@property (nonatomic, assign) BOOL highlighted;
 
 @property (nonatomic, assign) BOOL acceptsFirstMouse;
 

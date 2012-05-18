@@ -45,6 +45,7 @@ typedef enum {
 		unsigned int dimsInBackground:1;
         unsigned int buttonType:8;
 		unsigned int firstDraw:1;
+		unsigned int reversesTitleShadowWhenHighlighted:1;
     } _buttonFlags;
 }
 
@@ -61,6 +62,8 @@ typedef enum {
 
 @property(nonatomic,readonly,strong) TUILabel     *titleLabel;
 @property(nonatomic,readonly,strong) TUIImageView *imageView;
+
+@property (nonatomic, assign) BOOL reversesTitleShadowWhenHighlighted;
 
 - (CGRect)backgroundRectForBounds:(CGRect)bounds;
 - (CGRect)contentRectForBounds:(CGRect)bounds;

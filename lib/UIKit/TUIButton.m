@@ -41,6 +41,7 @@
 		_buttonFlags.firstDraw = 1;
 		self.backgroundColor = [TUIColor clearColor];
 		self.needsDisplayWhenWindowsKeyednessChanges = YES;
+		self.reversesTitleShadowWhenHighlighted = NO;
 	}
 	return self;
 }
@@ -206,6 +207,7 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 	
 	_titleView.text = self.currentTitle;
 	_titleView.textColor = self.currentTitleColor;
+	_titleView.renderer.shadowColor = self.currentTitleShadowColor;
 	
 	CGContextRef ctx = TUIGraphicsGetCurrentContext();
 	CGContextSaveGState(ctx);
@@ -252,6 +254,22 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 	[self _update];
 	
 	[self setNeedsDisplay];
+}
+
+- (void)setHighlighted:(BOOL)highlighted {
+	if(self.highlighted != highlighted) {
+		_titleView.renderer.shadowOffset = CGSizeMake(_titleView.renderer.shadowOffset.width, -_titleView.renderer.shadowOffset.height);
+	}
+	
+	[super setHighlighted:highlighted];
+}
+
+- (BOOL)reversesTitleShadowWhenHighlighted {
+	return _buttonFlags.reversesTitleShadowWhenHighlighted;
+}
+
+- (void)setReversesTitleShadowWhenHighlighted:(BOOL)reversesTitleShadowWhenHighlighted {
+	_buttonFlags.reversesTitleShadowWhenHighlighted = reversesTitleShadowWhenHighlighted;
 }
 
 @end

@@ -103,3 +103,4 @@
 
 extern TUIViewDrawRect TUITextViewSearchFrame(void);
 extern TUIViewDrawRect TUITextViewSearchFrameOverDark(void);
+extern TUIViewDrawRect TUITextViewStandardFrame(void);

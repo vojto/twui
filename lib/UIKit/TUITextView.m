@@ -117,6 +117,8 @@
 		self.font = [TUIFont fontWithName:@"HelveticaNeue" size:12];
 		self.textColor = [TUIColor blackColor];
 		[self _updateDefaultAttributes];
+		
+		self.drawFrame = TUITextViewStandardFrame();
 	}
 	return self;
 }
@@ -728,5 +730,42 @@ TUIViewDrawRect TUITextViewSearchFrameOverDark(void)
 {
 	return [^(TUIView *view, CGRect rect) {
 		TUITextViewDrawRoundedFrame(view, 	floor(view.bounds.size.height / 2), YES);
+	} copy];
+}
+
+TUIViewDrawRect TUITextViewStandardFrame(void)
+{
+	return [^(TUIView *view, CGRect rect) {
+		static const CGFloat outlineCornerRadius = 3.0f;
+		static const CGFloat innerShadowCornerRadius = 2.1f;
+		static const CGFloat contentAreaCornerRadius = 2.0f;
+		CGRect bounds = view.bounds;
+		
+		// bottom white highlight
+		NSRect hightlightFrame = NSMakeRect(0.0, 0.0, bounds.size.width, bounds.size.height-10.0);
+		[[NSColor colorWithDeviceWhite:1.0 alpha:0.5] set];
+		[[NSBezierPath bezierPathWithRoundedRect:hightlightFrame xRadius:outlineCornerRadius yRadius:outlineCornerRadius] fill];
+		
+		// black outline
+		NSRect blackOutlineFrame = NSMakeRect(0.0, 1.0, bounds.size.width, bounds.size.height-2.0);
+		NSGradient *gradient = nil;
+		if([NSApp isActive]) {
+			gradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceWhite:0.6 alpha:1.0] endingColor:[NSColor colorWithDeviceWhite:0.7 alpha:1.0]];
+		} else {
+			gradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceWhite:0.55 alpha:1.0] endingColor:[NSColor colorWithDeviceWhite:0.558 alpha:1.0]];
+		}
+		[gradient drawInBezierPath:[NSBezierPath bezierPathWithRoundedRect:blackOutlineFrame xRadius:outlineCornerRadius yRadius:outlineCornerRadius] angle:-90];
+		
+		// main white area
+		NSRect whiteFrame = NSMakeRect(1, 2, bounds.size.width-2.0, bounds.size.height-4.0);
+		[[NSColor whiteColor] set];
+		[[NSBezierPath bezierPathWithRoundedRect:whiteFrame xRadius:contentAreaCornerRadius yRadius:contentAreaCornerRadius] fill];
+		
+		// top inner shadow
+		NSRect shadowFrame = NSMakeRect(1, bounds.size.height-5, bounds.size.width-2.0, 3.0);
+		if(shadowFrame.size.width > 0.0f && shadowFrame.size.height > 0.0f) {
+			gradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceWhite:0.9 alpha:1.0] endingColor:[NSColor colorWithDeviceWhite:1.0 alpha:1.0]];
+			[gradient drawInBezierPath:[NSBezierPath bezierPathWithRoundedRect:shadowFrame xRadius:innerShadowCornerRadius yRadius:innerShadowCornerRadius] angle:-90];
+		}
 	} copy];
 }

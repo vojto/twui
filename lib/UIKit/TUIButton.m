@@ -204,6 +204,9 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 		[image drawInRect:imageRect blendMode:kCGBlendModeNormal alpha:alpha];
 	}
 	
+	_titleView.text = self.currentTitle;
+	_titleView.textColor = self.currentTitleColor;
+	
 	CGContextRef ctx = TUIGraphicsGetCurrentContext();
 	CGContextSaveGState(ctx);
 	CGContextTranslateCTM(ctx, _titleEdgeInsets.left, _titleEdgeInsets.bottom);
@@ -240,8 +243,7 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 }
 
 - (void)_update {
-	_titleView.text = self.currentTitle;
-	_titleView.textColor = self.currentTitleColor;
+	
 }
 
 - (void)_stateDidChange {

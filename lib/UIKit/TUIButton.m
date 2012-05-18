@@ -257,7 +257,7 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 }
 
 - (void)setHighlighted:(BOOL)highlighted {
-	if(self.highlighted != highlighted) {
+	if(self.highlighted != highlighted && self.reversesTitleShadowWhenHighlighted) {
 		_titleView.renderer.shadowOffset = CGSizeMake(_titleView.renderer.shadowOffset.width, -_titleView.renderer.shadowOffset.height);
 	}
 	

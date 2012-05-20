@@ -268,8 +268,8 @@
 	}
 	
 	if(_newHoverView != _hoverView) {
-		[_newHoverView mouseEntered:event];
 		[_hoverView mouseExited:event];
+		[_newHoverView mouseEntered:event];
 		_hoverView = _newHoverView;
 		
 		if([[self window] isKeyWindow]) {

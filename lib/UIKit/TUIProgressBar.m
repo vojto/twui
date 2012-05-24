@@ -268,7 +268,7 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 	animationClippingView.opaque = NO;
 	animationClippingView.backgroundColor = [TUIColor clearColor];
 	
-	CGPathRef clipPath = TUICreateRoundRectInRectWithRadius(animationClippingView.bounds, ceil(NSHeight(animationClippingView.bounds) / 2.0));
+	CGPathRef clipPath = TUICGPathCreateRoundedRect(animationClippingView.bounds, ceil(NSHeight(animationClippingView.bounds) / 2.0));
 	CAShapeLayer *clipLayer = [[CAShapeLayer alloc] init];
 	clipLayer.path = clipPath;
 	animationClippingView.layer.mask = clipLayer;

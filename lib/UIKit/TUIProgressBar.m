@@ -96,7 +96,7 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 		//Drop shadow
 		[NSGraphicsContext saveGraphicsState];
 		CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeScreen);
-		[[NSColor colorWithCalibratedWhite:1.0 alpha:0.35] set];
+		[[NSColor colorWithCalibratedWhite:1.0 alpha:0.54] set];
 		CGFloat y = NSMinY(view.bounds);
 		[NSBezierPath strokeLineFromPoint:NSMakePoint(NSMinX(view.bounds) + radius, y) toPoint:NSMakePoint((NSMaxX(view.bounds) - radius), y)];
 		[NSGraphicsContext restoreGraphicsState];

@@ -57,21 +57,31 @@ CGImageRef TUICreateCGImageFromBitmapContext(CGContextRef ctx) // autoreleased
 	return CGBitmapContextCreateImage(ctx);
 }
 
-void CGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius)
+CGPathRef TUICreateRoundRectInRectWithRadius(CGRect rect, CGFloat radius)
 {
 	radius = MIN(radius, rect.size.width / 2);
 	radius = MIN(radius, rect.size.height / 2);
 	radius = floor(radius);
 	
-	CGContextMoveToPoint(context, rect.origin.x, rect.origin.y + radius);
-	CGContextAddLineToPoint(context, rect.origin.x, rect.origin.y + rect.size.height - radius);
-	CGContextAddArc(context, rect.origin.x + radius, rect.origin.y + rect.size.height - radius, radius, M_PI, M_PI / 2, 1);
-	CGContextAddLineToPoint(context, rect.origin.x + rect.size.width - radius, rect.origin.y + rect.size.height);
-	CGContextAddArc(context, rect.origin.x + rect.size.width - radius, rect.origin.y + rect.size.height - radius, radius, M_PI / 2, 0.0f, 1);
-	CGContextAddLineToPoint(context, rect.origin.x + rect.size.width, rect.origin.y + radius);
-	CGContextAddArc(context, rect.origin.x + rect.size.width - radius, rect.origin.y + radius, radius, 0.0f, -M_PI / 2, 1);
-	CGContextAddLineToPoint(context, rect.origin.x + radius, rect.origin.y);
-	CGContextAddArc(context, rect.origin.x + radius, rect.origin.y + radius, radius, -M_PI / 2, M_PI, 1);
+	CGMutablePathRef returnPath = CGPathCreateMutable();
+	CGPathMoveToPoint(returnPath, NULL, rect.origin.x, rect.origin.y + radius);
+	CGPathAddLineToPoint(returnPath, NULL, rect.origin.x, rect.origin.y + rect.size.height - radius);
+	CGPathAddArc(returnPath, NULL, rect.origin.x + radius, rect.origin.y + rect.size.height - radius, radius, M_PI, M_PI / 2, 1);
+	CGPathAddLineToPoint(returnPath, NULL, rect.origin.x + rect.size.width - radius, rect.origin.y + rect.size.height);
+	CGPathAddArc(returnPath, NULL, rect.origin.x + rect.size.width - radius, rect.origin.y + rect.size.height - radius, radius, M_PI / 2, 0.0f, 1);
+	CGPathAddLineToPoint(returnPath, NULL, rect.origin.x + rect.size.width, rect.origin.y + radius);
+	CGPathAddArc(returnPath, NULL, rect.origin.x + rect.size.width - radius, rect.origin.y + radius, radius, 0.0f, -M_PI / 2, 1);
+	CGPathAddLineToPoint(returnPath, NULL, rect.origin.x + radius, rect.origin.y);
+	CGPathAddArc(returnPath, NULL, rect.origin.x + radius, rect.origin.y + radius, radius, -M_PI / 2, M_PI, 1);
+	
+	return returnPath;
+}
+
+void CGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius)
+{
+	CGPathRef path = TUICreateRoundRectInRectWithRadius(rect, radius);
+	CGContextAddPath(context, path);
+	CGPathRelease(path);
 }
 
 void CGContextClipToRoundRect(CGContextRef context, CGRect rect, CGFloat radius)

@@ -21,6 +21,7 @@ extern CGContextRef TUICreateGraphicsContext(CGSize size);
 extern CGContextRef TUICreateGraphicsContextWithOptions(CGSize size, BOOL opaque);
 extern CGImageRef TUICreateCGImageFromBitmapContext(CGContextRef ctx);
 
+CGPathRef TUICreateRoundRectInRectWithRadius(CGRect rect, CGFloat radius);
 extern void CGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius);
 extern void CGContextClipToRoundRect(CGContextRef context, CGRect rect, CGFloat radius);
 

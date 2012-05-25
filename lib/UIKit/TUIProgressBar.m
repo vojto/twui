@@ -262,6 +262,9 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 		return;
 	}
 	
+	if (self.animationView != nil)
+		return; //We are already animating a barber pole
+	
 	// Animation container
 	TUIView *animationClippingView = [[TUIView alloc] initWithFrame:[self fillRect]];
 	animationClippingView.clipsToBounds = YES;

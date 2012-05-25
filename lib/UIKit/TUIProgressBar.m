@@ -254,6 +254,8 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 
 - (void)setIndeterminate:(BOOL)indeterminate
 {
+	static NSString *animationKey = @"GHUIBarberPoleAnimation";
+
 	_indeterminate = indeterminate;
 
 	if (!indeterminate) {
@@ -262,8 +264,13 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 		return;
 	}
 	
-	if (self.animationView != nil)
-		return; //We are already animating a barber pole
+	if (self.animationView != nil) { //We already have an animation view added but the progress bar could have been taken off screen, so stopped animating
+		NSArray *animationKeys = self.animationView.layer.animationKeys;
+		if (animationKeys == nil || ![animationKeys containsObject:animationKey]) {
+			[self.animationView.layer addAnimation:[self basicAnimationForView:self.animationView animationKey:animationKey] forKey:animationKey];
+		}
+		return;
+	}
 	
 	// Animation container
 	TUIView *animationClippingView = [[TUIView alloc] initWithFrame:[self fillRect]];
@@ -303,7 +310,6 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 	[self addSubview:animationClippingView];
 	[animationClippingView addSubview:self.animationView];
 	
-	NSString *animationKey = @"GHUIBarberPoleAnimation";
 	[self.animationView.layer addAnimation:[self basicAnimationForView:self.animationView animationKey:animationKey] forKey:animationKey];
 	
 	[self setNeedsDisplay];

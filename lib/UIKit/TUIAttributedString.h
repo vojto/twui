@@ -69,6 +69,7 @@ typedef enum {
 @property (nonatomic, assign) TUITextAlignment alignment; // setting this will set lineBreakMode to word wrap, use setAlignment:lineBreakMode: for more control
 @property (nonatomic, assign) CGFloat kerning;
 @property (nonatomic, assign) CGFloat lineHeight;
+@property (nonatomic, copy) NSString *text;
 
 - (void)setAlignment:(TUITextAlignment)alignment lineBreakMode:(TUILineBreakMode)lineBreakMode;
 

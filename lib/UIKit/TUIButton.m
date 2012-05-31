@@ -205,8 +205,16 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 		[image drawInRect:imageRect blendMode:kCGBlendModeNormal alpha:alpha];
 	}
 	
-	_titleView.text = self.currentTitle;
-	_titleView.textColor = self.currentTitleColor;
+	NSString *title = self.currentTitle;
+	if(title != nil) {
+		_titleView.text = title;
+	}
+	
+	TUIColor *color = self.currentTitleColor;
+	if(color != nil) {
+		_titleView.textColor = color;
+	}
+	
 	TUIColor *shadowColor = self.currentTitleShadowColor;
 	// they may have manually set the renderer's shadow color, in which case we 
 	// don't want to reset it to nothing

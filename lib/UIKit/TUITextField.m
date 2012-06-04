@@ -100,7 +100,7 @@ doClear:
 - (void)insertNewline:(id)sender
 {
 	if([self _textField]->_textFieldFlags.delegateTextFieldShouldReturn)
-		[(id<TUITextFieldDelegate>)[self _textField].delegate textFieldShouldReturn:(id)self];
+		[(id<TUITextFieldDelegate>)[self _textField].delegate textFieldShouldReturn:[self _textField]];
 	[[self _textField] sendActionsForControlEvents:TUIControlEventEditingDidEndOnExit];
 }
 

@@ -79,6 +79,10 @@
 @synthesize autocorrectedResults;
 @synthesize placeholderRenderer;
 
+- (void)dealloc {
+	renderer.delegate = nil;
+}
+
 - (void)_updateDefaultAttributes
 {
 	renderer.defaultAttributes = [NSDictionary dictionaryWithObjectsAndKeys:

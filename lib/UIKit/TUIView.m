@@ -303,8 +303,6 @@ CGFloat TUICurrentContextScaleFactor(void)
 	return 1.0;
 }
 
-static void BogusFunctionToSilenceStaticAnalyzer(void *x) { }
-
 static void TUISetCurrentContextScaleFactor(CGFloat s)
 {
 	CGFloat *v = pthread_getspecific(TUICurrentContextScaleFactorTLSKey);
@@ -313,7 +311,6 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 		pthread_setspecific(TUICurrentContextScaleFactorTLSKey, v);
 	}
 	*v = s;
-	BogusFunctionToSilenceStaticAnalyzer(v);
 }
 
 - (void)displayLayer:(CALayer *)layer

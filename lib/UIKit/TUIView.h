@@ -94,7 +94,7 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 	NSTimeInterval toolTipDelay;
 	
 	@public
-	TUINSView *_nsView; // keep this updated, fast way of getting .nsView
+	__unsafe_unretained TUINSView *_nsView; // keep this updated, fast way of getting .nsView
 	
 	struct {
 		NSInteger lastWidth;

@@ -44,8 +44,8 @@
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidResignKeyNotification object:nil];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidBecomeKeyNotification object:nil];
 	
+	rootView.nsView = nil;
 	[rootView removeFromSuperview];
-    rootView.nsView = nil;
 	
 	rootView = nil;
 	_hoverView = nil;

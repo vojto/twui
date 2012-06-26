@@ -243,6 +243,8 @@ NSParagraphStyle *ABNSParagraphStyleForTextAlignment(TUITextAlignment alignment)
 }
 
 - (void)setText:(NSString *)text {
+	text = text ? : @" ";
+	
 	[self beginEditing];
 	[self replaceCharactersInRange:NSMakeRange(0, [self length]) withString:[text copy]];
 	[self endEditing];

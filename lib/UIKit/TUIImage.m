@@ -73,17 +73,21 @@ static NSURL *TUIURLForNameAndScaleFactor(NSString *name, CGFloat scaleFactor)
 	return [[[NSBundle mainBundle] resourceURL] URLByAppendingPathComponent:name];
 }
 
-static CGImageRef TUICreateImageRefForNameAndScaleFactor(NSString *name, CGFloat scaleFactor, BOOL shouldCache)
+static CGImageRef TUICreateImageRefForNameAndScaleFactor(NSString *name, CGFloat scaleFactor, BOOL shouldCache, CGFloat *imageScaleFactor)
 {
 	if(name) {
 		CGImageRef i = NULL;
 		if(scaleFactor == 2.0) {
 			i = TUICreateImageRefForURL(TUIURLForNameAndScaleFactor(name, scaleFactor), shouldCache);
-			if(i)
+			if(i) {
+				if(imageScaleFactor != NULL) *imageScaleFactor = scaleFactor;
 				return i;
+			}
 		}
 		// fallback
-		return TUICreateImageRefForURL(TUIURLForNameAndScaleFactor(name, 1.0), shouldCache);
+		i = TUICreateImageRefForURL(TUIURLForNameAndScaleFactor(name, 1.0), shouldCache);
+		if(imageScaleFactor != NULL) *imageScaleFactor = 1.0f;
+		return i;
 	}
 	
 	return NULL;
@@ -105,7 +109,8 @@ static CGImageRef TUICreateImageRefForNameAndScaleFactor(NSString *name, CGFloat
 
 @implementation TUIImage
 {
-	CGFloat _lastScaleFactor;
+	CGFloat _lastContextScaleFactor;
+	CGFloat _imageScaleFactor;
 	NSString *_imageName;
 	CGImageRef _imageRef;
 	BOOL _shouldCache;
@@ -114,7 +119,8 @@ static CGImageRef TUICreateImageRefForNameAndScaleFactor(NSString *name, CGFloat
 - (id)init
 {
 	if(self = [super init]) {
-		_lastScaleFactor = 1.0;
+		_lastContextScaleFactor = 1.0;
+		_imageScaleFactor = 1.0f;
 	}
 	return self;
 }
@@ -244,7 +250,7 @@ static CGImageRef TUICreateImageRefForNameAndScaleFactor(NSString *name, CGFloat
 - (CGSize)size
 {
 	CGImageRef cgImage = [self CGImage];
-	CGFloat inv = 1.0f / _lastScaleFactor; // must call -CGImage first (will update _lastScaleFactor)
+	CGFloat inv = 1.0f / _imageScaleFactor; // must call -CGImage first (will update _lastScaleFactor)
 	if(cgImage)
 		return CGSizeMake(CGImageGetWidth(cgImage) * inv, CGImageGetHeight(cgImage) * inv);
 	return CGSizeZero;
@@ -253,19 +259,19 @@ static CGImageRef TUICreateImageRefForNameAndScaleFactor(NSString *name, CGFloat
 - (CGFloat)scale
 {
 	[self CGImage]; // update _lastScaleFactor if needed
-	return _lastScaleFactor;
+	return _lastContextScaleFactor;
 }
 
 - (CGImageRef)CGImage
 {
 	if(_imageName) { // lazy image
 		CGFloat currentScaleFactor = TUICurrentContextScaleFactor();
-		if(!_imageRef || (_lastScaleFactor != currentScaleFactor)) {
+		if(!_imageRef || (_lastContextScaleFactor != currentScaleFactor)) {
 			// if we haven't loaded an image yet, or the scale factor changed, load a new one
 			if(_imageRef)
 				CGImageRelease(_imageRef);
-			_imageRef = CGImageRetain(TUICreateImageRefForNameAndScaleFactor(_imageName, currentScaleFactor, _shouldCache));
-			_lastScaleFactor = currentScaleFactor;
+			_imageRef = CGImageRetain(TUICreateImageRefForNameAndScaleFactor(_imageName, currentScaleFactor, _shouldCache, &_imageScaleFactor));
+			_lastContextScaleFactor = currentScaleFactor;
 		}
 	}
 	return _imageRef;

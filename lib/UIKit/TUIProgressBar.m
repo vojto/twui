@@ -216,8 +216,9 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 	if (drawingProgress > 1.0)
 		drawingProgress = 1.0;
 	
+	static const CGFloat minimumWidth = 10.0f;
 	CGRect fillRect = self.bounds;
-	fillRect.size.width = ceil(drawingProgress * fillRect.size.width);
+	fillRect.size.width = MAX(ceil(drawingProgress * fillRect.size.width), minimumWidth);
 
 	CGFloat delta = (self.style == TUIProgressBarStyleGray ? 0.5 : 1.5);
 	fillRect = CGRectInset(fillRect, delta, delta);

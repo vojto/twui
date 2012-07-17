@@ -18,6 +18,8 @@
 
 #import "CAAnimation+TUIExtensions.h"
 #import "CoreText+Additions.h"
+#import "NSClipView+TUIExtensions.h"
+#import "NSScrollView+TUIExtensions.h"
 #import "NSView+TUIExtensions.h"
 #import "TUIActivityIndicatorView.h"
 #import "TUIAttributedString.h"
@@ -38,6 +40,7 @@
 #import "TUIProgressBar.h"
 #import "TUIResponder.h"
 #import "TUIScrollView.h"
+#import "TUIScrollView+TUIBridgedScrollView.h"
 #import "TUIStringDrawing.h"
 #import "TUIStyledView.h"
 #import "TUITableView+Additions.h"

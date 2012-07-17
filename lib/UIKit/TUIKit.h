@@ -48,6 +48,7 @@
 #import "TUITextField.h"
 #import "TUITextView.h"
 #import "TUIView.h"
+#import "TUIView+TUIBridgedView.h"
 #import "TUIViewController.h"
 
 extern CGContextRef TUIGraphicsGetCurrentContext(void);

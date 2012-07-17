@@ -480,6 +480,7 @@
 		D0C7655A15B6297200E7AC2C /* NSClipView+TUIExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSClipView+TUIExtensions.m"; sourceTree = "<group>"; };
 		D0C7655B15B6297300E7AC2C /* NSScrollView+TUIExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSScrollView+TUIExtensions.h"; sourceTree = "<group>"; };
 		D0C7655C15B6297300E7AC2C /* NSScrollView+TUIExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSScrollView+TUIExtensions.m"; sourceTree = "<group>"; };
+		D0C7656915B62EFA00E7AC2C /* TUINSView+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TUINSView+Private.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -691,6 +692,7 @@
 				CBB74C5E13BE6E1900C85CB5 /* TUINSView+Hyperfocus.h */,
 				CBB74C5F13BE6E1900C85CB5 /* TUINSView+Hyperfocus.m */,
 				CBB74C6013BE6E1900C85CB5 /* TUINSView+NSTextInputClient.m */,
+				D0C7656915B62EFA00E7AC2C /* TUINSView+Private.h */,
 				CBB74C6113BE6E1900C85CB5 /* TUINSView.h */,
 				CBB74C6213BE6E1900C85CB5 /* TUINSView.m */,
 				CBB74C6313BE6E1900C85CB5 /* TUINSWindow.h */,

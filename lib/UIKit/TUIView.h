@@ -466,6 +466,7 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 
 @interface TUIView (TUIViewAppKit)
 
+// TODO: deprecate this in favor of hostView or ancestorTUINSView
 @property (nonatomic, assign, setter=setNSView:) TUINSView *nsView;
 @property (nonatomic, readonly) TUINSWindow *nsWindow;
 

@@ -20,6 +20,7 @@
 #import "CoreText+Additions.h"
 #import "TUIActivityIndicatorView.h"
 #import "TUIAttributedString.h"
+#import "TUIBridgedScrollView.h"
 #import "TUIBridgedView.h"
 #import "TUIButton.h"
 #import "TUICGAdditions.h"

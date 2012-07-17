@@ -305,6 +305,12 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 - (void)didMoveToWindow;
 
 /**
+ * Returns the closest ancestor that is shared by the receiver and another view,
+ * or nil if there is no such view.
+ */
+- (TUIView *)ancestorSharedWithView:(TUIView *)view;
+
+/**
  Note: returns YES ff view == reciever
  */
 - (BOOL)isDescendantOfView:(TUIView *)view;

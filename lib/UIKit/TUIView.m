@@ -723,7 +723,7 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	} else {\
 		[self.subviews insertObject:view atIndex:index];\
 	}\
- 	[view removeFromSuperview]; /* will call willAdd:nil and didAdd (nil) */ \
+	[view removeFromSuperview]; /* will call willAdd:nil and didAdd (nil) */ \
 	[view willMoveToSuperview:self]; \
 	view.nsView = _nsView;
 
@@ -834,6 +834,20 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	if(!SUBVIEW_VAR) continue;
 
 #define END_EACH_SUBVIEW }
+
+- (TUIView *)ancestorSharedWithView:(TUIView *)view
+{
+	TUIView *parentView = self;
+
+	do {
+		if ([view isDescendantOfView:parentView])
+			return parentView;
+
+		parentView = parentView.superview;
+	} while (parentView);
+
+	return nil;
+}
 
 - (BOOL)isDescendantOfView:(TUIView *)view
 {

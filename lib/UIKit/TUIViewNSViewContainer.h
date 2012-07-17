@@ -14,6 +14,10 @@
  limitations under the License.
  */
 
+//	Portions of this code were taken from Velvet,
+//	which is copyright (c) 2012 Bitswift, Inc.
+//	See LICENSE.txt for more information.
+
 #import "TUIView.h"
 
 /*

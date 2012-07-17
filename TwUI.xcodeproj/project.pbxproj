@@ -287,6 +287,12 @@
 		D0C7652D15B6232100E7AC2C /* CATransaction+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C7652315B6232100E7AC2C /* CATransaction+TUIExtensions.m */; };
 		D0C7652E15B6232100E7AC2C /* CATransaction+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C7652315B6232100E7AC2C /* CATransaction+TUIExtensions.m */; };
 		D0C7652F15B6232100E7AC2C /* CATransaction+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C7652315B6232100E7AC2C /* CATransaction+TUIExtensions.m */; };
+		D0C7653315B624D900E7AC2C /* NSView+TUIExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = D0C7653115B624D800E7AC2C /* NSView+TUIExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0C7653415B624D900E7AC2C /* NSView+TUIExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = D0C7653115B624D800E7AC2C /* NSView+TUIExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0C7653515B624D900E7AC2C /* NSView+TUIExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = D0C7653115B624D800E7AC2C /* NSView+TUIExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0C7653615B624D900E7AC2C /* NSView+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C7653215B624D800E7AC2C /* NSView+TUIExtensions.m */; };
+		D0C7653715B624D900E7AC2C /* NSView+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C7653215B624D800E7AC2C /* NSView+TUIExtensions.m */; };
+		D0C7653815B624D900E7AC2C /* NSView+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C7653215B624D800E7AC2C /* NSView+TUIExtensions.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -440,6 +446,8 @@
 		D0C7652115B6232100E7AC2C /* CALayer+TUIExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CALayer+TUIExtensions.m"; sourceTree = "<group>"; };
 		D0C7652215B6232100E7AC2C /* CATransaction+TUIExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CATransaction+TUIExtensions.h"; sourceTree = "<group>"; };
 		D0C7652315B6232100E7AC2C /* CATransaction+TUIExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CATransaction+TUIExtensions.m"; sourceTree = "<group>"; };
+		D0C7653115B624D800E7AC2C /* NSView+TUIExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSView+TUIExtensions.h"; sourceTree = "<group>"; };
+		D0C7653215B624D800E7AC2C /* NSView+TUIExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSView+TUIExtensions.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -598,6 +606,8 @@
 		CBB74C3D13BE6E1900C85CB5 /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
+				D0C7653115B624D800E7AC2C /* NSView+TUIExtensions.h */,
+				D0C7653215B624D800E7AC2C /* NSView+TUIExtensions.m */,
 				CBB74C3E13BE6E1900C85CB5 /* TUIAccessibility.h */,
 				CBB74C3F13BE6E1900C85CB5 /* TUIAccessibility.m */,
 				CBB74C4013BE6E1900C85CB5 /* TUIActivityIndicatorView.h */,
@@ -734,6 +744,7 @@
 				D0C764ED15B611C200E7AC2C /* TUIBridgedView.h in Headers */,
 				D0C7650715B6156A00E7AC2C /* TUIHostView.h in Headers */,
 				D0C7651815B61E5A00E7AC2C /* TUIBridgedScrollView.h in Headers */,
+				D0C7653515B624D900E7AC2C /* NSView+TUIExtensions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -798,6 +809,7 @@
 				D0C764EB15B611C200E7AC2C /* TUIBridgedView.h in Headers */,
 				D0C7650515B6156A00E7AC2C /* TUIHostView.h in Headers */,
 				D0C7651615B61E5A00E7AC2C /* TUIBridgedScrollView.h in Headers */,
+				D0C7653315B624D900E7AC2C /* NSView+TUIExtensions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -818,6 +830,7 @@
 				D0C764EC15B611C200E7AC2C /* TUIBridgedView.h in Headers */,
 				D0C7650615B6156A00E7AC2C /* TUIHostView.h in Headers */,
 				D0C7651715B61E5A00E7AC2C /* TUIBridgedScrollView.h in Headers */,
+				D0C7653415B624D900E7AC2C /* NSView+TUIExtensions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1023,6 +1036,7 @@
 				D0C7651315B6189D00E7AC2C /* TUINSHostView.m in Sources */,
 				D0C7652915B6232100E7AC2C /* CALayer+TUIExtensions.m in Sources */,
 				D0C7652F15B6232100E7AC2C /* CATransaction+TUIExtensions.m in Sources */,
+				D0C7653815B624D900E7AC2C /* NSView+TUIExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1092,6 +1106,7 @@
 				D0C7651115B6189D00E7AC2C /* TUINSHostView.m in Sources */,
 				D0C7652715B6232100E7AC2C /* CALayer+TUIExtensions.m in Sources */,
 				D0C7652D15B6232100E7AC2C /* CATransaction+TUIExtensions.m in Sources */,
+				D0C7653615B624D900E7AC2C /* NSView+TUIExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1167,6 +1182,7 @@
 				D0C7651215B6189D00E7AC2C /* TUINSHostView.m in Sources */,
 				D0C7652815B6232100E7AC2C /* CALayer+TUIExtensions.m in Sources */,
 				D0C7652E15B6232100E7AC2C /* CATransaction+TUIExtensions.m in Sources */,
+				D0C7653715B624D900E7AC2C /* NSView+TUIExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

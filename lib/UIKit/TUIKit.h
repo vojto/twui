@@ -18,6 +18,7 @@
 
 #import "CAAnimation+TUIExtensions.h"
 #import "CoreText+Additions.h"
+#import "NSView+TUIExtensions.h"
 #import "TUIActivityIndicatorView.h"
 #import "TUIAttributedString.h"
 #import "TUIBridgedScrollView.h"

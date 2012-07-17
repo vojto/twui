@@ -53,6 +53,7 @@
 #import "TUIView.h"
 #import "TUIView+TUIBridgedView.h"
 #import "TUIViewController.h"
+#import "TUIViewNSViewContainer.h"
 
 extern CGContextRef TUIGraphicsGetCurrentContext(void);
 extern void TUIGraphicsPushContext(CGContextRef context);

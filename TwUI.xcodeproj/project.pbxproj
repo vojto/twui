@@ -481,6 +481,7 @@
 		D0C7655B15B6297300E7AC2C /* NSScrollView+TUIExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSScrollView+TUIExtensions.h"; sourceTree = "<group>"; };
 		D0C7655C15B6297300E7AC2C /* NSScrollView+TUIExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSScrollView+TUIExtensions.m"; sourceTree = "<group>"; };
 		D0C7656915B62EFA00E7AC2C /* TUINSView+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TUINSView+Private.h"; sourceTree = "<group>"; };
+		D0C7656D15B6322A00E7AC2C /* TUIViewNSViewContainer+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TUIViewNSViewContainer+Private.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -761,6 +762,7 @@
 				CBB74C8E13BE6E1900C85CB5 /* TUIViewController.m */,
 				CBB74C8F13BE6E1900C85CB5 /* TUIViewNSViewContainer.h */,
 				CBB74C9013BE6E1900C85CB5 /* TUIViewNSViewContainer.m */,
+				D0C7656D15B6322A00E7AC2C /* TUIViewNSViewContainer+Private.h */,
 			);
 			name = UIKit;
 			path = lib/UIKit;

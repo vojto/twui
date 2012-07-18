@@ -142,10 +142,10 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	
-	rootView.nsView = nil;
-	[rootView removeFromSuperview];
+	_rootView.nsView = nil;
+	[_rootView removeFromSuperview];
 	
-	rootView = nil;
+	_rootView = nil;
 	_hoverView = nil;
 	_trackingView = nil;
 	_trackingArea = nil;
@@ -197,7 +197,7 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 {
 	[super viewWillStartLiveResize];
 	inLiveResize = YES;
-	[rootView viewWillStartLiveResize];
+	[_rootView viewWillStartLiveResize];
 }
 
 - (BOOL)inLiveResize
@@ -209,7 +209,7 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 {
 	[super viewDidEndLiveResize];
 	inLiveResize = NO;
-	[rootView viewDidEndLiveResize]; // will send to all subviews
+	[_rootView viewDidEndLiveResize]; // will send to all subviews
 	
 	if([[self window] respondsToSelector:@selector(ensureWindowRectIsOnScreen)])
 		[[self window] performSelector:@selector(ensureWindowRectIsOnScreen)];
@@ -219,17 +219,17 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 {
 	v.autoresizingMask = TUIViewAutoresizingFlexibleSize;
 
-	rootView.nsView = nil;
-	rootView.hostView = nil;
-	rootView = v;
-	rootView.nsView = self;
-	rootView.hostView = self;
+	_rootView.nsView = nil;
+	_rootView.hostView = nil;
+	_rootView = v;
+	_rootView.nsView = self;
+	_rootView.hostView = self;
 	
-	[rootView setNextResponder:self];
+	[_rootView setNextResponder:self];
 	
 	CGSize s = [self frame].size;
 	v.frame = CGRectMake(0, 0, s.width, s.height);
-	[self.tuiHostView.layer addSublayer:rootView.layer];
+	[self.tuiHostView.layer addSublayer:_rootView.layer];
 	
 	[self _updateLayerScaleFactor];
 }
@@ -253,15 +253,15 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	}
 	
 	CALayer *hostLayer = self.tuiHostView.layer;
-	if(newWindow != nil && rootView.layer.superlayer != hostLayer) {
-		rootView.layer.frame = hostLayer.bounds;
-		[hostLayer addSublayer:rootView.layer];
+	if(newWindow != nil && _rootView.layer.superlayer != hostLayer) {
+		_rootView.layer.frame = hostLayer.bounds;
+		[hostLayer addSublayer:_rootView.layer];
 	}
 	
 	[self.rootView willMoveToWindow:(TUINSWindow *) newWindow];
 	
 	if(newWindow == nil) {
-		[rootView removeFromSuperview];
+		[_rootView removeFromSuperview];
 	}
 }
 
@@ -305,7 +305,7 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 
 - (TUIView *)viewForLocalPoint:(NSPoint)p
 {
-	return [rootView hitTest:p withEvent:nil];
+	return [_rootView hitTest:p withEvent:nil];
 }
 
 - (NSPoint)localPointForLocationInWindow:(NSPoint)locationInWindow
@@ -532,12 +532,12 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 
 - (BOOL)performKeyEquivalent:(NSEvent *)event
 {
-	return [rootView performKeyEquivalent:event];
+	return [_rootView performKeyEquivalent:event];
 }
 
 - (void)setEverythingNeedsDisplay
 {
-	[rootView setEverythingNeedsDisplay];
+	[_rootView setEverythingNeedsDisplay];
 }
 
 - (BOOL)isTrackingSubviewOfView:(TUIView *)v

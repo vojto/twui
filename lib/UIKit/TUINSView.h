@@ -23,7 +23,6 @@
  */
 @interface TUINSView : NSView <NSTextInputClient, TUIHostView>
 {
-	TUIView *rootView;
 	TUIView *_hoverView;
 
 	__unsafe_unretained TUIView *_trackingView; // dragging view, weak

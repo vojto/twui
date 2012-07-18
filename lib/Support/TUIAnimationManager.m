@@ -57,12 +57,14 @@ static void mainRunLoopObserverCallback (CFRunLoopObserverRef observer, CFRunLoo
 #pragma mark Lifecycle
 
 + (void)load {
-    [[NSNotificationCenter defaultCenter]
-        addObserver:[self defaultManager]
-        selector:@selector(applicationDidFinishLaunchingNotification:)
-        name:NSApplicationDidFinishLaunchingNotification
-        object:nil
-    ];
+	@autoreleasepool {
+		[[NSNotificationCenter defaultCenter]
+			addObserver:[self defaultManager]
+			selector:@selector(applicationDidFinishLaunchingNotification:)
+			name:NSApplicationDidFinishLaunchingNotification
+			object:nil
+		];
+	}
 }
 
 + (TUIAnimationManager *)defaultManager; {

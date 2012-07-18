@@ -32,13 +32,6 @@
 	 * are in effect.
 	 */
 	NSUInteger _renderingContainedViewCount;
-
-	#ifdef DEBUG
-	/**
-	 * An observer for `TUIHostViewDebugModeChangedNotification`.
-	 */
-	id _hostViewDebugModeObserver;
-	#endif
 }
 
 - (void)synchronizeNSViewGeometry;
@@ -131,13 +124,6 @@
 }
 
 - (void)dealloc {
-	#ifdef DEBUG
-	if (_hostViewDebugModeObserver) {
-		[[NSNotificationCenter defaultCenter] removeObserver:_hostViewDebugModeObserver];
-		_hostViewDebugModeObserver = nil;
-	}
-	#endif
-
 	self.rootView.hostView = nil;
 }
 

@@ -317,6 +317,9 @@
 		D0C7656615B6297300E7AC2C /* NSScrollView+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C7655C15B6297300E7AC2C /* NSScrollView+TUIExtensions.m */; };
 		D0C7656715B6297300E7AC2C /* NSScrollView+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C7655C15B6297300E7AC2C /* NSScrollView+TUIExtensions.m */; };
 		D0C7656815B6297300E7AC2C /* NSScrollView+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C7655C15B6297300E7AC2C /* NSScrollView+TUIExtensions.m */; };
+		D0C7657415B6341800E7AC2C /* TUICAAction.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C7657015B6341800E7AC2C /* TUICAAction.m */; };
+		D0C7657515B6341800E7AC2C /* TUICAAction.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C7657015B6341800E7AC2C /* TUICAAction.m */; };
+		D0C7657615B6341800E7AC2C /* TUICAAction.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C7657015B6341800E7AC2C /* TUICAAction.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -482,6 +485,8 @@
 		D0C7655C15B6297300E7AC2C /* NSScrollView+TUIExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSScrollView+TUIExtensions.m"; sourceTree = "<group>"; };
 		D0C7656915B62EFA00E7AC2C /* TUINSView+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TUINSView+Private.h"; sourceTree = "<group>"; };
 		D0C7656D15B6322A00E7AC2C /* TUIViewNSViewContainer+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TUIViewNSViewContainer+Private.h"; sourceTree = "<group>"; };
+		D0C7656F15B6341800E7AC2C /* TUICAAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUICAAction.h; sourceTree = "<group>"; };
+		D0C7657015B6341800E7AC2C /* TUICAAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUICAAction.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -632,6 +637,8 @@
 				D0C7652115B6232100E7AC2C /* CALayer+TUIExtensions.m */,
 				D0C7652215B6232100E7AC2C /* CATransaction+TUIExtensions.h */,
 				D0C7652315B6232100E7AC2C /* CATransaction+TUIExtensions.m */,
+				D0C7656F15B6341800E7AC2C /* TUICAAction.h */,
+				D0C7657015B6341800E7AC2C /* TUICAAction.m */,
 			);
 			name = Support;
 			path = lib/Support;
@@ -1097,6 +1104,7 @@
 				D0C7655715B6294400E7AC2C /* TUIScrollView+TUIBridgedScrollView.m in Sources */,
 				D0C7656215B6297300E7AC2C /* NSClipView+TUIExtensions.m in Sources */,
 				D0C7656815B6297300E7AC2C /* NSScrollView+TUIExtensions.m in Sources */,
+				D0C7657615B6341800E7AC2C /* TUICAAction.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1171,6 +1179,7 @@
 				D0C7655515B6294400E7AC2C /* TUIScrollView+TUIBridgedScrollView.m in Sources */,
 				D0C7656015B6297300E7AC2C /* NSClipView+TUIExtensions.m in Sources */,
 				D0C7656615B6297300E7AC2C /* NSScrollView+TUIExtensions.m in Sources */,
+				D0C7657415B6341800E7AC2C /* TUICAAction.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1251,6 +1260,7 @@
 				D0C7655615B6294400E7AC2C /* TUIScrollView+TUIBridgedScrollView.m in Sources */,
 				D0C7656115B6297300E7AC2C /* NSClipView+TUIExtensions.m in Sources */,
 				D0C7656715B6297300E7AC2C /* NSScrollView+TUIExtensions.m in Sources */,
+				D0C7657515B6341800E7AC2C /* TUICAAction.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

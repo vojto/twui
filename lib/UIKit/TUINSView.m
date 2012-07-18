@@ -647,6 +647,11 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	[self recalculateNSViewClipping];
 }
 
+- (void)didAddSubview:(NSView *)view {
+	NSAssert(view == self.tuiHostView || view == self.appKitHostView, @"Subviews should not be added to TUINSView %@: %@", self, view);
+	[super didAddSubview:view];
+}
+
 #define ENABLE_NSTEXT_INPUT_CLIENT
 #import "TUINSView+NSTextInputClient.m"
 #undef ENABLE_NSTEXT_INPUT_CLIENT

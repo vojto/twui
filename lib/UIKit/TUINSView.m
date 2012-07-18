@@ -252,9 +252,10 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidChangeScreenProfileNotification object:self.window];
 	}
 	
-	if(newWindow != nil && rootView.layer.superlayer != [self layer]) {
-		rootView.layer.frame = self.layer.bounds;
-		[[self layer] addSublayer:rootView.layer];
+	CALayer *hostLayer = self.tuiHostView.layer;
+	if(newWindow != nil && rootView.layer.superlayer != hostLayer) {
+		rootView.layer.frame = hostLayer.bounds;
+		[hostLayer addSublayer:rootView.layer];
 	}
 	
 	[self.rootView willMoveToWindow:(TUINSWindow *) newWindow];
@@ -287,9 +288,9 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 			scale = [[self window] backingScaleFactor];
 		}
 		
-		if([self.layer respondsToSelector:@selector(setContentsScale:)]) {
-			if(fabs(self.layer.contentsScale - scale) > 0.1f) {
-				self.layer.contentsScale = scale;
+		if([self.tuiHostView.layer respondsToSelector:@selector(setContentsScale:)]) {
+			if(fabs(self.tuiHostView.layer.contentsScale - scale) > 0.1f) {
+				self.tuiHostView.layer.contentsScale = scale;
 			}
 		}
 		

@@ -288,13 +288,18 @@ static BOOL animateContents = NO;
 
 - (id<CAAction>)actionForLayer:(CALayer *)layer forKey:(NSString *)event
 {
-	if(disableAnimations == YES)
-		return (id)[NSNull null];
+	id defaultAction = [NSNull null];
+
+	if(disableAnimations)
+		return defaultAction;
 
 	if((animateContents == NO) && [event isEqualToString:@"contents"])
-		return (id<CAAction>)[NSNull null]; // default - don't animate contents
+		return defaultAction; // default - don't animate contents
 
 	id animation = [TUIView _currentAnimation];
+	if (!animation)
+		return defaultAction;
+
 	if ([TUICAAction interceptsActionForKey:event])
 		return [TUICAAction actionWithAction:animation];
 	else

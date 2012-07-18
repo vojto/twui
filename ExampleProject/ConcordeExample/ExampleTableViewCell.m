@@ -52,7 +52,7 @@
 	CGSize textFieldSize = self.textFieldContainer.bounds.size;
 	CGFloat textFieldLeft = CGRectGetWidth(self.bounds) - textFieldSize.width - 16;
 
-	self.textFieldContainer.frame = CGRectMake(textFieldLeft, 8, textFieldSize.width, textFieldSize.height);
+	self.textFieldContainer.frame = CGRectMake(textFieldLeft, 14, textFieldSize.width, textFieldSize.height);
 }
 
 - (NSAttributedString *)attributedString

@@ -288,29 +288,17 @@ static BOOL animateContents = NO;
 
 - (id<CAAction>)actionForLayer:(CALayer *)layer forKey:(NSString *)event
 {
-	if(disableAnimations == NO) {
-		if((animateContents == NO) && [event isEqualToString:@"contents"])
-			return (id<CAAction>)[NSNull null]; // default - don't animate contents
-		
-		id<CAAction>animation = [TUIView _currentAnimation];
-		if(animation)
-			return animation;
-	}
+	if(disableAnimations == YES)
+		return (id)[NSNull null];
 
-	id defaultAction = [NSNull null];
-    if (![TUICAAction interceptsActionForKey:event])
-        return defaultAction;
+	if((animateContents == NO) && [event isEqualToString:@"contents"])
+		return (id<CAAction>)[NSNull null]; // default - don't animate contents
 
-    // If we're being called inside the [layer actionForKey:key] call below,
-    // so return the default action.
-    if (self.recursingActionForLayer)
-        return defaultAction;
-
-    self.recursingActionForLayer = YES;
-    id<CAAction> innerAction = [layer actionForKey:event];
-    self.recursingActionForLayer = NO;
-
-    return [TUICAAction actionWithAction:innerAction];
+	id animation = [TUIView _currentAnimation];
+	if ([TUICAAction interceptsActionForKey:event])
+		return [TUICAAction actionWithAction:animation];
+	else
+		return animation;
 }
 
 @end

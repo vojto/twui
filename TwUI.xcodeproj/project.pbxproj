@@ -55,7 +55,6 @@
 		5EE983E413BE7834005F430D /* TUIView+Event.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C8413BE6E1900C85CB5 /* TUIView+Event.m */; };
 		5EE983E513BE7834005F430D /* TUIView+NSTextInputClient.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C8613BE6E1900C85CB5 /* TUIView+NSTextInputClient.m */; };
 		5EE983E613BE7834005F430D /* TUIView+PasteboardDragging.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C8813BE6E1900C85CB5 /* TUIView+PasteboardDragging.m */; };
-		5EE983E713BE7834005F430D /* TUIView+Private.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C8A13BE6E1900C85CB5 /* TUIView+Private.m */; };
 		5EE983E813BE7834005F430D /* TUIView.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C8C13BE6E1900C85CB5 /* TUIView.m */; };
 		5EE983E913BE7834005F430D /* TUIViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C8E13BE6E1900C85CB5 /* TUIViewController.m */; };
 		5EE983EA13BE7834005F430D /* TUIViewNSViewContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C9013BE6E1900C85CB5 /* TUIViewNSViewContainer.m */; };
@@ -174,7 +173,6 @@
 		CB5E326213BE70CA004B7899 /* TUIView+Event.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C8413BE6E1900C85CB5 /* TUIView+Event.m */; };
 		CB5E326413BE70CA004B7899 /* TUIView+NSTextInputClient.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C8613BE6E1900C85CB5 /* TUIView+NSTextInputClient.m */; };
 		CB5E326613BE70CA004B7899 /* TUIView+PasteboardDragging.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C8813BE6E1900C85CB5 /* TUIView+PasteboardDragging.m */; };
-		CB5E326813BE70CA004B7899 /* TUIView+Private.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C8A13BE6E1900C85CB5 /* TUIView+Private.m */; };
 		CB5E326A13BE70CA004B7899 /* TUIView.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C8C13BE6E1900C85CB5 /* TUIView.m */; };
 		CB5E326C13BE70CA004B7899 /* TUIViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C8E13BE6E1900C85CB5 /* TUIViewController.m */; };
 		CB5E326E13BE70CA004B7899 /* TUIViewNSViewContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C9013BE6E1900C85CB5 /* TUIViewNSViewContainer.m */; };
@@ -262,7 +260,6 @@
 		CBB74CDE13BE6E1900C85CB5 /* TUIView+PasteboardDragging.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB74C8713BE6E1900C85CB5 /* TUIView+PasteboardDragging.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CBB74CDF13BE6E1900C85CB5 /* TUIView+PasteboardDragging.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C8813BE6E1900C85CB5 /* TUIView+PasteboardDragging.m */; };
 		CBB74CE013BE6E1900C85CB5 /* TUIView+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB74C8913BE6E1900C85CB5 /* TUIView+Private.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CBB74CE113BE6E1900C85CB5 /* TUIView+Private.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C8A13BE6E1900C85CB5 /* TUIView+Private.m */; };
 		CBB74CE213BE6E1900C85CB5 /* TUIView.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB74C8B13BE6E1900C85CB5 /* TUIView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CBB74CE313BE6E1900C85CB5 /* TUIView.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C8C13BE6E1900C85CB5 /* TUIView.m */; };
 		CBB74CE413BE6E1900C85CB5 /* TUIViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB74C8D13BE6E1900C85CB5 /* TUIViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -457,7 +454,6 @@
 		CBB74C8713BE6E1900C85CB5 /* TUIView+PasteboardDragging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUIView+PasteboardDragging.h"; sourceTree = "<group>"; };
 		CBB74C8813BE6E1900C85CB5 /* TUIView+PasteboardDragging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUIView+PasteboardDragging.m"; sourceTree = "<group>"; };
 		CBB74C8913BE6E1900C85CB5 /* TUIView+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUIView+Private.h"; sourceTree = "<group>"; };
-		CBB74C8A13BE6E1900C85CB5 /* TUIView+Private.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUIView+Private.m"; sourceTree = "<group>"; };
 		CBB74C8B13BE6E1900C85CB5 /* TUIView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIView.h; sourceTree = "<group>"; };
 		CBB74C8C13BE6E1900C85CB5 /* TUIView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIView.m; sourceTree = "<group>"; };
 		CBB74C8D13BE6E1900C85CB5 /* TUIViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIViewController.h; sourceTree = "<group>"; };
@@ -760,7 +756,6 @@
 				CBB74C8713BE6E1900C85CB5 /* TUIView+PasteboardDragging.h */,
 				CBB74C8813BE6E1900C85CB5 /* TUIView+PasteboardDragging.m */,
 				CBB74C8913BE6E1900C85CB5 /* TUIView+Private.h */,
-				CBB74C8A13BE6E1900C85CB5 /* TUIView+Private.m */,
 				D0C7653E15B626E200E7AC2C /* TUIView+TUIBridgedView.h */,
 				D0C7653F15B626E200E7AC2C /* TUIView+TUIBridgedView.m */,
 				CBB74C8B13BE6E1900C85CB5 /* TUIView.h */,
@@ -1082,7 +1077,6 @@
 				5EE983E413BE7834005F430D /* TUIView+Event.m in Sources */,
 				5EE983E513BE7834005F430D /* TUIView+NSTextInputClient.m in Sources */,
 				5EE983E613BE7834005F430D /* TUIView+PasteboardDragging.m in Sources */,
-				5EE983E713BE7834005F430D /* TUIView+Private.m in Sources */,
 				5EE983E813BE7834005F430D /* TUIView.m in Sources */,
 				5EE983E913BE7834005F430D /* TUIViewController.m in Sources */,
 				5EE983EA13BE7834005F430D /* TUIViewNSViewContainer.m in Sources */,
@@ -1154,7 +1148,6 @@
 				CBB74CDB13BE6E1900C85CB5 /* TUIView+Event.m in Sources */,
 				CBB74CDD13BE6E1900C85CB5 /* TUIView+NSTextInputClient.m in Sources */,
 				CBB74CDF13BE6E1900C85CB5 /* TUIView+PasteboardDragging.m in Sources */,
-				CBB74CE113BE6E1900C85CB5 /* TUIView+Private.m in Sources */,
 				CBB74CE313BE6E1900C85CB5 /* TUIView.m in Sources */,
 				CBB74CE513BE6E1900C85CB5 /* TUIViewController.m in Sources */,
 				CBB74CE713BE6E1900C85CB5 /* TUIViewNSViewContainer.m in Sources */,
@@ -1238,7 +1231,6 @@
 				CB5E326213BE70CA004B7899 /* TUIView+Event.m in Sources */,
 				CB5E326413BE70CA004B7899 /* TUIView+NSTextInputClient.m in Sources */,
 				CB5E326613BE70CA004B7899 /* TUIView+PasteboardDragging.m in Sources */,
-				CB5E326813BE70CA004B7899 /* TUIView+Private.m in Sources */,
 				CB5E326A13BE70CA004B7899 /* TUIView.m in Sources */,
 				CB5E326C13BE70CA004B7899 /* TUIViewController.m in Sources */,
 				CB5E326E13BE70CA004B7899 /* TUIViewNSViewContainer.m in Sources */,

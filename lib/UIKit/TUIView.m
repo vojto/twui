@@ -16,6 +16,8 @@
 
 #import "TUIView.h"
 #import "TUIKit.h"
+#import "TUINSWindow.h"
+#import "TUITextRenderer.h"
 #import "TUIView+Private.h"
 #import "TUIViewController.h"
 #import <pthread.h>
@@ -483,6 +485,54 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 		_layer.contentsGravity = kCAGravityResizeAspectFill;
 	} else {
 		NSAssert1(NO, @"%u is not a valid contentMode.", contentMode);
+	}
+}
+
+- (NSArray *)textRenderers
+{
+	return _textRenderers;
+}
+
+- (void)setTextRenderers:(NSArray *)renderers
+{
+	_currentTextRenderer = nil;
+	
+	for(TUITextRenderer *renderer in _textRenderers) {
+		renderer.view = nil;
+		[renderer setNextResponder:nil];
+	}
+	
+	_textRenderers = renderers;
+
+	for(TUITextRenderer *renderer in _textRenderers) {
+		[renderer setNextResponder:self];
+		renderer.view = self;
+	}
+}
+
+- (TUITextRenderer *)textRendererAtPoint:(CGPoint)point
+{
+	for(TUITextRenderer *r in _textRenderers) {
+		if(CGRectContainsPoint(r.frame, point))
+			return r;
+	}
+	return nil;
+}
+
+- (void)_updateLayerScaleFactor
+{
+	if([self nsWindow] != nil) {
+		[self.subviews makeObjectsPerformSelector:_cmd];
+		
+		CGFloat scale = 1.0f;
+		if([[self nsWindow] respondsToSelector:@selector(backingScaleFactor)]) {
+			scale = [[self nsWindow] backingScaleFactor];
+		}
+		
+		if([self.layer respondsToSelector:@selector(setContentsScale:)]) {
+			self.layer.contentsScale = scale;
+			[self setNeedsDisplay];
+		}
 	}
 }
 

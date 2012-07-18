@@ -229,11 +229,7 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	
 	CGSize s = [self frame].size;
 	v.frame = CGRectMake(0, 0, s.width, s.height);
-	
-	[self setWantsLayer:YES];
-	CALayer *layer = [self layer];
-	[layer setDelegate:self];
-	[layer addSublayer:rootView.layer];
+	[self.tuiHostView.layer addSublayer:rootView.layer];
 	
 	[self _updateLayerScaleFactor];
 }

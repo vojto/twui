@@ -663,6 +663,9 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	// subviews (which expect it in their superview's coordinate system)
 	point = [self convertPoint:point fromView:self.superview];
 
+	if (!CGRectContainsPoint(self.bounds, point))
+		return nil;
+
 	__block NSView *result = self;
 
 	// we need to avoid hitting any NSViews that are clipped by their

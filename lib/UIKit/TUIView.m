@@ -699,6 +699,9 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	
 	TUIView *superview = [self superview];
 	if(superview) {
+		TUINSView *nsView = self.ancestorTUINSView;
+		[self willMoveToTUINSView:nil];
+
 		[superview willRemoveSubview:self];
 		[self willMoveToSuperview:nil];
 
@@ -707,6 +710,8 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 		self.nsView = nil;
 
 		[self didMoveToSuperview];
+		[self didMoveFromTUINSView:nsView];
+		[self viewHierarchyDidChange];
 	}
 }
 
@@ -764,6 +769,7 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	}
 }
 
+// TODO: get rid of these macros, and just always go through a single method
 #define PRE_ADDSUBVIEW(index) \
 	if (!_subviews) \
 		_subviews = [[NSMutableArray alloc] init]; \
@@ -774,12 +780,17 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 		[self.subviews insertObject:view atIndex:index];\
 	}\
 	[view removeFromSuperview]; /* will call willAdd:nil and didAdd (nil) */ \
+	\
+	TUINSView *originalNSView_ = view.ancestorTUINSView; \
+	[view willMoveToTUINSView:_nsView]; \
+	\
 	[view willMoveToSuperview:self]; \
 	view.nsView = _nsView;
 
 #define POST_ADDSUBVIEW \
 	[self didAddSubview:view]; \
 	[view didMoveToSuperview]; \
+	[view didMoveFromTUINSView:originalNSView_]; \
 	[view setNextResponder:self]; \
 	[self _blockLayout];
 

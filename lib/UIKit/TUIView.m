@@ -409,6 +409,7 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 {
 	[self layoutSubviews];
 	[self _blockLayout];
+	[self.subviews makeObjectsPerformSelector:@selector(ancestorDidLayout)];
 }
 
 - (BOOL)drawInBackground
@@ -549,6 +550,7 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 - (void)setFrame:(CGRect)f
 {
 	self.layer.frame = f;
+	[self.subviews makeObjectsPerformSelector:@selector(ancestorDidLayout)];
 }
 
 - (CGRect)bounds
@@ -559,6 +561,7 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 - (void)setBounds:(CGRect)b
 {
 	self.layer.bounds = b;
+	[self.subviews makeObjectsPerformSelector:@selector(ancestorDidLayout)];
 }
 
 - (void)setCenter:(CGPoint)c
@@ -567,6 +570,7 @@ else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context,
 	f.origin.x = c.x - f.size.width / 2;
 	f.origin.y = c.y - f.size.height / 2;
 	self.frame = f;
+	[self.subviews makeObjectsPerformSelector:@selector(ancestorDidLayout)];
 }
 
 - (CGPoint)center

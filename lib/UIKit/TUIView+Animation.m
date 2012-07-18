@@ -297,13 +297,14 @@ static BOOL animateContents = NO;
 			return animation;
 	}
 
+	id defaultAction = [NSNull null];
     if (![TUICAAction interceptsActionForKey:event])
-        return (id<CAAction>)[NSNull null];
+        return defaultAction;
 
     // If we're being called inside the [layer actionForKey:key] call below,
-    // retun nil, so that method will return the default action.
+    // so return the default action.
     if (self.recursingActionForLayer)
-        return nil;
+        return defaultAction;
 
     self.recursingActionForLayer = YES;
     id<CAAction> innerAction = [layer actionForKey:event];

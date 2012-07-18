@@ -165,7 +165,8 @@
 #pragma mark Action interception
 
 - (void)runActionForKey:(NSString *)key object:(id)anObject arguments:(NSDictionary *)dict {
-	[self.innerAction runActionForKey:key object:anObject arguments:dict];
+	if (![[NSNull null] isEqual:self.innerAction])
+		[self.innerAction runActionForKey:key object:anObject arguments:dict];
 
 	CAAnimation *animation = [anObject animationForKey:key];
 	if (!animation)

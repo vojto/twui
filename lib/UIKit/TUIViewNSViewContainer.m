@@ -45,7 +45,7 @@
 
 @dynamic hostView;
 
-- (void)setGuestView:(NSView *)view {
+- (void)setRootView:(NSView *)view {
 	NSAssert1([NSThread isMainThread], @"%s should only be called from the main thread", __func__);
 
 	// remove any existing guest view

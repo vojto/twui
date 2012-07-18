@@ -35,9 +35,9 @@
 		 */
 		self.textRenderers = [NSArray arrayWithObjects:textRenderer, nil];
 
-        NSTextField *textField = [[NSTextField alloc] initWithFrame:NSMakeRect(20, 180, 91, 22)];
-        [textField.cell setUsesSingleLineMode:YES];
-        [textField.cell setScrollable:YES];
+		NSTextField *textField = [[NSTextField alloc] initWithFrame:NSMakeRect(20, 180, 91, 22)];
+		[textField.cell setUsesSingleLineMode:YES];
+		[textField.cell setScrollable:YES];
 
 		self.textFieldContainer = [[TUIViewNSViewContainer alloc] initWithNSView:textField];
 		self.textFieldContainer.backgroundColor = [TUIColor blueColor];

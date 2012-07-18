@@ -15,6 +15,8 @@
  */
 
 #import "TUIView.h"
+#import "TUIView+Private.h"
+#import "TUICAAction.h"
 
 @interface TUIViewAnimation : NSObject <CAAction>
 {
@@ -294,8 +296,20 @@ static BOOL animateContents = NO;
 		if(animation)
 			return animation;
 	}
-	
-	return (id<CAAction>)[NSNull null];
+
+    if (![TUICAAction interceptsActionForKey:event])
+        return (id<CAAction>)[NSNull null];
+
+    // If we're being called inside the [layer actionForKey:key] call below,
+    // retun nil, so that method will return the default action.
+    if (self.recursingActionForLayer)
+        return nil;
+
+    self.recursingActionForLayer = YES;
+    id<CAAction> innerAction = [layer actionForKey:event];
+    self.recursingActionForLayer = NO;
+
+    return [TUICAAction actionWithAction:innerAction];
 }
 
 @end

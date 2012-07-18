@@ -18,6 +18,14 @@
 #import "TUITextRenderer.h"
 
 @interface TUIView ()
+/*
+ * Whether we're inside the -actionForLayer:forKey: method.
+ *
+ * This is used so we can get the original action for the key, and wrap it with
+ * extra functionality, without entering an infinite loop. 
+ */
+@property (nonatomic, assign, getter = isRecursingActionForLayer) BOOL recursingActionForLayer;
+
 @property (nonatomic, retain) NSArray *textRenderers;
 
 - (TUITextRenderer *)textRendererAtPoint:(CGPoint)point;

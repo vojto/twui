@@ -40,7 +40,7 @@
 
 @interface TUILayoutManager ()
 
-@property (nonatomic, assign) BOOL isProcessingChanges;
+@property (nonatomic, assign, getter = isProcessingChanges) BOOL processingChanges;
 
 @property (nonatomic, strong) NSMapTable *constraints;
 @property (nonatomic, strong) NSMutableArray *viewsToProcess;
@@ -50,7 +50,7 @@
 
 @implementation TUILayoutManager
 
-@synthesize isProcessingChanges = _isProcessingChanges;
+@synthesize processingChanges = _processingChanges;
 @synthesize constraints = _constraints;
 @synthesize viewsToProcess = _viewsToProcess;
 @synthesize processedViews = _processedViews;
@@ -72,7 +72,7 @@
 	                                             selector:@selector(frameChanged:)
 		                                             name:TUIViewFrameDidChangeNotification
 		                                           object:nil];
-		_isProcessingChanges = NO;
+		_processingChanges = NO;
 		
 		_constraints = [NSMapTable mapTableWithWeakToStrongObjects];
 		_viewsToProcess = [[NSMutableArray alloc] init];
@@ -126,8 +126,8 @@
 }
 
 - (void)beginProcessingView:(TUIView *)view {
-	if(self.isProcessingChanges == NO) {
-		self.isProcessingChanges = YES;
+	if(self.processingChanges == NO) {
+		self.processingChanges = YES;
 		
 		@autoreleasepool {
 			[self.viewsToProcess addObject:view];
@@ -143,7 +143,7 @@
 			[self.processedViews removeAllObjects];
 		}
 		
-		self.isProcessingChanges = NO;
+		self.processingChanges = NO;
 	} else {
 		if([self.processedViews containsObject:view] == NO)
 			[self.viewsToProcess addObject:view];

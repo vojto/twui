@@ -173,7 +173,7 @@ NSTimeInterval const TUIPopoverDefaultFadeoutDuration = 0.3;
     BOOL (^checkPopoverSizeForScreenWithPopoverEdge)(CGRectEdge) = ^ (CGRectEdge popoverEdge) 
     {
         CGRect popoverRect = popoverRectForEdge(popoverEdge);
-        return NSContainsRect(positioningView.nsWindow.screen.frame, popoverRect);
+        return NSContainsRect(positioningView.nsWindow.screen.visibleFrame, popoverRect);
     };
     
     //This is as ugly as sin… but it gets the job done. I couldn't think of a nice way to code this but still get the desired behaviour
@@ -196,7 +196,7 @@ NSTimeInterval const TUIPopoverDefaultFadeoutDuration = 0.3;
         };
 		
 		CGRect (^fitRectToScreen)(CGRect) = ^ (CGRect proposedRect) {
-			NSRect screenRect = positioningView.nsWindow.screen.frame;
+			NSRect screenRect = positioningView.nsWindow.screen.visibleFrame;
 			
 			if (proposedRect.origin.y < NSMinY(screenRect))
 				proposedRect.origin.y = NSMinY(screenRect);

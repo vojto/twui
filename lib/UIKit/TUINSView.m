@@ -44,8 +44,8 @@
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidResignKeyNotification object:nil];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidBecomeKeyNotification object:nil];
 	
+	rootView.nsView = nil;
 	[rootView removeFromSuperview];
-    rootView.nsView = nil;
 	
 	rootView = nil;
 	_hoverView = nil;
@@ -203,7 +203,7 @@
 
 - (void)screenProfileOrBackingPropertiesDidChange:(NSNotification *)notification
 {
-	[self _updateLayerScaleFactor];
+	[self performSelector:@selector(_updateLayerScaleFactor) withObject:nil afterDelay:0.0]; // the window's backingScaleFactor doesn't update until after this notification fires (10.8) - so delay it a bit.
 }
 
 - (TUIView *)viewForLocalPoint:(NSPoint)p
@@ -268,8 +268,8 @@
 	}
 	
 	if(_newHoverView != _hoverView) {
-		[_newHoverView mouseEntered:event];
 		[_hoverView mouseExited:event];
+		[_newHoverView mouseEntered:event];
 		_hoverView = _newHoverView;
 		
 		if([[self window] isKeyWindow]) {

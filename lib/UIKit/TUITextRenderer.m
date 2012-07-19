@@ -449,4 +449,9 @@
 	[self _resetFrame];
 }
 
+- (void)setNeedsDisplay {
+	[self _resetFramesetter];
+	[view setNeedsDisplay];
+}
+
 @end

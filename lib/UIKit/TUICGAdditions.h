@@ -14,6 +14,19 @@
  limitations under the License.
  */
 
+enum _TUICGRoundedRectCorner {
+	TUICGRoundedRectCornerTopLeft = 1 << 0,
+	TUICGRoundedRectCornerTopRight = 1 << 1,
+	TUICGRoundedRectCornerBottomLeft = 1 << 2,
+	TUICGRoundedRectCornerBottomRight = 1 << 3,
+	TUICGRoundedRectCornerTop = TUICGRoundedRectCornerTopLeft | TUICGRoundedRectCornerTopRight,
+	TUICGRoundedRectCornerBottom = TUICGRoundedRectCornerBottomLeft | TUICGRoundedRectCornerBottomRight,
+	TUICGRoundedRectCornerAll = TUICGRoundedRectCornerTopLeft | TUICGRoundedRectCornerTopRight | TUICGRoundedRectCornerBottomLeft | TUICGRoundedRectCornerBottomRight,
+	TUICGRoundedRectCornerNone = 0,
+};
+
+typedef NSUInteger TUICGRoundedRectCorner;
+
 #import <Foundation/Foundation.h>
 
 extern CGContextRef TUICreateOpaqueGraphicsContext(CGSize size);
@@ -21,6 +34,8 @@ extern CGContextRef TUICreateGraphicsContext(CGSize size);
 extern CGContextRef TUICreateGraphicsContextWithOptions(CGSize size, BOOL opaque);
 extern CGImageRef TUICreateCGImageFromBitmapContext(CGContextRef ctx);
 
+extern CGPathRef TUICGPathCreateRoundedRect(CGRect rect, CGFloat radius);
+extern CGPathRef TUICGPathCreateRoundedRectWithCorners(CGRect rect, CGFloat radius, TUICGRoundedRectCorner corners);
 extern void CGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius);
 extern void CGContextClipToRoundRect(CGContextRef context, CGRect rect, CGFloat radius);
 

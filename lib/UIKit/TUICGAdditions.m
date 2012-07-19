@@ -57,21 +57,53 @@ CGImageRef TUICreateCGImageFromBitmapContext(CGContextRef ctx) // autoreleased
 	return CGBitmapContextCreateImage(ctx);
 }
 
+CGPathRef TUICGPathCreateRoundedRect(CGRect rect, CGFloat radius) {
+	return TUICGPathCreateRoundedRectWithCorners(rect, radius, TUICGRoundedRectCornerAll);
+}
+
+CGPathRef TUICGPathCreateRoundedRectWithCorners(CGRect rect, CGFloat radius, TUICGRoundedRectCorner corners) {
+	CGMutablePathRef path = CGPathCreateMutable();
+	CGPathMoveToPoint(path, NULL, rect.origin.x, rect.origin.y + radius);
+	CGPathAddLineToPoint(path, NULL, rect.origin.x, rect.origin.y + rect.size.height - radius);
+	
+	if((corners & TUICGRoundedRectCornerTopLeft) != 0) {
+		CGPathAddArc(path, NULL, rect.origin.x + radius, rect.origin.y + rect.size.height - radius, radius, M_PI, M_PI / 2, 1);
+	} else {
+		CGPathAddLineToPoint(path, NULL, rect.origin.x, rect.origin.y + rect.size.height);
+	}
+	
+	CGPathAddLineToPoint(path, NULL, rect.origin.x + rect.size.width - radius, rect.origin.y + rect.size.height);
+	
+	if((corners & TUICGRoundedRectCornerTopRight) != 0) {
+		CGPathAddArc(path, NULL, rect.origin.x + rect.size.width - radius, rect.origin.y + rect.size.height - radius, radius, M_PI / 2, 0.0f, 1);
+	} else {
+		CGPathAddLineToPoint(path, NULL, rect.origin.x + rect.size.width, rect.origin.y + rect.size.height);
+	}
+	
+	CGPathAddLineToPoint(path, NULL, rect.origin.x + rect.size.width, rect.origin.y + radius);
+	
+	if((corners & TUICGRoundedRectCornerBottomRight) != 0) {
+		CGPathAddArc(path, NULL, rect.origin.x + rect.size.width - radius, rect.origin.y + radius, radius, 0.0f, -M_PI / 2, 1);
+	} else {
+		CGPathAddLineToPoint(path, NULL, rect.origin.x + rect.size.width, rect.origin.y);
+	}
+	
+	CGPathAddLineToPoint(path, NULL, rect.origin.x + radius, rect.origin.y);
+	
+	if((corners & TUICGRoundedRectCornerBottomLeft) != 0) {
+		CGPathAddArc(path, NULL, rect.origin.x + radius, rect.origin.y + radius, radius, -M_PI / 2, M_PI, 1);
+	} else {
+		CGPathAddLineToPoint(path, NULL, rect.origin.x, rect.origin.y);
+	}
+	
+	return path;
+}
+
 void CGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius)
 {
-	radius = MIN(radius, rect.size.width / 2);
-	radius = MIN(radius, rect.size.height / 2);
-	radius = floor(radius);
-	
-	CGContextMoveToPoint(context, rect.origin.x, rect.origin.y + radius);
-	CGContextAddLineToPoint(context, rect.origin.x, rect.origin.y + rect.size.height - radius);
-	CGContextAddArc(context, rect.origin.x + radius, rect.origin.y + rect.size.height - radius, radius, M_PI, M_PI / 2, 1);
-	CGContextAddLineToPoint(context, rect.origin.x + rect.size.width - radius, rect.origin.y + rect.size.height);
-	CGContextAddArc(context, rect.origin.x + rect.size.width - radius, rect.origin.y + rect.size.height - radius, radius, M_PI / 2, 0.0f, 1);
-	CGContextAddLineToPoint(context, rect.origin.x + rect.size.width, rect.origin.y + radius);
-	CGContextAddArc(context, rect.origin.x + rect.size.width - radius, rect.origin.y + radius, radius, 0.0f, -M_PI / 2, 1);
-	CGContextAddLineToPoint(context, rect.origin.x + radius, rect.origin.y);
-	CGContextAddArc(context, rect.origin.x + radius, rect.origin.y + radius, radius, -M_PI / 2, M_PI, 1);
+	CGPathRef path = TUICGPathCreateRoundedRect(rect, radius);
+	CGContextAddPath(context, path);
+	CGPathRelease(path);
 }
 
 void CGContextClipToRoundRect(CGContextRef context, CGRect rect, CGFloat radius)

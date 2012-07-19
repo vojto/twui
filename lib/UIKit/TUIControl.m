@@ -59,6 +59,7 @@
   if(_controlFlags.disabled)        actual |= TUIControlStateDisabled;
   if(_controlFlags.selected)        actual |= TUIControlStateSelected;
 	if(_controlFlags.tracking)        actual |= TUIControlStateHighlighted;
+	if(_controlFlags.highlighted) actual |= TUIControlStateHighlighted;
 	if(![self.nsView isWindowKey])  actual |= TUIControlStateNotKey;
 	
 	return actual;
@@ -92,6 +93,17 @@
 -(void)setSelected:(BOOL)selected {
 	[self _stateWillChange];
 	_controlFlags.selected = selected;
+	[self _stateDidChange];
+	[self setNeedsDisplay];
+}
+
+- (BOOL)highlighted {
+	return _controlFlags.highlighted;
+}
+
+- (void)setHighlighted:(BOOL)highlighted {
+	[self _stateWillChange];
+	_controlFlags.highlighted = highlighted;
 	[self _stateDidChange];
 	[self setNeedsDisplay];
 }

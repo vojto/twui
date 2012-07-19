@@ -51,4 +51,8 @@
     [_image drawInRect:rect];
 }
 
+- (CGSize)sizeThatFits:(CGSize)size {
+	return _image.size;
+}
+
 @end

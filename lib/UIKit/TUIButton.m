@@ -41,6 +41,7 @@
 		_buttonFlags.firstDraw = 1;
 		self.backgroundColor = [TUIColor clearColor];
 		self.needsDisplayWhenWindowsKeyednessChanges = YES;
+		self.reversesTitleShadowWhenHighlighted = NO;
 	}
 	return self;
 }
@@ -155,6 +156,10 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 	return r;
 }
 
+- (CGSize)sizeThatFits:(CGSize)size {
+	return self.currentImage.size;
+}
+
 
 - (void)drawRect:(CGRect)r
 {
@@ -200,6 +205,23 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 		[image drawInRect:imageRect blendMode:kCGBlendModeNormal alpha:alpha];
 	}
 	
+	NSString *title = self.currentTitle;
+	if(title != nil) {
+		_titleView.text = title;
+	}
+	
+	TUIColor *color = self.currentTitleColor;
+	if(color != nil) {
+		_titleView.textColor = color;
+	}
+	
+	TUIColor *shadowColor = self.currentTitleShadowColor;
+	// they may have manually set the renderer's shadow color, in which case we 
+	// don't want to reset it to nothing
+	if(shadowColor != nil) {
+		_titleView.renderer.shadowColor = shadowColor;
+	}
+	
 	CGContextRef ctx = TUIGraphicsGetCurrentContext();
 	CGContextSaveGState(ctx);
 	CGContextTranslateCTM(ctx, _titleEdgeInsets.left, _titleEdgeInsets.bottom);
@@ -236,8 +258,7 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 }
 
 - (void)_update {
-	_titleView.text = self.currentTitle;
-	_titleView.textColor = self.currentTitleColor;
+	
 }
 
 - (void)_stateDidChange {
@@ -246,6 +267,22 @@ static CGRect ButtonRectCenteredInRect(CGRect a, CGRect b)
 	[self _update];
 	
 	[self setNeedsDisplay];
+}
+
+- (void)setHighlighted:(BOOL)highlighted {
+	if(self.highlighted != highlighted && self.reversesTitleShadowWhenHighlighted) {
+		_titleView.renderer.shadowOffset = CGSizeMake(_titleView.renderer.shadowOffset.width, -_titleView.renderer.shadowOffset.height);
+	}
+	
+	[super setHighlighted:highlighted];
+}
+
+- (BOOL)reversesTitleShadowWhenHighlighted {
+	return _buttonFlags.reversesTitleShadowWhenHighlighted;
+}
+
+- (void)setReversesTitleShadowWhenHighlighted:(BOOL)reversesTitleShadowWhenHighlighted {
+	_buttonFlags.reversesTitleShadowWhenHighlighted = reversesTitleShadowWhenHighlighted;
 }
 
 @end

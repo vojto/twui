@@ -238,6 +238,18 @@ NSParagraphStyle *ABNSParagraphStyleForTextAlignment(TUITextAlignment alignment)
 	return TUIBackgroundFillStyleInline;
 }
 
+- (NSString *)text {
+	return [self string];
+}
+
+- (void)setText:(NSString *)text {
+	text = text ? : @" ";
+	
+	[self beginEditing];
+	[self replaceCharactersInRange:NSMakeRange(0, [self length]) withString:[text copy]];
+	[self endEditing];
+}
+
 @end
 
 @implementation NSShadow (TUIAdditions)

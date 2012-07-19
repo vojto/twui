@@ -1,5 +1,5 @@
 /*
- Copyright 2011 Twitter, Inc.
+ Copyright 2012 Twitter, Inc.
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this work except in compliance with the License.
@@ -15,16 +15,24 @@
  */
 
 #import "TUIView.h"
-#import "TUITextRenderer.h"
 
-@interface TUIView (Private)
+enum _TUIProgressBarStyle
+{
+	TUIProgressBarStyleBlue = 0, //default
+	TUIProgressBarStyleGray
+};
 
-@property (nonatomic, retain) NSArray *textRenderers;
+typedef NSUInteger TUIProgressBarStyle;
 
-- (TUITextRenderer *)textRendererAtPoint:(CGPoint)point;
+@interface TUIProgressBar : TUIView
 
-- (void)_updateLayerScaleFactor;
+@property (nonatomic, assign) CGFloat progress;
+@property (nonatomic, assign, getter = isIndeterminate) BOOL indeterminate;
+
+//Drawing
+@property (nonatomic, strong) TUIViewDrawRect drawTrack;
+@property (nonatomic, strong) TUIViewDrawRect drawFill;
+
+- (id)initWithFrame:(CGRect)frame style:(TUIProgressBarStyle)style;
 
 @end
-
-extern CGFloat TUICurrentContextScaleFactor(void);

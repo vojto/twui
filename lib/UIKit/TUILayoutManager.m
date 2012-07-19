@@ -32,7 +32,7 @@
 	if((self = [super init])) {
 		_layoutConstraints = [[NSMutableArray alloc] init];
 	}
-    return self;
+	return self;
 }
 
 @end
@@ -56,29 +56,29 @@
 @synthesize processedViews = _processedViews;
 
 + (id)sharedLayoutManager {
-    static TUILayoutManager *_sharedLayoutManager = nil;
-    static dispatch_once_t onceToken;
-    
-    dispatch_once(&onceToken, ^{
-        _sharedLayoutManager = [[TUILayoutManager alloc] init];
-    });
-    
+	static TUILayoutManager *_sharedLayoutManager = nil;
+	static dispatch_once_t onceToken;
+	
+	dispatch_once(&onceToken, ^{
+		_sharedLayoutManager = [[TUILayoutManager alloc] init];
+	});
+	
 	return _sharedLayoutManager;
 }
 
 - (id)init {
-    if((self = [super init])) {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(frameChanged:)
-                                                     name:TUIViewFrameDidChangeNotification
-                                                   object:nil];
-        _processingChanges = NO;
-        
-        _constraints = [NSMapTable mapTableWithWeakToStrongObjects];
-        _viewsToProcess = [[NSMutableArray alloc] init];
-        _processedViews = [[NSMutableSet alloc] init];
-    }
-    return self;
+	if((self = [super init])) {
+		[[NSNotificationCenter defaultCenter] addObserver:self
+	                                             selector:@selector(frameChanged:)
+		                                             name:TUIViewFrameDidChangeNotification
+		                                           object:nil];
+		_processingChanges = NO;
+		
+		_constraints = [NSMapTable mapTableWithWeakToStrongObjects];
+		_viewsToProcess = [[NSMutableArray alloc] init];
+		_processedViews = [[NSMutableSet alloc] init];
+	}
+	return self;
 }
 
 - (void)dealloc {
@@ -92,13 +92,13 @@
 - (void)processView:(TUIView *)aView {
 	[self.processedViews addObject:aView];
 	
-    NSArray *viewConstraints = [self layoutConstraintsOnView:aView];
-    for(TUILayoutConstraint * constraint in viewConstraints)
-        [constraint applyToTargetView:aView];
+	NSArray *viewConstraints = [self layoutConstraintsOnView:aView];
+	for(TUILayoutConstraint * constraint in viewConstraints)
+		[constraint applyToTargetView:aView];
 	
-    // Order of Operations:
-    // 1.  Siblings with constraints to this view.
-    // 2.  Children with constraints to superview.
+	// Order of Operations:
+	// 1.  Siblings with constraints to this view.
+	// 2.  Children with constraints to superview.
 	
 	if([self layoutNameForView:aView] != nil) {
 		NSArray *siblings = [[aView superview] subviews];
@@ -126,23 +126,23 @@
 }
 
 - (void)beginProcessingView:(TUIView *)view {
-    if(self.processingChanges == NO) {
-        self.processingChanges = YES;
+	if(self.processingChanges == NO) {
+		self.processingChanges = YES;
 		
-        @autoreleasepool {
-            [self.viewsToProcess addObject:view];
-            
-            while([self.viewsToProcess count] > 0) {
-                TUIView *currentView = [self.viewsToProcess objectAtIndex:0];
-                [self.viewsToProcess removeObjectAtIndex:0];			
-                if([self.viewsToProcess containsObject:currentView] == NO)
-                    [self processView:currentView];
-            }
-            
-            [self.viewsToProcess removeAllObjects];
-            [self.processedViews removeAllObjects];
-        }
-        
+		@autoreleasepool {
+			[self.viewsToProcess addObject:view];
+			
+			while([self.viewsToProcess count] > 0) {
+				TUIView *currentView = [self.viewsToProcess objectAtIndex:0];
+				[self.viewsToProcess removeObjectAtIndex:0];			
+				if([self.viewsToProcess containsObject:currentView] == NO)
+					[self processView:currentView];
+			}
+			
+			[self.viewsToProcess removeAllObjects];
+			[self.processedViews removeAllObjects];
+		}
+		
 		self.processingChanges = NO;
 	} else {
 		if([self.processedViews containsObject:view] == NO)
@@ -175,7 +175,7 @@
 - (NSArray *)layoutConstraintsOnView:(TUIView *)view {
 	TUILayoutContainer *container = [self.constraints objectForKey:view];
 	
-    if(!container) return nil;
+	if(!container) return nil;
 	else return [[container layoutConstraints] copy];
 }
 
@@ -194,7 +194,7 @@
 			viewContainer = [TUILayoutContainer container];
 			[self.constraints setObject:viewContainer forKey:view];
 		}
-        [viewContainer setLayoutName:name];
+		[viewContainer setLayoutName:name];
 	}
 }
 

@@ -31,7 +31,8 @@
 - (id)init {
 	if((self = [super init])) {
 		_layoutConstraints = [[NSMutableArray alloc] init];
-	} return self;
+	}
+    return self;
 }
 
 @end

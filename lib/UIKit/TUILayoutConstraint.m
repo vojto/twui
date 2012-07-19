@@ -53,7 +53,7 @@
                     attribute:(TUILayoutConstraintAttribute)srcAttr
                         scale:(CGFloat)scale
                        offset:(CGFloat)offset {
-    return [[self alloc] initWithAttribute:attr relativeTo:source attribute:srcAttr scale:scale offset:offset];
+	return [[self alloc] initWithAttribute:attr relativeTo:source attribute:srcAttr scale:scale offset:offset];
 }
 
 + (id)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
@@ -79,7 +79,7 @@
 	double attributeRange = floor(log10(attr));
 	double sourceAttributeRange = floor(log10(srcAttr));
 	
-    NSAssert(fabs(attributeRange - sourceAttributeRange) < 0.001, @"Invalid source and target attributes: %f, %f", sourceAttributeRange, attributeRange);
+	NSAssert(fabs(attributeRange - sourceAttributeRange) < 0.001, @"Invalid source and target attributes: %f, %f", sourceAttributeRange, attributeRange);
 	
 	if((self = [super init])) {
 		_attribute = attr;
@@ -88,7 +88,7 @@
 		_sourceName = [srcLayer copy];
 		_valueTransformer = transformer;
 	}
-    return self;
+	return self;
 }
 
 - (CGFloat)transformValue:(CGFloat)original {
@@ -108,7 +108,7 @@
 	
 	NSRect sourceValue = [source valueForLayoutAttribute:[self sourceAttribute]];
 	NSRect targetValue = sourceValue;
-    
+	
 	if(self.attribute >= TUILayoutConstraintAttributeMinY && self.attribute <= TUILayoutConstraintAttributeMidX)
 		targetValue.origin.x = [self transformValue:sourceValue.origin.x];
 	
@@ -129,11 +129,11 @@
 	if((self = [super init])) {
 		_transformer = [block copy];
 	}
-    return self;
+	return self;
 }
 
 - (id)transformedValue:(id)value {
-    if(!self.transformer) return nil;
+	if(!self.transformer) return nil;
 	CGFloat source = [value floatValue];
 	CGFloat transformed = self.transformer(source);
 	return [NSNumber numberWithFloat:transformed];

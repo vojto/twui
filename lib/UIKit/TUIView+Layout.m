@@ -46,7 +46,7 @@
 - (CGRect)valueForLayoutAttribute:(TUILayoutConstraintAttribute)attribute {
 	CGRect frame = self.frame;
 	CGRect bounds = self.bounds;
-    
+	
 	switch(attribute) {
 		case TUILayoutConstraintAttributeMinY:
 			return TUIScalarRect(NSMinY(frame));
@@ -89,7 +89,7 @@
 		case TUILayoutConstraintAttributeBounds:
 			return bounds;
 		default:
-            NSAssert(NO, @"Invalid constraint attribute.");
+			NSAssert(NO, @"Invalid constraint attribute.");
 			return NSZeroRect;
 	}
 }
@@ -150,7 +150,7 @@
 		case TUILayoutConstraintAttributeBoundsCenter:
 			TUISetMidX(bounds, pointValue.x);
 			TUISetMidY(bounds, pointValue.y);
-            [self setBounds:bounds];
+			[self setBounds:bounds];
 			break;
 		case TUILayoutConstraintAttributeMidXMaxY:
 			TUISetMidX(frame, pointValue.x);
@@ -173,14 +173,14 @@
 			break;
 		case TUILayoutConstraintAttributeBounds:
 			bounds = rectValue;
-            [self setBounds:bounds];
+			[self setBounds:bounds];
 			break;
-        default:
-            NSAssert(NO, @"Invalid constraint attribute.");
-            break;
+		default:
+			NSAssert(NO, @"Invalid constraint attribute.");
+			break;
 	}
-    
-    [self setFrame:frame];
+	
+	[self setFrame:frame];
 }
 
 - (TUIView *)relativeViewForName:(NSString *)name {

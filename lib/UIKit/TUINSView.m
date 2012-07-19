@@ -30,6 +30,12 @@
 #import "TUITooltipWindow.h"
 #import <CoreFoundation/CoreFoundation.h>
 
+// If enabled, NSViews contained within TUIViewNSViewContainers will be clipped
+// by any TwUI ancestors that enable clipping to bounds.
+//
+// This should really only be disabled for debugging.
+#define ENABLE_NSVIEW_CLIPPING 1
+
 static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, void *context) {
 	TUIViewNSViewContainer *hostA = viewA.hostView;
 	TUIViewNSViewContainer *hostB = viewB.hostView;
@@ -642,9 +648,12 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 
 	// set up masking on the AppKit host view, and make ourselves the layout
 	// manager, so that we'll know when new sublayers are added
-	self.appKitHostView.layer.mask = self.maskLayer;
 	self.appKitHostView.layer.layoutManager = self;
+
+	#if ENABLE_NSVIEW_CLIPPING
+	self.appKitHostView.layer.mask = self.maskLayer;
 	[self recalculateNSViewClipping];
+	#endif
 }
 
 - (void)didAddSubview:(NSView *)view {
@@ -697,6 +706,10 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 }
 
 - (void)recalculateNSViewClipping; {
+	#if !ENABLE_NSVIEW_CLIPPING
+	return;
+	#endif
+
 	CGMutablePathRef path = CGPathCreateMutable();
 
 	for (NSView *view in self.appKitHostView.subviews) {

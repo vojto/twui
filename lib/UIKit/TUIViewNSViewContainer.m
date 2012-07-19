@@ -279,6 +279,16 @@
 	return cellSize;
 }
 
+- (void)sizeToFit {
+	if ([self.rootView respondsToSelector:@selector(sizeToFit)]) {
+		[self.rootView performSelector:@selector(sizeToFit)];
+
+		self.bounds = self.rootView.bounds;
+	} else {
+		[super sizeToFit];
+	}
+}
+
 #pragma mark NSObject overrides
 
 - (NSString *)description {

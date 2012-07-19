@@ -1,71 +1,39 @@
 #import "TUILayoutConstraint.h"
 #import "TUILayoutManager.h"
 
-@interface TUILayoutValueTransformer : NSValueTransformer {
-	CGFloat offset;
-	CGFloat scale;
-}
+@interface TUIView (Layout_Private)
 
-+ (id)transformerWithOffset:(CGFloat)anOffset scale:(CGFloat)aScale;
-- (id)initWithOffset:(CGFloat)anOffset scale:(CGFloat)aScale;
+- (NSRect)valueForLayoutAttribute:(TUILayoutConstraintAttribute)attribute;
+- (void)setValue:(NSRect)newValue forLayoutAttribute:(TUILayoutConstraintAttribute)attribute;
 
 @end
 
-@implementation TUILayoutValueTransformer
 
-+ (id)transformerWithOffset:(CGFloat)anOffset scale:(CGFloat)aScale {
-	return [[self alloc] initWithOffset:anOffset scale:aScale];
-}
+@interface TUILayoutConstraint ()
 
-- (id)initWithOffset:(CGFloat)anOffset scale:(CGFloat)aScale {
-	if((self = [super init])) {
-		offset = anOffset;
-		scale = aScale;
-	} return self;
-}
+@property (nonatomic, copy) NSValueTransformer *valueTransformer;
 
-- (id)transformedValue:(id)value {
-	CGFloat source = [value floatValue];
-	CGFloat transformed = (source * scale) + offset;
-	return [NSNumber numberWithFloat:transformed];
-}
+- (CGFloat)transformValue:(CGFloat)original;
+- (void)applyToTargetView:(TUIView *)target;
+- (void)applyToTargetView:(TUIView *)target sourceView:(TUIView *)source;
 
 @end
 
-@interface TUILayoutBlockValueTransformer : NSValueTransformer {
-	TUILayoutTransformer transformer;
-}
+@interface TUILayoutBlockValueTransformer : NSValueTransformer
+
+@property (nonatomic, copy) TUILayoutTransformer transformer;
 
 + (id)transformerWithBlock:(TUILayoutTransformer)block;
 - (id)initWithBlock:(TUILayoutTransformer)block;
 
 @end
 
-@implementation TUILayoutBlockValueTransformer
+@implementation TUILayoutConstraint
 
-+ (id)transformerWithBlock:(TUILayoutTransformer)block {
-	return [[self alloc] initWithBlock:block];
-}
-
-- (id)initWithBlock:(TUILayoutTransformer)block {
-	if((self = [super init])) {
-		transformer = [block copy];
-	} return self;
-}
-
-- (id) transformedValue:(id)value {
-	CGFloat source = [value floatValue];
-	CGFloat transformed = transformer(source);
-	return [NSNumber numberWithFloat:transformed];
-}
-
-@end
-
-@implementation TUILayoutConstraint {
-	NSValueTransformer *valueTransformer;
-}
-
-@synthesize attribute, sourceAttribute, sourceName;
+@synthesize attribute = _attribute;
+@synthesize sourceAttribute = _sourceAttribute;
+@synthesize sourceName = _sourceName;
+@synthesize valueTransformer = _valueTransformer;
 
 + (id)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
                    relativeTo:(NSString *)srcLayer
@@ -81,12 +49,11 @@
 }
 
 + (id)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
-                   relativeTo:(NSString *)srcLayer
+                   relativeTo:(NSString *)source
                     attribute:(TUILayoutConstraintAttribute)srcAttr
                         scale:(CGFloat)scale
                        offset:(CGFloat)offset {
-	TUILayoutValueTransformer *t = [TUILayoutValueTransformer transformerWithOffset:offset scale:scale];
-	return [self constraintWithAttribute:attr relativeTo:srcLayer attribute:srcAttr valueTransformer:t];
+    return [[self alloc] initWithAttribute:attr relativeTo:source attribute:srcAttr scale:scale offset:offset];
 }
 
 + (id)constraintWithAttribute:(TUILayoutConstraintAttribute)attr
@@ -111,22 +78,21 @@
     
 	double attributeRange = floor(log10(attr));
 	double sourceAttributeRange = floor(log10(srcAttr));
-	if(attributeRange != sourceAttributeRange) {
-		[NSException raise:NSInvalidArgumentException format:@"Invalid source and target attributes"];
-		return nil;
-	}
+	
+    NSAssert(fabs(attributeRange - sourceAttributeRange) < 0.001, @"Invalid source and target attributes: %f, %f", sourceAttributeRange, attributeRange);
 	
 	if((self = [super init])) {
-		attribute = attr;
-		sourceAttribute = srcAttr;
+		_attribute = attr;
+		_sourceAttribute = srcAttr;
 				
-		sourceName = [srcLayer copy];
-		valueTransformer = transformer;
-	} return self;
+		_sourceName = [srcLayer copy];
+		_valueTransformer = transformer;
+	}
+    return self;
 }
 
 - (CGFloat)transformValue:(CGFloat)original {
-	id transformed = [valueTransformer transformedValue:[NSNumber numberWithFloat:original]];
+	id transformed = [self.valueTransformer transformedValue:[NSNumber numberWithFloat:original]];
 	return [transformed floatValue];
 }
 
@@ -143,10 +109,34 @@
 	NSRect sourceValue = [source valueForLayoutAttribute:[self sourceAttribute]];
 	NSRect targetValue = sourceValue;
     
-	if(attribute >= TUILayoutConstraintAttributeMinY && attribute <= TUILayoutConstraintAttributeMidX)
+	if(self.attribute >= TUILayoutConstraintAttributeMinY && self.attribute <= TUILayoutConstraintAttributeMidX)
 		targetValue.origin.x = [self transformValue:sourceValue.origin.x];
 	
 	[target setValue:targetValue forLayoutAttribute:[self attribute]];
+}
+
+@end
+
+@implementation TUILayoutBlockValueTransformer
+
+@synthesize transformer = _transformer;
+
++ (id)transformerWithBlock:(TUILayoutTransformer)block {
+	return [[self alloc] initWithBlock:block];
+}
+
+- (id)initWithBlock:(TUILayoutTransformer)block {
+	if((self = [super init])) {
+		_transformer = [block copy];
+	}
+    return self;
+}
+
+- (id)transformedValue:(id)value {
+    if(!self.transformer) return nil;
+	CGFloat source = [value floatValue];
+	CGFloat transformed = self.transformer(source);
+	return [NSNumber numberWithFloat:transformed];
 }
 
 @end

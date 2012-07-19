@@ -9,9 +9,6 @@
 - (NSArray *)layoutConstraints;
 - (void)removeAllLayoutConstraints;
 
-- (NSRect)valueForLayoutAttribute:(TUILayoutConstraintAttribute)attribute;
-- (void)setValue:(NSRect)newValue forLayoutAttribute:(TUILayoutConstraintAttribute)attribute;
-
 - (TUIView *)relativeViewForName:(NSString *)name;
 
 @end

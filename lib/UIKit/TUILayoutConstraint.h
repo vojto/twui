@@ -1,14 +1,14 @@
 @class TUIView;
 
-typedef enum {
-	TUILayoutConstraintAttributeMinY = 1,
-	TUILayoutConstraintAttributeMaxY = 2,
-	TUILayoutConstraintAttributeMinX = 3,
-	TUILayoutConstraintAttributeMaxX = 4,
-	TUILayoutConstraintAttributeWidth = 5,
-	TUILayoutConstraintAttributeHeight = 6,
-	TUILayoutConstraintAttributeMidY = 7,
-	TUILayoutConstraintAttributeMidX = 8,
+typedef enum : NSUInteger {
+	TUILayoutConstraintAttributeMinY    = 1,
+	TUILayoutConstraintAttributeMaxY    = 2,
+	TUILayoutConstraintAttributeMinX    = 3,
+	TUILayoutConstraintAttributeMaxX    = 4,
+	TUILayoutConstraintAttributeWidth   = 5,
+	TUILayoutConstraintAttributeHeight  = 6,
+	TUILayoutConstraintAttributeMidY    = 7,
+	TUILayoutConstraintAttributeMidX    = 8,
 	
 	TUILayoutConstraintAttributeMinXMinY = 101,
 	TUILayoutConstraintAttributeMinXMidY = 102,
@@ -24,8 +24,8 @@ typedef enum {
 	
 	TUILayoutConstraintAttributeBoundsCenter = 110,
 	
-	TUILayoutConstraintAttributeFrame = 1000,
-	TUILayoutConstraintAttributeBounds = 1001
+	TUILayoutConstraintAttributeFrame   = 1000,
+	TUILayoutConstraintAttributeBounds  = 1001
 } TUILayoutConstraintAttribute;
 
 typedef CGFloat (^TUILayoutTransformer)(CGFloat);
@@ -57,9 +57,5 @@ typedef CGFloat (^TUILayoutTransformer)(CGFloat);
                    relativeTo:(NSString *)source
                     attribute:(TUILayoutConstraintAttribute)srcAttr
              valueTransformer:(NSValueTransformer *)transformer;
-
-- (CGFloat)transformValue:(CGFloat)original;
-- (void)applyToTargetView:(TUIView *)target;
-- (void)applyToTargetView:(TUIView *)target sourceView:(TUIView *)source;
 
 @end

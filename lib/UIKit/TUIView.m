@@ -111,8 +111,8 @@ static pthread_key_t TUICurrentContextScaleFactorTLSKey;
 
 - (void)dealloc
 {
-    [[TUILayoutManager sharedLayoutManager] removeLayoutConstraintsFromView:(TUIView *)self];
-    [[TUILayoutManager sharedLayoutManager] setLayoutName:nil forView:(TUIView *)self];
+    [[TUILayoutManager sharedLayoutManager] removeLayoutConstraintsFromView:self];
+    [[TUILayoutManager sharedLayoutManager] setLayoutName:nil forView:self];
     
 	[self setTextRenderers:nil];
 	_layer.delegate = nil;

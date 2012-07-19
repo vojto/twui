@@ -14,6 +14,13 @@
 #define TUISetMaxX(_r,_v) ((_r).origin.x = (_v) - (_r).size.width)
 #define TUISetMaxY(_r,_v) ((_r).origin.y = (_v) - (_r).size.height)
 
+@interface TUIView (Layout_Private)
+
+- (NSRect)valueForLayoutAttribute:(TUILayoutConstraintAttribute)attribute;
+- (void)setValue:(NSRect)newValue forLayoutAttribute:(TUILayoutConstraintAttribute)attribute;
+
+@end
+
 @implementation TUIView (Layout)
 
 - (void)setLayoutName:(NSString *)newLayoutName {
@@ -82,6 +89,7 @@
 		case TUILayoutConstraintAttributeBounds:
 			return bounds;
 		default:
+            NSAssert(NO, @"Invalid constraint attribute.");
 			return NSZeroRect;
 	}
 }
@@ -142,6 +150,7 @@
 		case TUILayoutConstraintAttributeBoundsCenter:
 			TUISetMidX(bounds, pointValue.x);
 			TUISetMidY(bounds, pointValue.y);
+            [self setBounds:bounds];
 			break;
 		case TUILayoutConstraintAttributeMidXMaxY:
 			TUISetMidX(frame, pointValue.x);
@@ -164,21 +173,23 @@
 			break;
 		case TUILayoutConstraintAttributeBounds:
 			bounds = rectValue;
+            [self setBounds:bounds];
 			break;
+        default:
+            NSAssert(NO, @"Invalid constraint attribute.");
+            break;
 	}
-	
-	if(attribute != TUILayoutConstraintAttributeBounds && attribute != TUILayoutConstraintAttributeBoundsCenter)
-		 [self setFrame:frame];
-	else [self setBounds:bounds];
+    
+    [self setFrame:frame];
 }
 
 - (TUIView *)relativeViewForName:(NSString *)name {
 	if([name isEqual:@"superview"])
 		return [self superview];
 	
-	NSArray * superSubviews = [[self superview] subviews];
-	for(TUIView *view in superSubviews)
-		if([[view layoutName] isEqual:name])
+	NSArray *siblings = [[self superview] subviews];
+	for(TUIView *view in siblings)
+		if([view.layoutName isEqual:name])
 			return (view == self ? nil : view);
 	return nil;
 }

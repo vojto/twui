@@ -82,6 +82,16 @@
 	return [self convertRect:self.bounds toView:self.ancestorTUINSView.rootView];
 }
 
+- (void)setFrame:(CGRect)frame {
+	[super setFrame:frame];
+	[self synchronizeNSViewGeometry];
+}
+
+- (void)setBounds:(CGRect)bounds {
+	[super setBounds:bounds];
+	[self synchronizeNSViewGeometry];
+}
+
 - (void)setCenter:(CGPoint)center {
 	[super setCenter:center];
 	[self synchronizeNSViewGeometry];

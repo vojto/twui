@@ -131,7 +131,8 @@
     if(self.valueTransformer) {
         id transformed = [self.valueTransformer transformedValue:[NSNumber numberWithFloat:source]];
         return [transformed floatValue];
-    } else return (source * self.scale) + self.offset;
+    } else
+        return (source * self.scale) + self.offset;
 }
 
 - (void)applyToTargetView:(TUIView *)target {

@@ -630,6 +630,8 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	opaque = YES;
 
 	_maskLayer = [CAShapeLayer layer];
+	_maskLayer.frame = self.bounds;
+	_maskLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
 
 	// enable layer-backing for this view
 	self.wantsLayer = YES;

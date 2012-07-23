@@ -14,14 +14,17 @@
  limitations under the License.
  */
 
+#import "TUIView.h"
 #import <pthread.h>
+#import "TUICGAdditions.h"
 #import "TUIColor.h"
-#import "TUIKit.h"
+#import "TUIImage.h"
 #import "TUILayoutManager.h"
+#import "TUINSView.h"
 #import "TUINSWindow.h"
 #import "TUITextRenderer.h"
 #import "TUIView+Private.h"
-#import "TUIView.h"
+#import "TUIView+TUIBridgedView.h"
 #import "TUIViewController.h"
 
 NSString * const TUIViewWillMoveToWindowNotification = @"TUIViewWillMoveToWindowNotification";

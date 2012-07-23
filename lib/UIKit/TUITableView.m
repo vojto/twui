@@ -15,6 +15,7 @@
  */
 
 #import "TUITableView.h"
+#import "TUIFastIndexPath.h"
 #import "TUINSView.h"
 #import "TUINSWindow.h"
 #import "TUITableView+Cell.h"

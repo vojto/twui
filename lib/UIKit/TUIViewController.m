@@ -15,6 +15,7 @@
  */
 
 #import "TUIViewController.h"
+#import "TUIColor.h"
 
 @implementation TUIViewController
 

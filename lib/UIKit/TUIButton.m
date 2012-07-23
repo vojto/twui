@@ -17,6 +17,7 @@
 #import "TUIImage.h"
 #import "TUIButton.h"
 #import "TUICGAdditions.h"
+#import "TUIColor.h"
 #import "TUIControl+Private.h"
 #import "TUIImageView.h"
 #import "TUILabel.h"

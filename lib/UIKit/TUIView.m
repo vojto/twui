@@ -15,13 +15,14 @@
  */
 
 #import <pthread.h>
-#import "TUIView.h"
+#import "TUIColor.h"
 #import "TUIKit.h"
+#import "TUILayoutManager.h"
 #import "TUINSWindow.h"
 #import "TUITextRenderer.h"
 #import "TUIView+Private.h"
+#import "TUIView.h"
 #import "TUIViewController.h"
-#import "TUILayoutManager.h"
 
 NSString * const TUIViewWillMoveToWindowNotification = @"TUIViewWillMoveToWindowNotification";
 NSString * const TUIViewDidMoveToWindowNotification = @"TUIViewDidMoveToWindowNotification";

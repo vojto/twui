@@ -15,10 +15,10 @@
  */
 
 #import "TUIPopover.h"
+#import "CAAnimation+TUIExtensions.h"
+#import "TUICGAdditions.h"
 #import "TUINSWindow.h"
 #import "TUIViewController.h"
-
-#import "CAAnimation+TUIExtensions.h"
 
 //#import "GHUICoreGraphics.h"
 

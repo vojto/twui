@@ -16,9 +16,11 @@
 
 #import "TUIImage.h"
 #import "TUIButton.h"
+#import "TUICGAdditions.h"
+#import "TUIControl+Private.h"
+#import "TUIImageView.h"
 #import "TUILabel.h"
 #import "TUINSView.h"
-#import "TUIControl+Private.h"
 
 @interface TUIButton ()
 

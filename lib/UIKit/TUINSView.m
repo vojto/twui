@@ -25,8 +25,8 @@
 #import "TUINSView+Hyperfocus.h"
 #import "TUINSView+Private.h"
 #import "TUIViewNSViewContainer.h"
+#import "TUIView.h"
 #import "TUIView+Private.h"
-#import "TUIView+TUIBridgedView.h"
 #import "TUITextRenderer+Event.h"
 #import "TUITooltipWindow.h"
 #import <CoreFoundation/CoreFoundation.h>

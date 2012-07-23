@@ -21,6 +21,7 @@
 #import "TUIImageView.h"
 #import "TUILabel.h"
 #import "TUINSView.h"
+#import "TUITextRenderer.h"
 
 @interface TUIButton ()
 

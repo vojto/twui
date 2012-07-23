@@ -19,6 +19,7 @@
 #import "TUIFont.h"
 #import "TUINSView.h"
 #import "TUIStringDrawing.h"
+#import "TUITextRenderer.h"
 #import "TUIView+Private.h"
 
 @interface TUILabel ()

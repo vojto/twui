@@ -704,10 +704,13 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 }
 
 - (void)recalculateNSViewOrdering; {
+	NSAssert([NSThread isMainThread], @"");
 	[self.appKitHostView sortSubviewsUsingFunction:&compareNSViewOrdering context:NULL];
 }
 
 - (void)recalculateNSViewClipping; {
+	NSAssert([NSThread isMainThread], @"");
+
 	#if !ENABLE_NSVIEW_CLIPPING
 	return;
 	#endif
@@ -721,9 +724,9 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 
 		CALayer *focusRingLayer = [self focusRingLayerForView:view];
 		if (focusRingLayer) {
-			id<TUIBridgedScrollView> clippingView = [hostView ancestorScrollView];
+			id<TUIBridgedScrollView> clippingView = hostView.ancestorScrollView;
 
-			if (clippingView) {
+			if (clippingView && self.ancestorScrollView != clippingView) {
 				// set up a mask on the focus ring that clips to any ancestor scroll views
 				CAShapeLayer *maskLayer = (id)focusRingLayer.mask;
 				if (![maskLayer isKindOfClass:[CAShapeLayer class]]) {

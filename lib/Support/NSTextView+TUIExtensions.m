@@ -19,9 +19,12 @@ static void fixedDrawRect (NSTextView *self, SEL _cmd, NSRect rect) {
     CGContextSetAllowsFontSubpixelQuantization(context, YES);
 
     CGContextSetShouldAntialias(context, YES);
-    CGContextSetShouldSmoothFonts(context, YES);
-    CGContextSetShouldSubpixelPositionFonts(context, YES);
-    CGContextSetShouldSubpixelQuantizeFonts(context, YES);
+
+	// TODO: SPAA seems to stop working when text fields and text views lose
+	// focus, so it's disabled for now.
+    CGContextSetShouldSmoothFonts(context, NO);
+    CGContextSetShouldSubpixelPositionFonts(context, NO);
+    CGContextSetShouldSubpixelQuantizeFonts(context, NO);
 
     if (self.superview) {
         // NSTextView likes to fall on non-integral points sometimes -- fix that

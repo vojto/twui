@@ -23,6 +23,13 @@
 #import "TUIViewController.h"
 #import "TUILayoutManager.h"
 
+/*
+ * Enable this to debug blending.
+ *
+ * Opaque views will be colored green, and blended views will be colored red.
+ */
+#define CA_COLOR_OVERLAY_DEBUG 0
+
 NSString * const TUIViewWillMoveToWindowNotification = @"TUIViewWillMoveToWindowNotification";
 NSString * const TUIViewDidMoveToWindowNotification = @"TUIViewDidMoveToWindowNotification";
 NSString * const TUIViewWindow = @"TUIViewWindow";
@@ -322,69 +329,70 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 
 - (void)displayLayer:(CALayer *)layer
 {
-	if(_viewFlags.delegateWillDisplayLayer)
+	if (_viewFlags.delegateWillDisplayLayer) {
 		[_viewDelegate viewWillDisplayLayer:self];
+	}
 	
 	typedef void (*DrawRectIMP)(id,SEL,CGRect);
 	SEL drawRectSEL = @selector(drawRect:);
 	DrawRectIMP drawRectIMP = (DrawRectIMP)[self methodForSelector:drawRectSEL];
 	DrawRectIMP dontCallThisBasicDrawRectIMP = (DrawRectIMP)[TUIView instanceMethodForSelector:drawRectSEL];
 
-#if 0
-#define CA_COLOR_OVERLAY_DEBUG \
-if(self.opaque) CGContextSetRGBFillColor(context, 0, 1, 0, 0.3); \
-else CGContextSetRGBFillColor(context, 1, 0, 0, 0.3); CGContextFillRect(context, b);
-#else
-#define CA_COLOR_OVERLAY_DEBUG
-#endif
-
-#define PRE_DRAW \
-	CGRect b = self.bounds; \
-	CGContextRef context = [self _CGContext]; \
-	TUIGraphicsPushContext(context); \
-	if(_viewFlags.clearsContextBeforeDrawing) \
-		CGContextClearRect(context, b); \
-	CGFloat scale = [self.layer respondsToSelector:@selector(contentsScale)] ? self.layer.contentsScale : 1.0f; \
-	TUISetCurrentContextScaleFactor(scale); \
-	CGContextScaleCTM(context, scale, scale); \
-	CGContextSetAllowsAntialiasing(context, true); \
-	CGContextSetShouldAntialias(context, true); \
-	CGContextSetShouldSmoothFonts(context, !_viewFlags.disableSubpixelTextRendering);
-	
-#define POST_DRAW \
-	CA_COLOR_OVERLAY_DEBUG \
-	TUIImage *image = TUIGraphicsGetImageFromCurrentImageContext(); \
-	layer.contents = (id)image.CGImage; \
-	CGContextScaleCTM(context, 1.0f / scale, 1.0f / scale); \
-	TUIGraphicsPopContext(); \
-	if(self.drawInBackground) [CATransaction flush];
+	if (!self.drawRect && (drawRectIMP == dontCallThisBasicDrawRectIMP || [self _disableDrawRect])) {
+		// drawRect isn't overridden by subclass, don't call, let the CA machinery just handle backgroundColor (fast path)
+		return;
+	}
 
 	CGRect rectToDraw = self.bounds;
-	if(!CGRectEqualToRect(_context.dirtyRect, CGRectZero)) {
+	if (!CGRectEqualToRect(_context.dirtyRect, CGRectZero)) {
 		rectToDraw = _context.dirtyRect;
 		_context.dirtyRect = CGRectZero;
 	}
-	
+
 	void (^drawBlock)(void) = ^{
-		if(drawRect) {
-			// drawRect is implemented via a block
-			PRE_DRAW
-			drawRect(self, rectToDraw);
-			POST_DRAW
-		} else if((drawRectIMP != dontCallThisBasicDrawRectIMP) && ![self _disableDrawRect]) {
-			// drawRect is overridden by subclass
-			PRE_DRAW
-			drawRectIMP(self, drawRectSEL, rectToDraw);
-			POST_DRAW
-		} else {
-			// drawRect isn't overridden by subclass, don't call, let the CA machinery just handle backgroundColor (fast path)
+		CGContextRef context = [self _CGContext];
+		TUIGraphicsPushContext(context);
+		if (_viewFlags.clearsContextBeforeDrawing) {
+			CGContextClearRect(context, rectToDraw);
 		}
+
+		CGFloat scale = [self.layer respondsToSelector:@selector(contentsScale)] ? self.layer.contentsScale : 1.0f;
+		TUISetCurrentContextScaleFactor(scale);
+		CGContextScaleCTM(context, scale, scale);
+
+		CGContextSetAllowsAntialiasing(context, true);
+		CGContextSetShouldAntialias(context, true);
+		CGContextSetShouldSmoothFonts(context, !_viewFlags.disableSubpixelTextRendering);
+
+		if (self.drawRect) {
+			// drawRect is implemented via a block
+			self.drawRect(self, rectToDraw);
+		} else if ((drawRectIMP != dontCallThisBasicDrawRectIMP) && ![self _disableDrawRect]) {
+			// drawRect is overridden by subclass
+			drawRectIMP(self, drawRectSEL, rectToDraw);
+		}
+
+		#if CA_COLOR_OVERLAY_DEBUG
+		if (self.opaque) {
+			CGContextSetRGBFillColor(context, 0, 1, 0, 0.3);
+		} else {
+			CGContextSetRGBFillColor(context, 1, 0, 0, 0.3);
+			CGContextFillRect(context, rectToDraw);
+		}
+		#endif
+
+		TUIImage *image = TUIGraphicsGetImageFromCurrentImageContext();
+		layer.contents = (id)image.CGImage;
+		CGContextScaleCTM(context, 1.0f / scale, 1.0f / scale);
+		TUIGraphicsPopContext();
+
+		if (self.drawInBackground) [CATransaction flush];
 	};
 	
-	if(self.drawInBackground) {
+	if (self.drawInBackground) {
 		layer.contents = nil;
 		
-		if(self.drawQueue != nil) {
+		if (self.drawQueue != nil) {
 			[self.drawQueue addOperationWithBlock:drawBlock];
 		} else {
 			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), drawBlock);

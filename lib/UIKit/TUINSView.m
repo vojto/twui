@@ -22,6 +22,7 @@
 #import "CALayer+TUIExtensions.h"
 #import "TUIBridgedScrollView.h"
 #import "TUINSHostView.h"
+#import "TUINSView+Hyperfocus.h"
 #import "TUINSView+Private.h"
 #import "TUIViewNSViewContainer.h"
 #import "TUIView+Private.h"

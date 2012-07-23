@@ -65,5 +65,3 @@
 - (BOOL)isWindowKey;
 
 @end
-
-#import "TUINSView+Hyperfocus.h"

@@ -15,11 +15,11 @@
  */
 
 #import "TUITextRenderer.h"
+#import "ABActiveRange.h"
 #import "TUITextRenderer+Event.h"
 #import "TUIFont.h"
 #import "TUIColor.h"
 #import "TUIKit.h"
-#import "CoreText+Additions.h"
 
 @interface TUITextRenderer ()
 @property (nonatomic, retain) NSMutableDictionary *lineRects;

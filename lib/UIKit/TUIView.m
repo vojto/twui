@@ -69,6 +69,13 @@ CGRect(^TUIViewCenteredLayout)(TUIView*) = nil;
 
 @interface TUIView ()
 @property (nonatomic, strong) NSMutableArray *subviews;
+
+/*
+ * Sets up the given view as a subview of the receiver. The given block is
+ * expected to perform the actual insertion into the subviews array or the
+ * layer.
+ */
+- (void)prepareSubview:(TUIView *)view insertionBlock:(void (^)(void))block;
 @end
 
 @implementation TUIView
@@ -550,6 +557,31 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 	}
 }
 
+- (void)prepareSubview:(TUIView *)view insertionBlock:(void (^)(void))block
+{
+	if (!_subviews) {
+		_subviews = [[NSMutableArray alloc] init];
+	}
+
+	TUINSView *originalNSView = view.ancestorTUINSView;
+
+	/* will call willAdd:nil and didAdd (nil) */
+	[view removeFromSuperview];
+
+	[view willMoveToTUINSView:_nsView];
+	[view willMoveToSuperview:self];
+	view.nsView = _nsView;
+
+	block();
+
+	[self didAddSubview:view];
+	[view didMoveToSuperview];
+	[view didMoveFromTUINSView:originalNSView];
+
+	[view setNextResponder:self];
+	[self _blockLayout];
+}
+
 @end
 
 
@@ -787,45 +819,23 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 	}
 }
 
-// TODO: get rid of these macros, and just always go through a single method
-#define PRE_ADDSUBVIEW(index) \
-	if (!_subviews) \
-		_subviews = [[NSMutableArray alloc] init]; \
-	\
-	if (index == NSUIntegerMax) {\
-		[self.subviews addObject:view]; \
-	} else {\
-		[self.subviews insertObject:view atIndex:index];\
-	}\
-	[view removeFromSuperview]; /* will call willAdd:nil and didAdd (nil) */ \
-	\
-	TUINSView *originalNSView_ = view.ancestorTUINSView; \
-	[view willMoveToTUINSView:_nsView]; \
-	\
-	[view willMoveToSuperview:self]; \
-	view.nsView = _nsView;
-
-#define POST_ADDSUBVIEW \
-	[self didAddSubview:view]; \
-	[view didMoveToSuperview]; \
-	[view didMoveFromTUINSView:originalNSView_]; \
-	[view setNextResponder:self]; \
-	[self _blockLayout];
-
-- (void)addSubview:(TUIView *)view // everything should go through this
+- (void)addSubview:(TUIView *)view
 {
 	if(!view)
 		return;
-	PRE_ADDSUBVIEW(NSUIntegerMax)
-	[self.layer addSublayer:view.layer];
-	POST_ADDSUBVIEW
+
+	[self prepareSubview:view insertionBlock:^{
+		[self.subviews addObject:view];
+		[self.layer addSublayer:view.layer];
+	}];
 }
 
 - (void)insertSubview:(TUIView *)view atIndex:(NSInteger)index
 {
-	PRE_ADDSUBVIEW(index)
-	[self.layer insertSublayer:view.layer atIndex:(unsigned int)index];
-	POST_ADDSUBVIEW
+	[self prepareSubview:view insertionBlock:^{
+		[self.subviews insertObject:view atIndex:index];
+		[self.layer insertSublayer:view.layer atIndex:(unsigned)index];
+	}];
 }
 
 - (void)insertSubview:(TUIView *)view belowSubview:(TUIView *)siblingSubview
@@ -834,9 +844,10 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 	if (siblingIndex == NSNotFound)
 		return;
 	
-	PRE_ADDSUBVIEW(siblingIndex + 1)
-	[self.layer insertSublayer:view.layer below:siblingSubview.layer];
-	POST_ADDSUBVIEW
+	[self prepareSubview:view insertionBlock:^{
+		[self.subviews insertObject:view atIndex:siblingIndex + 1];
+		[self.layer insertSublayer:view.layer below:siblingSubview.layer];
+	}];
 }
 
 - (void)insertSubview:(TUIView *)view aboveSubview:(TUIView *)siblingSubview
@@ -845,9 +856,10 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 	if (siblingIndex == NSNotFound)
 		return;
 	
-	PRE_ADDSUBVIEW(siblingIndex)
-	[self.layer insertSublayer:view.layer above:siblingSubview.layer];
-	POST_ADDSUBVIEW
+	[self prepareSubview:view insertionBlock:^{
+		[self.subviews insertObject:view atIndex:siblingIndex];
+		[self.layer insertSublayer:view.layer above:siblingSubview.layer];
+	}];
 }
 
 - (TUIView *)_topSubview

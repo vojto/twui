@@ -17,7 +17,10 @@
 #import "TUITextRenderer+Event.h"
 #import "ABActiveRange.h"
 #import "CoreText+Additions.h"
-#import "TUIKit.h"
+#import "TUICGAdditions.h"
+#import "TUIImage.h"
+#import "TUINSView.h"
+#import "TUINSWindow.h"
 #import "TUIView+Private.h"
 #import "TUIView.h"
 

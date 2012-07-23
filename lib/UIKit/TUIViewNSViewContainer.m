@@ -108,8 +108,8 @@
 
 #pragma mark Lifecycle
 
-- (id)init {
-	self = [super init];
+- (id)initWithFrame:(CGRect)frame {
+	self = [super initWithFrame:frame];
 	if (!self)
 		return nil;
 
@@ -124,12 +124,11 @@
 - (id)initWithNSView:(NSView *)view; {
 	NSAssert1([NSThread isMainThread], @"%s should only be called from the main thread", __func__);
 
-	self = [self init];
+	self = [self initWithFrame:view.frame];
 	if (!self)
 		return nil;
 
 	self.rootView = view;
-	self.frame = view.frame;
 	return self;
 }
 

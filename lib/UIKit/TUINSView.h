@@ -21,7 +21,7 @@
 /**
  TUINSView is the bridge that hosts a TUIView-based interface heirarchy. You may add it as the contentView of your window if you want to build a pure TwUI-based UI, or you can use it for a small part.
  */
-@interface TUINSView : NSView <NSTextInputClient, TUIHostView>
+@interface TUINSView : NSView <TUIHostView>
 {
 	TUIView *_hoverView;
 

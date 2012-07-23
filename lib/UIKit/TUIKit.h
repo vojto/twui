@@ -37,6 +37,7 @@
 #import "TUILayoutConstraint.h"
 #import "TUINSView.h"
 #import "TUINSView+Hyperfocus.h"
+#import "TUINSView+NSTextInputClient.h"
 #import "TUINSWindow.h"
 #import "TUIPopover.h"
 #import "TUIProgressBar.h"

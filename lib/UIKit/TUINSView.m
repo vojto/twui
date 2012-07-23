@@ -653,10 +653,6 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	[super didAddSubview:view];
 }
 
-#define ENABLE_NSTEXT_INPUT_CLIENT
-#import "TUINSView+NSTextInputClient.m"
-#undef ENABLE_NSTEXT_INPUT_CLIENT
-
 #pragma mark AppKit bridging
 
 - (NSView *)hitTest:(NSPoint)point {

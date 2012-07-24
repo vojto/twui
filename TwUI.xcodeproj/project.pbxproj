@@ -569,6 +569,7 @@
 		CBB74C9013BE6E1900C85CB5 /* TUIViewNSViewContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIViewNSViewContainer.m; sourceTree = "<group>"; };
 		D04007C215BF2BAF00FD49DB /* Expecta.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Expecta.xcodeproj; path = expecta/Expecta.xcodeproj; sourceTree = "<group>"; };
 		D04007D515BF2BB300FD49DB /* Specta.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Specta.xcodeproj; path = specta/Specta.xcodeproj; sourceTree = "<group>"; };
+		D04007ED15BF2C0700FD49DB /* TwUITests-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TwUITests-Prefix.pch"; sourceTree = "<group>"; };
 		D040610815B6A77500F753ED /* TUIAnimationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIAnimationManager.h; sourceTree = "<group>"; };
 		D040610915B6A77500F753ED /* TUIAnimationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIAnimationManager.m; sourceTree = "<group>"; };
 		D040611115B6A7CC00F753ED /* NSTextView+TUIExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTextView+TUIExtensions.h"; sourceTree = "<group>"; };
@@ -724,6 +725,7 @@
 			children = (
 				CB5B266A13BE6DA300579B1E /* TwUITests-Info.plist */,
 				CB5B266B13BE6DA300579B1E /* InfoPlist.strings */,
+				D04007ED15BF2C0700FD49DB /* TwUITests-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1656,7 +1658,7 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
-				GCC_PREFIX_HEADER = "TwUI/TwUI-Prefix.pch";
+				GCC_PREFIX_HEADER = "TwUITests/TwUITests-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					"TwUITests/expecta/src/**",
 					"TwUITests/specta/src/**",
@@ -1672,7 +1674,7 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
-				GCC_PREFIX_HEADER = "TwUI/TwUI-Prefix.pch";
+				GCC_PREFIX_HEADER = "TwUITests/TwUITests-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					"TwUITests/expecta/src/**",
 					"TwUITests/specta/src/**",

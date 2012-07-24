@@ -135,7 +135,6 @@
 		CB5B266413BE6DA300579B1E /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB5B264F13BE6DA200579B1E /* Cocoa.framework */; };
 		CB5B266713BE6DA300579B1E /* TwUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB5B264C13BE6DA200579B1E /* TwUI.framework */; };
 		CB5B266D13BE6DA300579B1E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CB5B266B13BE6DA300579B1E /* InfoPlist.strings */; };
-		CB5B266F13BE6DA300579B1E /* TwUITests.h in Resources */ = {isa = PBXBuildFile; fileRef = CB5B266E13BE6DA300579B1E /* TwUITests.h */; };
 		CB5B267113BE6DA300579B1E /* TwUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB5B267013BE6DA300579B1E /* TwUITests.m */; };
 		CB5E31B713BE6F49004B7899 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB5E31B613BE6F49004B7899 /* QuartzCore.framework */; };
 		CB5E321D13BE70CA004B7899 /* TUIAccessibility.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C3F13BE6E1900C85CB5 /* TUIAccessibility.m */; };
@@ -477,7 +476,6 @@
 		CB5B266213BE6DA300579B1E /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		CB5B266A13BE6DA300579B1E /* TwUITests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TwUITests-Info.plist"; sourceTree = "<group>"; };
 		CB5B266C13BE6DA300579B1E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		CB5B266E13BE6DA300579B1E /* TwUITests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TwUITests.h; sourceTree = "<group>"; };
 		CB5B267013BE6DA300579B1E /* TwUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TwUITests.m; sourceTree = "<group>"; };
 		CB5E31B613BE6F49004B7899 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		CB5E321813BE7098004B7899 /* libtwui.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libtwui.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -713,7 +711,6 @@
 			children = (
 				D04007C215BF2BAF00FD49DB /* Expecta.xcodeproj */,
 				D04007D515BF2BB300FD49DB /* Specta.xcodeproj */,
-				CB5B266E13BE6DA300579B1E /* TwUITests.h */,
 				CB5B267013BE6DA300579B1E /* TwUITests.m */,
 				CB5B266913BE6DA300579B1E /* Supporting Files */,
 			);
@@ -1246,7 +1243,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB5B266D13BE6DA300579B1E /* InfoPlist.strings in Resources */,
-				CB5B266F13BE6DA300579B1E /* TwUITests.h in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

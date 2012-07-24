@@ -124,6 +124,9 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 // these cannot be implicitly synthesized because they're from protocols/categories
 @synthesize hostView = _hostView;
 @synthesize appKitHostView = _appKitHostView;
+@synthesize rootView = _rootView;
+@synthesize maskLayer = _maskLayer;
+@synthesize tuiHostView = _tuiHostView;
 
 - (id)initWithCoder:(NSCoder *)coder
 {

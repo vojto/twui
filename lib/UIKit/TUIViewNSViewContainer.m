@@ -44,6 +44,7 @@
 #pragma mark Properties
 
 @dynamic hostView;
+@synthesize rootView = _rootView;
 
 - (void)setRootView:(NSView *)view {
 	NSAssert1([NSThread isMainThread], @"%s should only be called from the main thread", __func__);

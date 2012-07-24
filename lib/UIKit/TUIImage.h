@@ -51,5 +51,3 @@
 
 extern NSData *TUIImagePNGRepresentation(TUIImage *image);
 extern NSData *TUIImageJPEGRepresentation(TUIImage *image, CGFloat compressionQuality);
-
-#import "TUIImage+Drawing.h"

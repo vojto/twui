@@ -48,6 +48,16 @@
 	return [self CGImageForProposedRect:rectPtr context:graphicsContext hints:nil];
 }
 
+- (void)drawAtPoint:(CGPoint)point
+{
+	[self drawAtPoint:point fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+}
+
+- (void)drawInRect:(CGRect)rect
+{
+	[self drawInRect:rect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+}
+
 - (NSImage *)scale:(CGSize)size
 {
 	return [NSImage imageWithSize:size drawing:^(CGContextRef ctx) {

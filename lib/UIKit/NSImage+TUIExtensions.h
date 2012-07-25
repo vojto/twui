@@ -37,6 +37,16 @@
  */
 - (CGImageRef)CGImageForProposedRect:(CGRect *)rectPtr CGContext:(CGContextRef)context;
 
+/*
+ * Draws the whole image originating at the given point.
+ */
+- (void)drawAtPoint:(CGPoint)point;
+
+/*
+ * Draws the whole image into the given rectangle.
+ */
+- (void)drawInRect:(CGRect)rect;
+
 - (NSImage *)crop:(CGRect)cropRect;
 - (NSImage *)upsideDownCrop:(CGRect)cropRect;
 - (NSImage *)scale:(CGSize)size;

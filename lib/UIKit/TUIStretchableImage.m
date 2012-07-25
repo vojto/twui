@@ -25,7 +25,7 @@
 #pragma mark Drawing
 
 - (void)drawInRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(CGFloat)alpha {
-	[self drawInRect:dstRect fromRect:srcRect operation:op fraction:alpha];
+	[self drawInRect:dstRect fromRect:srcRect operation:op fraction:alpha respectFlipped:YES hints:nil];
 }
 
 - (void)drawInRect:(NSRect)dstRect fromRect:(NSRect)srcRect operation:(NSCompositingOperation)op fraction:(CGFloat)alpha respectFlipped:(BOOL)respectFlipped hints:(NSDictionary *)hints {

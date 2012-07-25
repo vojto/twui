@@ -32,7 +32,6 @@
 		5EE983C713BE7834005F430D /* TUIControl+TargetAction.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4B13BE6E1900C85CB5 /* TUIControl+TargetAction.m */; };
 		5EE983C813BE7834005F430D /* TUIControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4D13BE6E1900C85CB5 /* TUIControl.m */; };
 		5EE983C913BE7834005F430D /* TUIFastIndexPath.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4F13BE6E1900C85CB5 /* TUIFastIndexPath.m */; };
-		5EE983CA13BE7834005F430D /* TUIFont.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C5113BE6E1900C85CB5 /* TUIFont.m */; };
 		5EE983CB13BE7834005F430D /* TUIGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C5313BE6E1900C85CB5 /* TUIGeometry.m */; };
 		5EE983CE13BE7834005F430D /* TUIImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C5913BE6E1900C85CB5 /* TUIImageView.m */; };
 		5EE983CF13BE7834005F430D /* TUILabel.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C5D13BE6E1900C85CB5 /* TUILabel.m */; };
@@ -145,7 +144,6 @@
 		CB5E322913BE70CA004B7899 /* TUIControl+TargetAction.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4B13BE6E1900C85CB5 /* TUIControl+TargetAction.m */; };
 		CB5E322B13BE70CA004B7899 /* TUIControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4D13BE6E1900C85CB5 /* TUIControl.m */; };
 		CB5E322D13BE70CA004B7899 /* TUIFastIndexPath.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4F13BE6E1900C85CB5 /* TUIFastIndexPath.m */; };
-		CB5E322F13BE70CA004B7899 /* TUIFont.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C5113BE6E1900C85CB5 /* TUIFont.m */; };
 		CB5E323113BE70CA004B7899 /* TUIGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C5313BE6E1900C85CB5 /* TUIGeometry.m */; };
 		CB5E323713BE70CA004B7899 /* TUIImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C5913BE6E1900C85CB5 /* TUIImageView.m */; };
 		CB5E323913BE70CA004B7899 /* TUIKit.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C5B13BE6E1900C85CB5 /* TUIKit.m */; };
@@ -201,8 +199,6 @@
 		CBB74CA413BE6E1900C85CB5 /* TUIControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4D13BE6E1900C85CB5 /* TUIControl.m */; };
 		CBB74CA513BE6E1900C85CB5 /* TUIFastIndexPath.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB74C4E13BE6E1900C85CB5 /* TUIFastIndexPath.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CBB74CA613BE6E1900C85CB5 /* TUIFastIndexPath.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4F13BE6E1900C85CB5 /* TUIFastIndexPath.m */; };
-		CBB74CA713BE6E1900C85CB5 /* TUIFont.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB74C5013BE6E1900C85CB5 /* TUIFont.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CBB74CA813BE6E1900C85CB5 /* TUIFont.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C5113BE6E1900C85CB5 /* TUIFont.m */; };
 		CBB74CA913BE6E1900C85CB5 /* TUIGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB74C5213BE6E1900C85CB5 /* TUIGeometry.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CBB74CAA13BE6E1900C85CB5 /* TUIGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C5313BE6E1900C85CB5 /* TUIGeometry.m */; };
 		CBB74CAF13BE6E1900C85CB5 /* TUIImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB74C5813BE6E1900C85CB5 /* TUIImageView.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -274,9 +270,6 @@
 		D039724B15B7D7DE0092CD26 /* TUILayoutConstraint.h in Headers */ = {isa = PBXBuildFile; fileRef = 48A10E7D15B7769A007F9EE3 /* TUILayoutConstraint.h */; };
 		D04007EB15BF2BC000FD49DB /* libExpecta.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D04007CD15BF2BB000FD49DB /* libExpecta.a */; };
 		D04007EC15BF2BC000FD49DB /* libSpecta.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D04007E015BF2BB300FD49DB /* libSpecta.a */; };
-		D040610D15B6A77500F753ED /* TUIAnimationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D040610915B6A77500F753ED /* TUIAnimationManager.m */; };
-		D040610E15B6A77500F753ED /* TUIAnimationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D040610915B6A77500F753ED /* TUIAnimationManager.m */; };
-		D040610F15B6A77500F753ED /* TUIAnimationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D040610915B6A77500F753ED /* TUIAnimationManager.m */; };
 		D040611615B6A7CD00F753ED /* NSTextView+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = D040611215B6A7CC00F753ED /* NSTextView+TUIExtensions.m */; };
 		D040611715B6A7CD00F753ED /* NSTextView+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = D040611215B6A7CC00F753ED /* NSTextView+TUIExtensions.m */; };
 		D040611815B6A7CD00F753ED /* NSTextView+TUIExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = D040611215B6A7CC00F753ED /* NSTextView+TUIExtensions.m */; };
@@ -505,8 +498,6 @@
 		CBB74C4D13BE6E1900C85CB5 /* TUIControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIControl.m; sourceTree = "<group>"; };
 		CBB74C4E13BE6E1900C85CB5 /* TUIFastIndexPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIFastIndexPath.h; sourceTree = "<group>"; };
 		CBB74C4F13BE6E1900C85CB5 /* TUIFastIndexPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIFastIndexPath.m; sourceTree = "<group>"; };
-		CBB74C5013BE6E1900C85CB5 /* TUIFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIFont.h; sourceTree = "<group>"; };
-		CBB74C5113BE6E1900C85CB5 /* TUIFont.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIFont.m; sourceTree = "<group>"; };
 		CBB74C5213BE6E1900C85CB5 /* TUIGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIGeometry.h; sourceTree = "<group>"; };
 		CBB74C5313BE6E1900C85CB5 /* TUIGeometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIGeometry.m; sourceTree = "<group>"; };
 		CBB74C5813BE6E1900C85CB5 /* TUIImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIImageView.h; sourceTree = "<group>"; };
@@ -568,8 +559,6 @@
 		D04007C215BF2BAF00FD49DB /* Expecta.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Expecta.xcodeproj; path = expecta/Expecta.xcodeproj; sourceTree = "<group>"; };
 		D04007D515BF2BB300FD49DB /* Specta.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Specta.xcodeproj; path = specta/Specta.xcodeproj; sourceTree = "<group>"; };
 		D04007ED15BF2C0700FD49DB /* TwUITests-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TwUITests-Prefix.pch"; sourceTree = "<group>"; };
-		D040610815B6A77500F753ED /* TUIAnimationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIAnimationManager.h; sourceTree = "<group>"; };
-		D040610915B6A77500F753ED /* TUIAnimationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIAnimationManager.m; sourceTree = "<group>"; };
 		D040611115B6A7CC00F753ED /* NSTextView+TUIExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTextView+TUIExtensions.h"; sourceTree = "<group>"; };
 		D040611215B6A7CC00F753ED /* NSTextView+TUIExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTextView+TUIExtensions.m"; sourceTree = "<group>"; };
 		D05D239E15BF7239000ED14F /* NSImage+TUIExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSImage+TUIExtensions.h"; sourceTree = "<group>"; };
@@ -756,8 +745,6 @@
 				D0C7652315B6232100E7AC2C /* CATransaction+TUIExtensions.m */,
 				D040611115B6A7CC00F753ED /* NSTextView+TUIExtensions.h */,
 				D040611215B6A7CC00F753ED /* NSTextView+TUIExtensions.m */,
-				D040610815B6A77500F753ED /* TUIAnimationManager.h */,
-				D040610915B6A77500F753ED /* TUIAnimationManager.m */,
 				D0C7656F15B6341800E7AC2C /* TUICAAction.h */,
 				D0C7657015B6341800E7AC2C /* TUICAAction.m */,
 			);
@@ -802,8 +789,6 @@
 				CBB74C4D13BE6E1900C85CB5 /* TUIControl.m */,
 				CBB74C4E13BE6E1900C85CB5 /* TUIFastIndexPath.h */,
 				CBB74C4F13BE6E1900C85CB5 /* TUIFastIndexPath.m */,
-				CBB74C5013BE6E1900C85CB5 /* TUIFont.h */,
-				CBB74C5113BE6E1900C85CB5 /* TUIFont.m */,
 				CBB74C5213BE6E1900C85CB5 /* TUIGeometry.h */,
 				CBB74C5313BE6E1900C85CB5 /* TUIGeometry.m */,
 				D0C7650415B6156A00E7AC2C /* TUIHostView.h */,
@@ -974,7 +959,6 @@
 				CBB74CA013BE6E1900C85CB5 /* TUIColor.h in Headers */,
 				CBB74CA313BE6E1900C85CB5 /* TUIControl.h in Headers */,
 				CBB74CA513BE6E1900C85CB5 /* TUIFastIndexPath.h in Headers */,
-				CBB74CA713BE6E1900C85CB5 /* TUIFont.h in Headers */,
 				CBB74CA913BE6E1900C85CB5 /* TUIGeometry.h in Headers */,
 				88D81CFF1577EF0D009D453B /* TUIStyledView.h in Headers */,
 				CBB74CAF13BE6E1900C85CB5 /* TUIImageView.h in Headers */,
@@ -1290,7 +1274,6 @@
 				5EE983C713BE7834005F430D /* TUIControl+TargetAction.m in Sources */,
 				5EE983C813BE7834005F430D /* TUIControl.m in Sources */,
 				5EE983C913BE7834005F430D /* TUIFastIndexPath.m in Sources */,
-				5EE983CA13BE7834005F430D /* TUIFont.m in Sources */,
 				5EE983CB13BE7834005F430D /* TUIGeometry.m in Sources */,
 				5EE983CE13BE7834005F430D /* TUIImageView.m in Sources */,
 				5EE983CF13BE7834005F430D /* TUILabel.m in Sources */,
@@ -1338,7 +1321,6 @@
 				D0C7656215B6297300E7AC2C /* NSClipView+TUIExtensions.m in Sources */,
 				D0C7656815B6297300E7AC2C /* NSScrollView+TUIExtensions.m in Sources */,
 				D0C7657615B6341800E7AC2C /* TUICAAction.m in Sources */,
-				D040610F15B6A77500F753ED /* TUIAnimationManager.m in Sources */,
 				D040611815B6A7CD00F753ED /* NSTextView+TUIExtensions.m in Sources */,
 				D039724115B7D7CC0092CD26 /* TUILayoutConstraint.m in Sources */,
 				D039724315B7D7CE0092CD26 /* TUILayoutManager.m in Sources */,
@@ -1365,7 +1347,6 @@
 				CBB74CA213BE6E1900C85CB5 /* TUIControl+TargetAction.m in Sources */,
 				CBB74CA413BE6E1900C85CB5 /* TUIControl.m in Sources */,
 				CBB74CA613BE6E1900C85CB5 /* TUIFastIndexPath.m in Sources */,
-				CBB74CA813BE6E1900C85CB5 /* TUIFont.m in Sources */,
 				CBB74CAA13BE6E1900C85CB5 /* TUIGeometry.m in Sources */,
 				CBB74CB013BE6E1900C85CB5 /* TUIImageView.m in Sources */,
 				CBB74CB213BE6E1900C85CB5 /* TUIKit.m in Sources */,
@@ -1417,7 +1398,6 @@
 				D0C7656015B6297300E7AC2C /* NSClipView+TUIExtensions.m in Sources */,
 				D0C7656615B6297300E7AC2C /* NSScrollView+TUIExtensions.m in Sources */,
 				D0C7657415B6341800E7AC2C /* TUICAAction.m in Sources */,
-				D040610D15B6A77500F753ED /* TUIAnimationManager.m in Sources */,
 				D040611615B6A7CD00F753ED /* NSTextView+TUIExtensions.m in Sources */,
 				48A10E8215B7769A007F9EE3 /* TUILayoutConstraint.m in Sources */,
 				48A10E8415B7769A007F9EE3 /* TUILayoutManager.m in Sources */,
@@ -1453,7 +1433,6 @@
 				CB5E322913BE70CA004B7899 /* TUIControl+TargetAction.m in Sources */,
 				CB5E322B13BE70CA004B7899 /* TUIControl.m in Sources */,
 				CB5E322D13BE70CA004B7899 /* TUIFastIndexPath.m in Sources */,
-				CB5E322F13BE70CA004B7899 /* TUIFont.m in Sources */,
 				CB5E323113BE70CA004B7899 /* TUIGeometry.m in Sources */,
 				CB5E323713BE70CA004B7899 /* TUIImageView.m in Sources */,
 				CB5E323913BE70CA004B7899 /* TUIKit.m in Sources */,
@@ -1502,7 +1481,6 @@
 				D0C7656115B6297300E7AC2C /* NSClipView+TUIExtensions.m in Sources */,
 				D0C7656715B6297300E7AC2C /* NSScrollView+TUIExtensions.m in Sources */,
 				D0C7657515B6341800E7AC2C /* TUICAAction.m in Sources */,
-				D040610E15B6A77500F753ED /* TUIAnimationManager.m in Sources */,
 				D040611715B6A7CD00F753ED /* NSTextView+TUIExtensions.m in Sources */,
 				D039723F15B7D7CB0092CD26 /* TUILayoutConstraint.m in Sources */,
 				D039724215B7D7CE0092CD26 /* TUILayoutManager.m in Sources */,

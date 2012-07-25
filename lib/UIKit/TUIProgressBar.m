@@ -191,10 +191,10 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 
 - (void)dealloc
 {
-	[self removeObserver:self forKeyPath:@"drawTrack" context:&GHUIProgressBarSetNeedsDisplayObservationContext];
-	[self removeObserver:self forKeyPath:@"drawFill" context:&GHUIProgressBarSetNeedsDisplayObservationContext];
-	[self removeObserver:self forKeyPath:@"progress" context:&GHUIProgressBarSetNeedsDisplayObservationContext];
-	[self removeObserver:self forKeyPath:@"indeterminate" context:&GHUIProgressBarSetNeedsDisplayObservationContext];
+	[self removeObserver:self forKeyPath:@"drawTrack"];
+	[self removeObserver:self forKeyPath:@"drawFill"];
+	[self removeObserver:self forKeyPath:@"progress"];
+	[self removeObserver:self forKeyPath:@"indeterminate"];
 }
 
 - (void)drawRect:(CGRect)dirtyRect {

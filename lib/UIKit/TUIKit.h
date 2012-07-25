@@ -30,7 +30,6 @@
 #import "TUICGAdditions.h"
 #import "TUIColor.h"
 #import "TUIFastIndexPath.h"
-#import "TUIFont.h"
 #import "TUIHostView.h"
 #import "TUIImageView.h"
 #import "TUILabel.h"

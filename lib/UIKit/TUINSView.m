@@ -263,6 +263,8 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidChangeScreenProfileNotification object:self.window];
 	}
 	
+	[self.tuiHostView removeFromSuperview];
+	
 	CALayer *hostLayer = self.tuiHostView.layer;
 	if(newWindow != nil && _rootView.layer.superlayer != hostLayer) {
 		_rootView.layer.frame = hostLayer.bounds;
@@ -290,6 +292,8 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 		[self.window setDisplaysWhenScreenProfileChanges:YES];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenProfileOrBackingPropertiesDidChange:) name:NSWindowDidChangeScreenProfileNotification object:self.window];
 	}
+
+	[self addSubview:self.tuiHostView positioned:NSWindowBelow relativeTo:self.appKitHostView];
 }
 
 - (void)_updateLayerScaleFactor {

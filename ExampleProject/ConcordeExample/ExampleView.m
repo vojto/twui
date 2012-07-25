@@ -85,16 +85,16 @@
 					// replace image with a dynamically generated fancy inset image
 					// 1. use the image as a mask to draw a blue gradient
 					// 2. generate an inner shadow image based on the mask, then overlay that on top
-					image = [NSImage imageWithSize:imageRect.size drawing:^(CGContextRef ctx) {
+					image = [NSImage tui_imageWithSize:imageRect.size drawing:^(CGContextRef ctx) {
 						CGRect r;
 						r.origin = CGPointZero;
 						r.size = imageRect.size;
 						
-						CGContextClipToMask(ctx, r, image.CGImage);
+						CGContextClipToMask(ctx, r, image.tui_CGImage);
 						CGContextDrawLinearGradientBetweenPoints(ctx, CGPointMake(0, r.size.height), (CGFloat[]){0,0,1,1}, CGPointZero, (CGFloat[]){0,0.6,1,1});
-						NSImage *innerShadow = [image innerShadowWithOffset:CGSizeMake(0, -1) radius:3.0 color:[TUIColor blackColor] backgroundColor:[TUIColor cyanColor]];
+						NSImage *innerShadow = [image tui_innerShadowWithOffset:CGSizeMake(0, -1) radius:3.0 color:[TUIColor blackColor] backgroundColor:[TUIColor cyanColor]];
 						CGContextSetBlendMode(ctx, kCGBlendModeOverlay);
-						CGContextDrawImage(ctx, r, innerShadow.CGImage);
+						CGContextDrawImage(ctx, r, innerShadow.tui_CGImage);
 					}];
 				}
 

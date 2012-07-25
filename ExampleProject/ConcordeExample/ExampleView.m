@@ -87,19 +87,17 @@
 					// 2. generate an inner shadow image based on the mask, then overlay that on top
 
 					// TODO: Refactor this to use NSImage.
-					#if 0
-					image = [TUIImage imageWithSize:imageRect.size drawing:^(CGContextRef ctx) {
+					image = [NSImage imageWithSize:imageRect.size drawing:^(CGContextRef ctx) {
 						CGRect r;
 						r.origin = CGPointZero;
 						r.size = imageRect.size;
 						
 						CGContextClipToMask(ctx, r, image.CGImage);
 						CGContextDrawLinearGradientBetweenPoints(ctx, CGPointMake(0, r.size.height), (CGFloat[]){0,0,1,1}, CGPointZero, (CGFloat[]){0,0.6,1,1});
-						TUIImage *innerShadow = [image innerShadowWithOffset:CGSizeMake(0, -1) radius:3.0 color:[TUIColor blackColor] backgroundColor:[TUIColor cyanColor]];
+						NSImage *innerShadow = [image innerShadowWithOffset:CGSizeMake(0, -1) radius:3.0 color:[TUIColor blackColor] backgroundColor:[TUIColor cyanColor]];
 						CGContextSetBlendMode(ctx, kCGBlendModeOverlay);
 						CGContextDrawImage(ctx, r, innerShadow.CGImage);
 					}];
-					#endif
 				}
 
 				[image drawInRect:imageRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0]; // draw 'image' (might be the regular one, or the dynamically generated one)

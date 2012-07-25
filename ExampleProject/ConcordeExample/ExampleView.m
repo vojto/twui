@@ -85,8 +85,6 @@
 					// replace image with a dynamically generated fancy inset image
 					// 1. use the image as a mask to draw a blue gradient
 					// 2. generate an inner shadow image based on the mask, then overlay that on top
-
-					// TODO: Refactor this to use NSImage.
 					image = [NSImage imageWithSize:imageRect.size drawing:^(CGContextRef ctx) {
 						CGRect r;
 						r.origin = CGPointZero;

@@ -1,4 +1,4 @@
-# TwUI 0.3.0
+# TwUI 0.4.0
 
 TwUI is a hardware accelerated UI framework for Mac, inspired by UIKit.  It enables:
 

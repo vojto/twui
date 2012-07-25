@@ -15,8 +15,10 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "TUIGeometry.h"
 
 @class TUIColor;
+@class TUIStretchableImage;
 
 @interface NSImage (TUIExtensions)
 
@@ -46,6 +48,12 @@
  * Draws the whole image into the given rectangle.
  */
 - (void)drawInRect:(CGRect)rect;
+
+/*
+ * Creates and returns a new image, based on the receiver, that has the
+ * specified end cap insets.
+ */
+- (TUIStretchableImage *)resizableImageWithCapInsets:(TUIEdgeInsets)insets;
 
 - (NSImage *)crop:(CGRect)cropRect;
 - (NSImage *)upsideDownCrop:(CGRect)cropRect;

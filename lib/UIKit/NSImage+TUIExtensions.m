@@ -17,6 +17,7 @@
 #import "NSImage+TUIExtensions.h"
 #import "TUICGAdditions.h"
 #import "TUIColor.h"
+#import "TUIStretchableImage.h"
 
 @implementation NSImage (TUIExtensions)
 
@@ -56,6 +57,14 @@
 - (void)drawInRect:(CGRect)rect
 {
 	[self drawInRect:rect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+}
+
+- (TUIStretchableImage *)resizableImageWithCapInsets:(TUIEdgeInsets)insets {
+	TUIStretchableImage *image = [[TUIStretchableImage alloc] init];
+	[image addRepresentations:self.representations];
+
+	image.capInsets = insets;
+	return image;
 }
 
 - (NSImage *)scale:(CGSize)size

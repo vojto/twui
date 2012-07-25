@@ -134,7 +134,15 @@
 		flipped = [[NSGraphicsContext currentContext] isFlipped];
 	}
 
-	NSDrawNinePartImage(dstRect, topLeft, topEdge, topRight, leftEdge, center, rightEdge, bottomLeft, bottomEdge, bottomRight, op, alpha, flipped);
+	if (topLeft != nil || bottomRight != nil) {
+		NSDrawNinePartImage(dstRect, topLeft, topEdge, topRight, leftEdge, center, rightEdge, bottomLeft, bottomEdge, bottomRight, op, alpha, flipped);
+	} else if (leftEdge != nil) {
+		// Horizontal three-part image.
+		NSDrawThreePartImage(dstRect, leftEdge, center, rightEdge, NO, op, alpha, flipped);
+	} else {
+		// Vertical three-part image.
+		NSDrawThreePartImage(dstRect, topEdge, center, bottomEdge, YES, op, alpha, flipped);
+	}
 }
 
 #pragma mark NSCopying

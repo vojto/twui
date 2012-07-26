@@ -88,13 +88,19 @@
 
 - (void)_updateDefaultAttributes
 {
-	NSMutableDictionary *attributes = [@{
-		(__bridge id)kCTForegroundColorAttributeName : (__bridge id)self.textColor.CGColor,
-		NSParagraphStyleAttributeName : ABNSParagraphStyleForTextAlignment(textAlignment)
-	} mutableCopy];
+	NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+	
+	if (self.textColor != nil) {
+		[attributes setObject:(__bridge id)self.textColor.CGColor forKey:(__bridge id)kCTForegroundColorAttributeName];
+	}
 
 	if (self.font != nil) {
 		[attributes setObject:self.font forKey:(__bridge id)kCTFontAttributeName];
+	}
+
+	NSParagraphStyle *style = ABNSParagraphStyleForTextAlignment(textAlignment);
+	if (style != nil) {
+		[attributes setObject:style forKey:NSParagraphStyleAttributeName];
 	}
 
 	renderer.defaultAttributes = attributes;

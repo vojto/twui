@@ -58,5 +58,6 @@
 #import "TUIView+TUIBridgedView.h"
 #import "TUIViewController.h"
 #import "TUIViewNSViewContainer.h"
+#import "NSFont+TUIExtensions.h"
 
 extern BOOL AtLeastLion; // set at launch

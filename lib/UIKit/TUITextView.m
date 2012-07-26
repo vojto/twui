@@ -88,16 +88,17 @@
 
 - (void)_updateDefaultAttributes
 {
-	renderer.defaultAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-						 self.font, kCTFontAttributeName,
-						 [self.textColor CGColor], kCTForegroundColorAttributeName,
-						 ABNSParagraphStyleForTextAlignment(textAlignment), NSParagraphStyleAttributeName,
-						 nil];
-	renderer.markedAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-						self.font, kCTFontAttributeName,
-						[self.textColor CGColor], kCTForegroundColorAttributeName,
-						ABNSParagraphStyleForTextAlignment(textAlignment), NSParagraphStyleAttributeName,
-						nil];
+	NSMutableDictionary *attributes = [@{
+		(__bridge id)kCTForegroundColorAttributeName : (__bridge id)self.textColor.CGColor,
+		NSParagraphStyleAttributeName : ABNSParagraphStyleForTextAlignment(textAlignment)
+	} mutableCopy];
+
+	if (self.font != nil) {
+		[attributes setObject:self.font forKey:(__bridge id)kCTFontAttributeName];
+	}
+
+	renderer.defaultAttributes = attributes;
+	renderer.markedAttributes = attributes;
 }
 
 - (Class)textEditorClass

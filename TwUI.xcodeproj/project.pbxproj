@@ -28,7 +28,6 @@
 		5EE983C313BE7834005F430D /* TUIButton+Content.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4413BE6E1900C85CB5 /* TUIButton+Content.m */; };
 		5EE983C413BE7834005F430D /* TUIButton.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4613BE6E1900C85CB5 /* TUIButton.m */; };
 		5EE983C513BE7834005F430D /* TUICGAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4813BE6E1900C85CB5 /* TUICGAdditions.m */; };
-		5EE983C613BE7834005F430D /* TUIColor.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4A13BE6E1900C85CB5 /* TUIColor.m */; };
 		5EE983C713BE7834005F430D /* TUIControl+TargetAction.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4B13BE6E1900C85CB5 /* TUIControl+TargetAction.m */; };
 		5EE983C813BE7834005F430D /* TUIControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4D13BE6E1900C85CB5 /* TUIControl.m */; };
 		5EE983C913BE7834005F430D /* TUIFastIndexPath.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4F13BE6E1900C85CB5 /* TUIFastIndexPath.m */; };
@@ -142,7 +141,6 @@
 		CB5E322213BE70CA004B7899 /* TUIButton+Content.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4413BE6E1900C85CB5 /* TUIButton+Content.m */; };
 		CB5E322413BE70CA004B7899 /* TUIButton.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4613BE6E1900C85CB5 /* TUIButton.m */; };
 		CB5E322613BE70CA004B7899 /* TUICGAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4813BE6E1900C85CB5 /* TUICGAdditions.m */; };
-		CB5E322813BE70CA004B7899 /* TUIColor.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4A13BE6E1900C85CB5 /* TUIColor.m */; };
 		CB5E322913BE70CA004B7899 /* TUIControl+TargetAction.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4B13BE6E1900C85CB5 /* TUIControl+TargetAction.m */; };
 		CB5E322B13BE70CA004B7899 /* TUIControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4D13BE6E1900C85CB5 /* TUIControl.m */; };
 		CB5E322D13BE70CA004B7899 /* TUIFastIndexPath.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4F13BE6E1900C85CB5 /* TUIFastIndexPath.m */; };
@@ -194,8 +192,6 @@
 		CBB74C9D13BE6E1900C85CB5 /* TUIButton.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4613BE6E1900C85CB5 /* TUIButton.m */; };
 		CBB74C9E13BE6E1900C85CB5 /* TUICGAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB74C4713BE6E1900C85CB5 /* TUICGAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CBB74C9F13BE6E1900C85CB5 /* TUICGAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4813BE6E1900C85CB5 /* TUICGAdditions.m */; };
-		CBB74CA013BE6E1900C85CB5 /* TUIColor.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB74C4913BE6E1900C85CB5 /* TUIColor.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CBB74CA113BE6E1900C85CB5 /* TUIColor.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4A13BE6E1900C85CB5 /* TUIColor.m */; };
 		CBB74CA213BE6E1900C85CB5 /* TUIControl+TargetAction.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4B13BE6E1900C85CB5 /* TUIControl+TargetAction.m */; };
 		CBB74CA313BE6E1900C85CB5 /* TUIControl.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB74C4C13BE6E1900C85CB5 /* TUIControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CBB74CA413BE6E1900C85CB5 /* TUIControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4D13BE6E1900C85CB5 /* TUIControl.m */; };
@@ -501,8 +497,6 @@
 		CBB74C4613BE6E1900C85CB5 /* TUIButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIButton.m; sourceTree = "<group>"; };
 		CBB74C4713BE6E1900C85CB5 /* TUICGAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUICGAdditions.h; sourceTree = "<group>"; };
 		CBB74C4813BE6E1900C85CB5 /* TUICGAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUICGAdditions.m; sourceTree = "<group>"; };
-		CBB74C4913BE6E1900C85CB5 /* TUIColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIColor.h; sourceTree = "<group>"; };
-		CBB74C4A13BE6E1900C85CB5 /* TUIColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIColor.m; sourceTree = "<group>"; };
 		CBB74C4B13BE6E1900C85CB5 /* TUIControl+TargetAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUIControl+TargetAction.m"; sourceTree = "<group>"; };
 		CBB74C4C13BE6E1900C85CB5 /* TUIControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIControl.h; sourceTree = "<group>"; };
 		CBB74C4D13BE6E1900C85CB5 /* TUIControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIControl.m; sourceTree = "<group>"; };
@@ -794,8 +788,6 @@
 				CBB74C4613BE6E1900C85CB5 /* TUIButton.m */,
 				CBB74C4713BE6E1900C85CB5 /* TUICGAdditions.h */,
 				CBB74C4813BE6E1900C85CB5 /* TUICGAdditions.m */,
-				CBB74C4913BE6E1900C85CB5 /* TUIColor.h */,
-				CBB74C4A13BE6E1900C85CB5 /* TUIColor.m */,
 				88CC1F2D13E365B500827793 /* TUIControl+Accessibility.h */,
 				88CC1F2E13E365B500827793 /* TUIControl+Accessibility.m */,
 				886EBA7D13D64393006DE018 /* TUIControl+Private.h */,
@@ -973,7 +965,6 @@
 				CBB74C9C13BE6E1900C85CB5 /* TUIButton.h in Headers */,
 				CBB74C9E13BE6E1900C85CB5 /* TUICGAdditions.h in Headers */,
 				30D39A0D156D8F71006ECDAE /* TUIProgressBar.h in Headers */,
-				CBB74CA013BE6E1900C85CB5 /* TUIColor.h in Headers */,
 				CBB74CA313BE6E1900C85CB5 /* TUIControl.h in Headers */,
 				CBB74CA513BE6E1900C85CB5 /* TUIFastIndexPath.h in Headers */,
 				CBB74CA913BE6E1900C85CB5 /* TUIGeometry.h in Headers */,
@@ -1290,7 +1281,6 @@
 				5EE983C313BE7834005F430D /* TUIButton+Content.m in Sources */,
 				5EE983C413BE7834005F430D /* TUIButton.m in Sources */,
 				5EE983C513BE7834005F430D /* TUICGAdditions.m in Sources */,
-				5EE983C613BE7834005F430D /* TUIColor.m in Sources */,
 				5EE983C713BE7834005F430D /* TUIControl+TargetAction.m in Sources */,
 				5EE983C813BE7834005F430D /* TUIControl.m in Sources */,
 				5EE983C913BE7834005F430D /* TUIFastIndexPath.m in Sources */,
@@ -1364,7 +1354,6 @@
 				CBB74C9B13BE6E1900C85CB5 /* TUIButton+Content.m in Sources */,
 				CBB74C9D13BE6E1900C85CB5 /* TUIButton.m in Sources */,
 				CBB74C9F13BE6E1900C85CB5 /* TUICGAdditions.m in Sources */,
-				CBB74CA113BE6E1900C85CB5 /* TUIColor.m in Sources */,
 				CBB74CA213BE6E1900C85CB5 /* TUIControl+TargetAction.m in Sources */,
 				CBB74CA413BE6E1900C85CB5 /* TUIControl.m in Sources */,
 				CBB74CA613BE6E1900C85CB5 /* TUIFastIndexPath.m in Sources */,
@@ -1452,7 +1441,6 @@
 				CB5E322213BE70CA004B7899 /* TUIButton+Content.m in Sources */,
 				CB5E322413BE70CA004B7899 /* TUIButton.m in Sources */,
 				CB5E322613BE70CA004B7899 /* TUICGAdditions.m in Sources */,
-				CB5E322813BE70CA004B7899 /* TUIColor.m in Sources */,
 				CB5E322913BE70CA004B7899 /* TUIControl+TargetAction.m in Sources */,
 				CB5E322B13BE70CA004B7899 /* TUIControl.m in Sources */,
 				CB5E322D13BE70CA004B7899 /* TUIFastIndexPath.m in Sources */,

@@ -238,9 +238,12 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	
 	[_rootView setNextResponder:self];
 	
+	[self setWantsLayer:YES];
+	CALayer *layer = [self layer];
+	[layer setDelegate:self];
 	CGSize s = [self frame].size;
 	v.frame = CGRectMake(0, 0, s.width, s.height);
-	[self.tuiHostView.layer addSublayer:_rootView.layer];
+	[self.layer addSublayer:_rootView.layer];
 	
 	[self _updateLayerScaleFactor];
 }
@@ -263,9 +266,9 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidChangeScreenProfileNotification object:self.window];
 	}
 	
-	[self.tuiHostView removeFromSuperview];
+//	[self.tuiHostView removeFromSuperview];
 	
-	CALayer *hostLayer = self.tuiHostView.layer;
+	CALayer *hostLayer = self.layer;
 	if(newWindow != nil && _rootView.layer.superlayer != hostLayer) {
 		_rootView.layer.frame = hostLayer.bounds;
 		[hostLayer addSublayer:_rootView.layer];
@@ -293,7 +296,7 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenProfileOrBackingPropertiesDidChange:) name:NSWindowDidChangeScreenProfileNotification object:self.window];
 	}
 
-	[self addSubview:self.tuiHostView positioned:NSWindowBelow relativeTo:self.appKitHostView];
+//	[self addSubview:self.tuiHostView positioned:NSWindowBelow relativeTo:self.appKitHostView];
 }
 
 - (void)_updateLayerScaleFactor {
@@ -303,9 +306,9 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 			scale = [[self window] backingScaleFactor];
 		}
 		
-		if([self.tuiHostView.layer respondsToSelector:@selector(setContentsScale:)]) {
-			if(fabs(self.tuiHostView.layer.contentsScale - scale) > 0.1f) {
-				self.tuiHostView.layer.contentsScale = scale;
+		if([self.layer respondsToSelector:@selector(setContentsScale:)]) {
+			if(fabs(self.layer.contentsScale - scale) > 0.1f) {
+				self.layer.contentsScale = scale;
 			}
 		}
 		
@@ -648,7 +651,7 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 
 	_tuiHostView = [[TUINSHostView alloc] initWithFrame:self.bounds];
 	_tuiHostView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
-	[self addSubview:_tuiHostView];
+//	[self addSubview:_tuiHostView];
 
 	_appKitHostView = [[NSView alloc] initWithFrame:self.bounds];
 	_appKitHostView.autoresizesSubviews = NO;
@@ -668,7 +671,7 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 }
 
 - (void)didAddSubview:(NSView *)view {
-	NSAssert(view == self.tuiHostView || view == self.appKitHostView, @"Subviews should not be added to TUINSView %@: %@", self, view);
+	NSAssert(view == self || view == self.appKitHostView, @"Subviews should not be added to TUINSView %@: %@", self, view);
 	[super didAddSubview:view];
 }
 

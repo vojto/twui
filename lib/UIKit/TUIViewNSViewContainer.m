@@ -116,6 +116,7 @@
 
 	self.layer.masksToBounds = NO;
 	self.clearsContextBeforeDrawing = NO;
+	self.opaque = NO;
 
 	// prevents the layer from displaying until we need to render our contained
 	// view

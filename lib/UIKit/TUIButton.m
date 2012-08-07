@@ -80,6 +80,9 @@
 - (void)setTitleEdgeInsets:(TUIEdgeInsets)i
 {
 	_titleEdgeInsets = i;
+	if (_imageView != nil) {
+		_imageView.frame = TUIEdgeInsetsInsetRect(self.bounds, self.imageEdgeInsets);
+	}
 }
 
 - (TUIEdgeInsets)titleEdgeInsets
@@ -107,9 +110,9 @@
 - (TUIImageView *)imageView
 {
 	if(!_imageView) {
-		_imageView = [[TUIImageView alloc] initWithFrame:CGRectZero];
+		_imageView = [[TUIImageView alloc] initWithFrame:TUIEdgeInsetsInsetRect(self.bounds, self.imageEdgeInsets)];
 		_imageView.backgroundColor = [TUIColor clearColor];
-		_imageView.hidden = YES;
+		[self addSubview:_imageView];
 	}
 	return _imageView;
 }

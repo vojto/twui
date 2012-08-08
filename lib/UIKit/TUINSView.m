@@ -21,7 +21,6 @@
 #import "TUINSView.h"
 #import "CALayer+TUIExtensions.h"
 #import "TUIBridgedScrollView.h"
-#import "TUINSHostView.h"
 #import "TUINSView+Hyperfocus.h"
 #import "TUINSView+Private.h"
 #import "TUIViewNSViewContainer.h"
@@ -81,11 +80,6 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 
 @interface TUINSView ()
 
-/*
- * The layer-hosted view which actually holds the TwUI hierarchy.
- */
-@property (nonatomic, readonly, strong) TUINSHostView *tuiHostView;
-
 - (void)recalculateNSViewClipping;
 - (void)recalculateNSViewOrdering;
 
@@ -126,7 +120,6 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 @synthesize appKitHostView = _appKitHostView;
 @synthesize rootView = _rootView;
 @synthesize maskLayer = _maskLayer;
-@synthesize tuiHostView = _tuiHostView;
 
 - (id)initWithCoder:(NSCoder *)coder
 {
@@ -266,8 +259,6 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidChangeScreenProfileNotification object:self.window];
 	}
 	
-//	[self.tuiHostView removeFromSuperview];
-	
 	CALayer *hostLayer = self.layer;
 	if(newWindow != nil && _rootView.layer.superlayer != hostLayer) {
 		_rootView.layer.frame = hostLayer.bounds;
@@ -295,8 +286,6 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 		[self.window setDisplaysWhenScreenProfileChanges:YES];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenProfileOrBackingPropertiesDidChange:) name:NSWindowDidChangeScreenProfileNotification object:self.window];
 	}
-
-//	[self addSubview:self.tuiHostView positioned:NSWindowBelow relativeTo:self.appKitHostView];
 }
 
 - (void)_updateLayerScaleFactor {
@@ -648,10 +637,6 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	// enable layer-backing for this view
 	self.wantsLayer = YES;
 	self.layerContentsRedrawPolicy = NSViewLayerContentsRedrawNever;
-
-	_tuiHostView = [[TUINSHostView alloc] initWithFrame:self.bounds];
-	_tuiHostView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
-//	[self addSubview:_tuiHostView];
 
 	_appKitHostView = [[NSView alloc] initWithFrame:self.bounds];
 	_appKitHostView.autoresizesSubviews = NO;

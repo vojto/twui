@@ -236,7 +236,7 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	[layer setDelegate:self];
 	CGSize s = [self frame].size;
 	v.frame = CGRectMake(0, 0, s.width, s.height);
-	[self.layer addSublayer:_rootView.layer];
+	[self.layer insertSublayer:_rootView.layer atIndex:0];
 	
 	[self _updateLayerScaleFactor];
 }
@@ -262,7 +262,7 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	CALayer *hostLayer = self.layer;
 	if(newWindow != nil && _rootView.layer.superlayer != hostLayer) {
 		_rootView.layer.frame = hostLayer.bounds;
-		[hostLayer addSublayer:_rootView.layer];
+		[hostLayer insertSublayer:_rootView.layer atIndex:0];
 	}
 	
 	[self.rootView willMoveToWindow:(TUINSWindow *) newWindow];
@@ -643,6 +643,9 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	_appKitHostView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
 	_appKitHostView.wantsLayer = YES;
 	_appKitHostView.layerContentsRedrawPolicy = NSViewLayerContentsRedrawNever;
+	
+	// keep this on top of TUIViews
+	_appKitHostView.layer.zPosition = 1;
 	[self addSubview:_appKitHostView];
 
 	// set up masking on the AppKit host view, and make ourselves the layout

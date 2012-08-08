@@ -66,7 +66,7 @@
 	CGFloat verticalEdgeLength = fmax(0, size.height - insets.top - insets.bottom);
 
 	// Length of sides that run horizontally.
-	CGFloat horizontalEdgeLength = fmax(0, size.height - insets.left - insets.right);
+	CGFloat horizontalEdgeLength = fmax(0, size.width - insets.left - insets.right);
 
 	NSImage *(^imageWithRect)(CGRect) = ^ id (CGRect rect){
 		CGImageRef part = CGImageCreateWithImageInRect(image, rect);

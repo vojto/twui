@@ -205,16 +205,16 @@ NSImage *TUIGraphicsContextGetImage(CGContextRef ctx)
 
 void TUIGraphicsBeginImageContextWithOptions(CGSize size, BOOL opaque, CGFloat scale)
 {
-    if (scale == 0.0) {
-        scale = [[NSScreen mainScreen] backingScaleFactor];
-    }
+	if (scale == 0.0) {
+		scale = [[NSScreen mainScreen] backingScaleFactor];
+	}
     
 	size.width *= scale;
 	size.height *= scale;
 	if(size.width < 1) size.width = 1;
 	if(size.height < 1) size.height = 1;
 	CGContextRef ctx = TUICreateGraphicsContextWithOptions(size, opaque);
-    CGContextScaleCTM(ctx, scale, scale);
+	CGContextScaleCTM(ctx, scale, scale);
 	TUIGraphicsPushContext(ctx);
 	CGContextRelease(ctx);
 }

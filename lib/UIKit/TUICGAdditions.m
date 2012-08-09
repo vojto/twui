@@ -205,8 +205,6 @@ NSImage *TUIGraphicsContextGetImage(CGContextRef ctx)
 
 void TUIGraphicsBeginImageContextWithOptions(CGSize size, BOOL opaque, CGFloat scale)
 {
-    // as in the iOS docs, "if you specify a value of 0.0, the scale
-    // factor is set to the scale factor of the device’s main screen."
     if (scale == 0.0) {
         scale = [[NSScreen mainScreen] backingScaleFactor];
     }

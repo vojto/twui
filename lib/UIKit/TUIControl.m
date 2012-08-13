@@ -41,7 +41,10 @@
 
 - (void)setEnabled:(BOOL)e
 {
+	[self _stateWillChange];
 	_controlFlags.disabled = !e;
+	[self _stateDidChange];
+	[self setNeedsDisplay];
 }
 
 - (BOOL)isTracking

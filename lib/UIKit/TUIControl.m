@@ -127,6 +127,10 @@
 - (void)mouseDown:(NSEvent *)event
 {
 	[super mouseDown:event];
+
+	if (self.state & TUIControlStateDisabled) {
+		return;
+	}
 	
 	// handle state change
 	[self _stateWillChange];
@@ -147,6 +151,10 @@
 - (void)mouseUp:(NSEvent *)event
 {
 	[super mouseUp:event];
+
+	if (self.state & TUIControlStateDisabled) {
+		return;
+	}
 	
 	// handle state change
 	[self _stateWillChange];

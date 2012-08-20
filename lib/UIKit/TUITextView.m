@@ -19,7 +19,6 @@
 #import "TUINSView.h"
 #import "TUINSWindow.h"
 #import "TUITextViewEditor.h"
-#import "TUITextRenderer+Event.h"
 #import "NSColor+TUIExtensions.h"
 
 @interface TUITextViewAutocorrectedPair : NSObject <NSCopying> {

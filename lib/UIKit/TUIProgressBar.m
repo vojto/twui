@@ -301,10 +301,11 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 		CGContextSetFillColorSpace(currentContext, patternColorSpace);
 		CGColorSpaceRelease(patternColorSpace);
 		
+		NSDictionary *infoDict = @{@"bounds" : [NSValue valueWithRect:patternBounds], @"contentsScale" : @(view.layer.contentsScale)};
 		const struct CGPatternCallbacks callbacks = {0, &GHUIProgressPatternDrawCallback, NULL};
-		CGPatternRef pattern = CGPatternCreate((__bridge void *)[NSValue valueWithRect:patternBounds], patternBounds, CGAffineTransformIdentity, GHUIProgressBarBarberPolePatternWidth, NSHeight(view.bounds), kCGPatternTilingConstantSpacing, true, &callbacks);
+		CGPatternRef pattern = CGPatternCreate((__bridge void *)infoDict, patternBounds, CGAffineTransformIdentity, (GHUIProgressBarBarberPolePatternWidth * self.layer.contentsScale), (NSHeight(view.bounds) * self.layer.contentsScale), kCGPatternTilingConstantSpacing, true, &callbacks);
 		CGFloat components = 1.0; //It's a coloured pattern so just alpha is fine
-		CGContextSetFillPattern(currentContext, pattern, &components); 
+		CGContextSetFillPattern(currentContext, pattern, &components);
 		CGContextFillRect(currentContext, view.bounds);
 		CGPatternRelease(pattern);
 		[NSGraphicsContext restoreGraphicsState];
@@ -341,7 +342,14 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 void GHUIProgressPatternDrawCallback(void *info, CGContextRef context)
 {
 	[NSGraphicsContext saveGraphicsState];
-	CGRect bounds = [(__bridge NSValue *)info rectValue];
+	NSGraphicsContext *nsContext = [NSGraphicsContext graphicsContextWithGraphicsPort:context flipped:NO];
+	[NSGraphicsContext setCurrentContext:nsContext];
+	
+	NSDictionary *infoDict = (__bridge NSDictionary *)info;
+	CGFloat contentsScale = [[infoDict objectForKey:@"contentsScale"] doubleValue];
+	CGContextScaleCTM(context, contentsScale, contentsScale);
+	
+	CGRect bounds = [[infoDict objectForKey:@"bounds"] rectValue];
 	CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeOverlay);
 	[[NSColor colorWithCalibratedWhite:1.0 alpha:0.24] set];
 

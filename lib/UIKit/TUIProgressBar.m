@@ -21,7 +21,7 @@
 NSString *GHUIProgressBarSetNeedsDisplayObservationContext = @"GHUIProgressBarSetNeedsDisplayObservationContext";
 
 CGFloat const GHUIProgressBarBarberPoleAnimationDuration = 5.0;
-CGFloat const GHUIProgressBarBarberPolePatternWidth = 8.0;
+CGFloat const GHUIProgressBarBarberPolePatternWidth = 16.0;
 CGFloat const GHUIProgressBarIdealTrackHeight = 12.0;
 
 void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
@@ -341,34 +341,27 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 
 void GHUIProgressPatternDrawCallback(void *info, CGContextRef context)
 {
-	[NSGraphicsContext saveGraphicsState];
-	NSGraphicsContext *nsContext = [NSGraphicsContext graphicsContextWithGraphicsPort:context flipped:NO];
-	[NSGraphicsContext setCurrentContext:nsContext];
-	
 	NSDictionary *infoDict = (__bridge NSDictionary *)info;
 	CGFloat contentsScale = [[infoDict objectForKey:@"contentsScale"] doubleValue];
 	CGContextScaleCTM(context, contentsScale, contentsScale);
 	
 	CGRect bounds = [[infoDict objectForKey:@"bounds"] rectValue];
 	CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeOverlay);
-	[[NSColor colorWithCalibratedWhite:1.0 alpha:0.24] set];
-
-	// I have _no_ idea why the save/restore of graphics state is fucking this up… working around it with this crap for now
-	CGFloat previousLineWidth = [NSBezierPath defaultLineWidth];
-	NSLineCapStyle previousLineCapStyle = [NSBezierPath defaultLineCapStyle];
-	//
 	
-	[NSBezierPath setDefaultLineWidth:3.0];
-	[NSBezierPath setDefaultLineCapStyle:NSSquareLineCapStyle];
-	[NSBezierPath strokeLineFromPoint:NSMakePoint(NSMinX(bounds), NSMidY(bounds)) toPoint:NSMakePoint(NSMaxX(bounds), NSMaxY(bounds))];
-	[NSBezierPath strokeLineFromPoint:NSMakePoint(NSMidX(bounds), NSMinY(bounds)) toPoint:NSMakePoint((NSMaxX(bounds) + 1.0), NSMidY(bounds))];
+	CGMutablePathRef fillPath = CGPathCreateMutable();
+	CGPathMoveToPoint(fillPath, NULL, NSMinX(bounds), NSMinY(bounds));
+	CGPathAddLineToPoint(fillPath, NULL, NSMidX(bounds), NSMaxY(bounds));
+	CGPathAddLineToPoint(fillPath, NULL, NSMaxX(bounds), NSMaxY(bounds));
+	CGPathAddLineToPoint(fillPath, NULL, NSMidX(bounds), NSMinY(bounds));
+	CGPathCloseSubpath(fillPath);
 	
-	// Fuck AppKit
-	[NSBezierPath setDefaultLineWidth:previousLineWidth];
-	[NSBezierPath setDefaultLineCapStyle:previousLineCapStyle];
-	//
+	CGContextAddPath(context, fillPath);
+	CGColorRef fillColor = CGColorCreateGenericGray(1.0, 0.24);
+	CGContextSetFillColorWithColor(context, fillColor);
+	CGColorRelease(fillColor);
+	CGContextFillPath(context);
 	
-	[NSGraphicsContext restoreGraphicsState];
+	CGPathRelease(fillPath);
 }
 
 @end

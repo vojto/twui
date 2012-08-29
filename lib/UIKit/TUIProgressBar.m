@@ -24,6 +24,11 @@ CGFloat const GHUIProgressBarBarberPoleAnimationDuration = 5.0;
 CGFloat const GHUIProgressBarBarberPolePatternWidth = 16.0;
 CGFloat const GHUIProgressBarIdealTrackHeight = 12.0;
 
+struct infoStruct {
+	CGRect bounds;
+	CGFloat contentsScale;
+};
+
 void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 
 @interface TUIProgressBar ()
@@ -301,9 +306,9 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 		CGContextSetFillColorSpace(currentContext, patternColorSpace);
 		CGColorSpaceRelease(patternColorSpace);
 		
-		NSDictionary *infoDict = @{@"bounds" : [NSValue valueWithRect:patternBounds], @"contentsScale" : @(view.layer.contentsScale)};
+		const struct infoStruct info = {patternBounds, view.layer.contentsScale};
 		const struct CGPatternCallbacks callbacks = {0, &GHUIProgressPatternDrawCallback, NULL};
-		CGPatternRef pattern = CGPatternCreate((__bridge void *)infoDict, patternBounds, CGAffineTransformIdentity, (GHUIProgressBarBarberPolePatternWidth * self.layer.contentsScale), (NSHeight(view.bounds) * self.layer.contentsScale), kCGPatternTilingConstantSpacing, true, &callbacks);
+		CGPatternRef pattern = CGPatternCreate((void *)&info, patternBounds, CGAffineTransformIdentity, (GHUIProgressBarBarberPolePatternWidth * self.layer.contentsScale), (NSHeight(view.bounds) * self.layer.contentsScale), kCGPatternTilingConstantSpacing, true, &callbacks);
 		CGFloat components = 1.0; //It's a coloured pattern so just alpha is fine
 		CGContextSetFillPattern(currentContext, pattern, &components);
 		CGContextFillRect(currentContext, view.bounds);
@@ -341,11 +346,11 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 
 void GHUIProgressPatternDrawCallback(void *info, CGContextRef context)
 {
-	NSDictionary *infoDict = (__bridge NSDictionary *)info;
-	CGFloat contentsScale = [[infoDict objectForKey:@"contentsScale"] doubleValue];
+	const struct infoStruct passedInfo = *(struct infoStruct *)info;
+	CGFloat contentsScale = passedInfo.contentsScale;
 	CGContextScaleCTM(context, contentsScale, contentsScale);
 	
-	CGRect bounds = [[infoDict objectForKey:@"bounds"] rectValue];
+	CGRect bounds = passedInfo.bounds;
 	CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeOverlay);
 	
 	CGMutablePathRef fillPath = CGPathCreateMutable();

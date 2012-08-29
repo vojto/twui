@@ -354,11 +354,11 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 
 void GHUIProgressPatternDrawCallback(void *info, CGContextRef context)
 {
-	const struct TUIProgressBarPatternInfoStruct passedInfo = *(struct TUIProgressBarPatternInfoStruct *)info;
-	CGFloat contentsScale = passedInfo.contentsScale;
+	const struct TUIProgressBarPatternInfoStruct *passedInfo = info;
+	CGFloat contentsScale = passedInfo->contentsScale;
 	CGContextScaleCTM(context, contentsScale, contentsScale);
 	
-	CGRect bounds = passedInfo.bounds;
+	CGRect bounds = passedInfo->bounds;
 	CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeOverlay);
 	
 	CGMutablePathRef fillPath = CGPathCreateMutable();

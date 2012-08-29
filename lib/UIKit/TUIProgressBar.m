@@ -24,6 +24,14 @@ CGFloat const GHUIProgressBarBarberPoleAnimationDuration = 5.0;
 CGFloat const GHUIProgressBarBarberPolePatternWidth = 16.0;
 CGFloat const GHUIProgressBarIdealTrackHeight = 12.0;
 
+// Simple struct used to pass information from the overlay drawing into the
+// pattern that it uses.
+//
+// bounds - the bounds of the pattern segment
+// contentsScale - the backing contents scale, necessary to correctly scale the
+// drawing of the pattern to match the backing scale factor.
+//
+
 struct TUIProgressBarPatternInfoStruct {
 	CGRect bounds;
 	CGFloat contentsScale;

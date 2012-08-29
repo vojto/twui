@@ -24,7 +24,7 @@ CGFloat const GHUIProgressBarBarberPoleAnimationDuration = 5.0;
 CGFloat const GHUIProgressBarBarberPolePatternWidth = 16.0;
 CGFloat const GHUIProgressBarIdealTrackHeight = 12.0;
 
-struct infoStruct {
+struct TUIProgressBarPatternInfoStruct {
 	CGRect bounds;
 	CGFloat contentsScale;
 };
@@ -306,7 +306,7 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 		CGContextSetFillColorSpace(currentContext, patternColorSpace);
 		CGColorSpaceRelease(patternColorSpace);
 		
-		const struct infoStruct info = {.bounds = patternBounds, .contentsScale = view.layer.contentsScale};
+		const struct TUIProgressBarPatternInfoStruct info = {.bounds = patternBounds, .contentsScale = view.layer.contentsScale};
 		const struct CGPatternCallbacks callbacks = {0, &GHUIProgressPatternDrawCallback, NULL};
 		CGPatternRef pattern = CGPatternCreate((void *)&info, patternBounds, CGAffineTransformIdentity, (GHUIProgressBarBarberPolePatternWidth * self.layer.contentsScale), (NSHeight(view.bounds) * self.layer.contentsScale), kCGPatternTilingConstantSpacing, true, &callbacks);
 		CGFloat components = 1.0; //It's a coloured pattern so just alpha is fine
@@ -346,7 +346,7 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 
 void GHUIProgressPatternDrawCallback(void *info, CGContextRef context)
 {
-	const struct infoStruct passedInfo = *(struct infoStruct *)info;
+	const struct TUIProgressBarPatternInfoStruct passedInfo = *(struct TUIProgressBarPatternInfoStruct *)info;
 	CGFloat contentsScale = passedInfo.contentsScale;
 	CGContextScaleCTM(context, contentsScale, contentsScale);
 	

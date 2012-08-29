@@ -247,7 +247,7 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 
 - (CGPoint)farLeftAnimatingPosition
 {
-	return CGPointMake((NSMidX(self.animationView.superview.bounds) - (NSWidth(self.animationView.superview.bounds) / 2.0)) + 1.0, NSMidY(self.animationView.superview.bounds));
+	return CGPointMake((NSMidX(self.animationView.superview.bounds) - (NSWidth(self.animationView.superview.bounds) / 2.0)) + 9.0, NSMidY(self.animationView.superview.bounds));
 }
 
 - (CGPoint)farRightAnimatingPosition

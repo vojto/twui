@@ -188,7 +188,7 @@ static CGFloat SlomoTime()
 
 + (void)setAnimationStartDate:(NSDate *)startDate
 {
-	NSLog(@"%@ %@ unimplemented", self, NSStringFromSelector(_cmd));
+	NSAssert(NO, @"%s is not yet implemented", __func__);
 }
 
 + (void)setAnimationCurve:(TUIViewAnimationCurve)curve
@@ -228,12 +228,12 @@ static CGFloat SlomoTime()
 
 + (void)setAnimationBeginsFromCurrentState:(BOOL)fromCurrentState
 {
-	NSLog(@"%@ %@ unimplemented", self, NSStringFromSelector(_cmd));
+	NSAssert(NO, @"%s is not yet implemented", __func__);
 }
 
 + (void)setAnimationTransition:(TUIViewAnimationTransition)transition forView:(TUIView *)view cache:(BOOL)cache
 {
-	NSLog(@"%@ %@ unimplemented", self, NSStringFromSelector(_cmd));
+	NSAssert(NO, @"%s is not yet implemented", __func__);
 }
 
 static BOOL disableAnimations = NO;

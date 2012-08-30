@@ -41,6 +41,7 @@
 		 we don't, so it could potentially save us some rendering costs.
 		 */
 		_tableView = [[TUITableView alloc] initWithFrame:b];
+		[_tableView setAlwaysBounceVertical: YES];
 		_tableView.autoresizingMask = TUIViewAutoresizingFlexibleSize;
 		_tableView.dataSource = self;
 		_tableView.delegate = self;

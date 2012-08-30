@@ -18,17 +18,6 @@
 #import "TUICAAction.h"
 
 @interface TUIViewAnimation : NSObject <CAAction>
-{
-	void *context;
-	NSString *animationID;
-
-	id __unsafe_unretained delegate;
-	SEL animationWillStartSelector;
-	SEL animationDidStopSelector;
-	void (^animationCompletionBlock)(BOOL finished);
-	
-	CABasicAnimation *basicAnimation;
-}
 
 @property (nonatomic, assign) void *context;
 @property (nonatomic, copy) NSString *animationID;
@@ -43,16 +32,6 @@
 @end
 
 @implementation TUIViewAnimation
-
-@synthesize context;
-@synthesize animationID;
-
-@synthesize delegate;
-@synthesize animationWillStartSelector;
-@synthesize animationDidStopSelector;
-@synthesize animationCompletionBlock;
-
-@synthesize basicAnimation;
 
 - (id)init
 {

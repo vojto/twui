@@ -449,6 +449,11 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 + (BOOL)areAnimationsEnabled;
 
 /**
+ Whether the current code is being executed from within an animation (block-based or not).
+ */
++ (BOOL)isDefiningAnimation;
+
+/**
  animate the 'contents' property when set, defaults to NO
  */
 + (void)setAnimateContents:(BOOL)enabled;

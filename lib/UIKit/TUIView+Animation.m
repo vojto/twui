@@ -138,6 +138,10 @@ static CGFloat SlomoTime() {
 	[NSAnimationContext endGrouping];
 }
 
++ (BOOL)isDefiningAnimation {
+	return TUIViewCurrentAnimation != nil;
+}
+
 + (void)setAnimationDelegate:(id)delegate {
 	TUIViewCurrentAnimation.delegate = delegate;
 }

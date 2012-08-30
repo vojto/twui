@@ -17,6 +17,21 @@
 #import "TUIView.h"
 #import "TUICAAction.h"
 
+@class TUIViewAnimation;
+
+static NSMutableArray *TUIViewAnimationStack;
+static TUIViewAnimation *TUIViewCurrentAnimation;
+static BOOL TUIViewAnimationsEnabled = YES;
+static BOOL TUIViewAnimateContents = NO;
+
+static CGFloat SlomoTime() {
+	if (([NSEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask) == NSShiftKeyMask) {
+		return 5.0;
+	} else {
+		return 1.0;
+	}
+}
+
 @interface TUIViewAnimation : NSObject <CAAction>
 
 @property (nonatomic, assign) void *context;
@@ -32,6 +47,12 @@
 @end
 
 @implementation TUIViewAnimation
+
++ (void)initialize {
+	if (self != [TUIViewAnimation class]) return;
+
+	TUIViewAnimationStack = [NSMutableArray array];
+}
 
 - (id)init {
 	self = [super init];
@@ -83,17 +104,6 @@
 
 @implementation TUIView (TUIViewAnimation)
 
-static NSMutableArray *AnimationStack = nil;
-
-+ (NSMutableArray *)_animationStack {
-	if(!AnimationStack) AnimationStack = [[NSMutableArray alloc] init];
-	return AnimationStack;
-}
-
-+ (TUIViewAnimation *)_currentAnimation {
-	return [AnimationStack lastObject];
-}
-
 + (void)animateWithDuration:(NSTimeInterval)duration animations:(void (^)(void))animations {
 	[self animateWithDuration:duration animations:animations completion:NULL];
 }
@@ -101,8 +111,8 @@ static NSMutableArray *AnimationStack = nil;
 + (void)animateWithDuration:(NSTimeInterval)duration animations:(void (^)(void))animations completion:(void (^)(BOOL finished))completion {
 	[self beginAnimations:nil context:NULL];
 	self.animationDuration = duration;
-	[self _currentAnimation].animationCompletionBlock = completion;
 
+	TUIViewCurrentAnimation.animationCompletionBlock = completion;
 	animations();
 
 	[self commitAnimations];
@@ -111,10 +121,10 @@ static NSMutableArray *AnimationStack = nil;
 + (void)beginAnimations:(NSString *)animationID context:(void *)context {
 	[NSAnimationContext beginGrouping];
 
-	TUIViewAnimation *animation = [[TUIViewAnimation alloc] init];
-	animation.context = context;
-	animation.animationID = animationID;
-	[[self _animationStack] addObject:animation];
+	TUIViewCurrentAnimation = [[TUIViewAnimation alloc] init];
+	TUIViewCurrentAnimation.context = context;
+	TUIViewCurrentAnimation.animationID = animationID;
+	[TUIViewAnimationStack addObject:TUIViewCurrentAnimation];
 	
 	// setup defaults
 	self.animationDuration = 0.25;
@@ -122,39 +132,33 @@ static NSMutableArray *AnimationStack = nil;
 }
 
 + (void)commitAnimations {
-	[[self _animationStack] removeLastObject];
+	[TUIViewAnimationStack removeLastObject];
+	TUIViewCurrentAnimation = TUIViewAnimationStack.lastObject;
+
 	[NSAnimationContext endGrouping];
 }
 
 + (void)setAnimationDelegate:(id)delegate {
-	[self _currentAnimation].delegate = delegate;
+	TUIViewCurrentAnimation.delegate = delegate;
 }
 
 + (void)setAnimationWillStartSelector:(SEL)selector {
-	[self _currentAnimation].animationWillStartSelector = selector;
+	TUIViewCurrentAnimation.animationWillStartSelector = selector;
 }
 
 + (void)setAnimationDidStopSelector:(SEL)selector {
-	[self _currentAnimation].animationDidStopSelector = selector;
-}
-
-static CGFloat SlomoTime() {
-	if (([NSEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask) == NSShiftKeyMask) {
-		return 5.0;
-	} else {
-		return 1.0;
-	}
+	TUIViewCurrentAnimation.animationDidStopSelector = selector;
 }
 
 + (void)setAnimationDuration:(NSTimeInterval)duration {
 	duration *= SlomoTime();
-	[self _currentAnimation].basicAnimation.duration = duration;
+	TUIViewCurrentAnimation.basicAnimation.duration = duration;
 	[NSAnimationContext currentContext].duration = duration;
 }
 
 + (void)setAnimationDelay:(NSTimeInterval)delay {
-	[self _currentAnimation].basicAnimation.beginTime = CACurrentMediaTime() + delay * SlomoTime();
-	[self _currentAnimation].basicAnimation.fillMode = kCAFillModeBoth;
+	TUIViewCurrentAnimation.basicAnimation.beginTime = CACurrentMediaTime() + delay * SlomoTime();
+	TUIViewCurrentAnimation.basicAnimation.fillMode = kCAFillModeBoth;
 }
 
 + (void)setAnimationStartDate:(NSDate *)startDate {
@@ -181,19 +185,19 @@ static CGFloat SlomoTime() {
 			NSAssert(NO, @"Unrecognized animation curve: %i", (int)curve);
 	}
 
-	[self _currentAnimation].basicAnimation.timingFunction = [CAMediaTimingFunction functionWithName:functionName];
+	TUIViewCurrentAnimation.basicAnimation.timingFunction = [CAMediaTimingFunction functionWithName:functionName];
 }
 
 + (void)setAnimationRepeatCount:(float)repeatCount {
-	[self _currentAnimation].basicAnimation.repeatCount = repeatCount;
+	TUIViewCurrentAnimation.basicAnimation.repeatCount = repeatCount;
 }
 
 + (void)setAnimationRepeatAutoreverses:(BOOL)repeatAutoreverses {
-	[self _currentAnimation].basicAnimation.autoreverses = repeatAutoreverses;
+	TUIViewCurrentAnimation.basicAnimation.autoreverses = repeatAutoreverses;
 }
 
 + (void)setAnimationIsAdditive:(BOOL)additive {
-	[self _currentAnimation].basicAnimation.additive = additive;
+	TUIViewCurrentAnimation.basicAnimation.additive = additive;
 }
 
 + (void)setAnimationBeginsFromCurrentState:(BOOL)fromCurrentState {
@@ -204,31 +208,29 @@ static CGFloat SlomoTime() {
 	NSAssert(NO, @"%s is not yet implemented", __func__);
 }
 
-static BOOL disableAnimations = NO;
-
 + (void)setAnimationsEnabled:(BOOL)enabled block:(void(^)(void))block {
-	BOOL save = disableAnimations;
-	disableAnimations = !enabled;
+	BOOL save = TUIViewAnimationsEnabled;
+	TUIViewAnimationsEnabled = enabled;
+
 	block();
-	disableAnimations = save;
+
+	TUIViewAnimationsEnabled = save;
 }
 
 + (void)setAnimationsEnabled:(BOOL)enabled {
-	disableAnimations = !enabled;
+	TUIViewAnimationsEnabled = enabled;
 }
 
 + (BOOL)areAnimationsEnabled {
-	return !disableAnimations;
+	return TUIViewAnimationsEnabled;
 }
 
-static BOOL animateContents = NO;
-
 + (void)setAnimateContents:(BOOL)enabled {
-	animateContents = enabled;
+	TUIViewAnimateContents = enabled;
 }
 
 + (BOOL)willAnimateContents {
-	return animateContents;
+	return TUIViewAnimateContents;
 }
 
 - (void)removeAllAnimations {
@@ -238,12 +240,11 @@ static BOOL animateContents = NO;
 
 - (id<CAAction>)actionForLayer:(CALayer *)layer forKey:(NSString *)event {
 	id defaultAction = [NSNull null];
-	if (disableAnimations) return defaultAction;
 
-	// default - don't animate contents
-	if (!animateContents && [event isEqualToString:@"contents"]) return defaultAction;
+	if (!TUIViewAnimationsEnabled) return defaultAction;
+	if (!TUIViewAnimateContents && [event isEqualToString:@"contents"]) return defaultAction;
 
-	id animation = [TUIView _currentAnimation];
+	TUIViewAnimation *animation = TUIViewCurrentAnimation;
 	if (animation == nil) return defaultAction;
 
 	if ([TUICAAction interceptsActionForKey:event]) {

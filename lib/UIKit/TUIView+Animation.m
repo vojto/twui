@@ -138,7 +138,7 @@ static CGFloat SlomoTime() {
 	[NSAnimationContext endGrouping];
 }
 
-+ (BOOL)isDefiningAnimation {
++ (BOOL)isInAnimationContext {
 	return TUIViewCurrentAnimation != nil;
 }
 

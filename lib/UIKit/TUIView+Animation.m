@@ -165,10 +165,6 @@ static CGFloat TUIViewAnimationSlowMotionMultiplier (void) {
 	TUIViewCurrentAnimation.basicAnimation.fillMode = kCAFillModeBoth;
 }
 
-+ (void)setAnimationStartDate:(NSDate *)startDate {
-	NSAssert(NO, @"%s is not yet implemented", __func__);
-}
-
 + (void)setAnimationCurve:(TUIViewAnimationCurve)curve {
 	NSString *functionName = kCAMediaTimingFunctionEaseInEaseOut;
 
@@ -202,14 +198,6 @@ static CGFloat TUIViewAnimationSlowMotionMultiplier (void) {
 
 + (void)setAnimationIsAdditive:(BOOL)additive {
 	TUIViewCurrentAnimation.basicAnimation.additive = additive;
-}
-
-+ (void)setAnimationBeginsFromCurrentState:(BOOL)fromCurrentState {
-	NSAssert(NO, @"%s is not yet implemented", __func__);
-}
-
-+ (void)setAnimationTransition:(TUIViewAnimationTransition)transition forView:(TUIView *)view cache:(BOOL)cache {
-	NSAssert(NO, @"%s is not yet implemented", __func__);
 }
 
 + (void)setAnimationsEnabled:(BOOL)enabled block:(void(^)(void))block {

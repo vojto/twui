@@ -24,7 +24,7 @@ static TUIViewAnimation *TUIViewCurrentAnimation;
 static BOOL TUIViewAnimationsEnabled = YES;
 static BOOL TUIViewAnimateContents = NO;
 
-static CGFloat SlomoTime() {
+static CGFloat TUIViewAnimationSlowMotionMultiplier (void) {
 	if (([NSEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask) == NSShiftKeyMask) {
 		return 5.0;
 	} else {
@@ -155,13 +155,13 @@ static CGFloat SlomoTime() {
 }
 
 + (void)setAnimationDuration:(NSTimeInterval)duration {
-	duration *= SlomoTime();
+	duration *= TUIViewAnimationSlowMotionMultiplier();
 	TUIViewCurrentAnimation.basicAnimation.duration = duration;
 	[NSAnimationContext currentContext].duration = duration;
 }
 
 + (void)setAnimationDelay:(NSTimeInterval)delay {
-	TUIViewCurrentAnimation.basicAnimation.beginTime = CACurrentMediaTime() + delay * SlomoTime();
+	TUIViewCurrentAnimation.basicAnimation.beginTime = CACurrentMediaTime() + delay * TUIViewAnimationSlowMotionMultiplier();
 	TUIViewCurrentAnimation.basicAnimation.fillMode = kCAFillModeBoth;
 }
 

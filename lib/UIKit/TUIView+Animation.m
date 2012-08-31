@@ -70,7 +70,7 @@ static CGFloat TUIViewAnimationSlowMotionMultiplier (void) {
 }
 
 - (void)runActionForKey:(NSString *)event object:(id)anObject arguments:(NSDictionary *)dict {
-	CAAnimation *animation = [self.basicAnimation copyWithZone:nil];
+	CAAnimation *animation = [self.basicAnimation copy];
 	animation.delegate = self;
 	[animation runActionForKey:event object:anObject arguments:dict];
 }

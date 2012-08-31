@@ -63,10 +63,10 @@ static CGFloat TUIViewAnimationSlowMotionMultiplier (void) {
 }
 
 - (void)dealloc {
-	if (self.animationCompletionBlock != nil) {
-		self.animationCompletionBlock(NO);
-		NSLog(@"Error: animation completion block didn't complete!");
-	}
+	if (self.animationCompletionBlock == nil) return;
+
+	self.animationCompletionBlock(NO);
+	if (self.animationCompletionBlock != nil) NSLog(@"Error: animationCompletionBlock didn't complete!");
 }
 
 - (void)runActionForKey:(NSString *)event object:(id)anObject arguments:(NSDictionary *)dict {

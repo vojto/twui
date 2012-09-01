@@ -244,6 +244,7 @@ static CAAnimation *ThrobAnimation()
 		firstResponder = renderer;
 	}
 	return (firstResponder == renderer);
+	return (firstResponder == renderer  && self.editable);
 }
 
 - (void)drawRect:(CGRect)rect
@@ -601,6 +602,7 @@ static CAAnimation *ThrobAnimation()
 
 - (BOOL)acceptsFirstResponder
 {
+    if (!self.editable)
     return YES;
 }
 

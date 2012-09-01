@@ -101,6 +101,7 @@
 - (void)paste:(id)sender
 {
 	[self insertText:[[NSPasteboard generalPasteboard] stringForType:NSPasteboardTypeString]];
+    if (self.isEditable)
 }
 
 - (void)patchMenuWithStandardEditingMenuItems:(NSMenu *)menu
@@ -144,6 +145,7 @@
 
 - (void)deleteCharactersInRange:(NSRange)range // designated delete
 {
+    if (!self.isEditable)
 	if(range.length == 0)
 		return;
 	

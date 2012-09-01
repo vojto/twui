@@ -24,6 +24,8 @@
 	NSDictionary *defaultAttributes;
 	NSDictionary *markedAttributes;
 	BOOL wasValidKeyEquivalentSelector;
+    
+    BOOL editable;
 }
 
 - (NSTextInputContext *)inputContext;
@@ -38,6 +40,8 @@
 @property (nonatomic, strong) NSDictionary *markedAttributes;
 
 @property (nonatomic, assign) NSRange selectedRange;
+
+@property (nonatomic, assign, getter = isEditable) BOOL editable;
 
 - (void)insertText:(id)aString; // at cursor
 - (void)insertText:(id)aString replacementRange:(NSRange)replacementRange;

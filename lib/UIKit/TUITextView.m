@@ -98,14 +98,14 @@
 	if (self.textColor != nil) {
 		[attributes setObject:(__bridge id)self.textColor.tui_CGColor forKey:(__bridge id)kCTForegroundColorAttributeName];
 	}
-
+    
 	NSParagraphStyle *style = ABNSParagraphStyleForTextAlignment(textAlignment);
 	if (style != nil) {
 		[attributes setObject:style forKey:NSParagraphStyleAttributeName];
 	}
-
+    
 	[attributes setObject:self.font forKey:(__bridge id)kCTFontAttributeName];
-
+    
 	renderer.defaultAttributes = attributes;
 	renderer.markedAttributes = attributes;
 }
@@ -185,7 +185,7 @@
 {
 	textColor = c;
 	[self _updateDefaultAttributes];
-}	
+}
 
 - (void)setTextAlignment:(TUITextAlignment)t
 {
@@ -234,7 +234,7 @@ static CAAnimation *ThrobAnimation()
 	return b;
 }
 
-- (BOOL)_isKey // will fix
+- (BOOL)_isKey // will fix (but now responds to -editable).
 {
 	NSResponder *firstResponder = [self.nsWindow firstResponder];
 	if(firstResponder == self) {
@@ -243,7 +243,6 @@ static CAAnimation *ThrobAnimation()
 		[self.nsWindow tui_makeFirstResponder:renderer];
 		firstResponder = renderer;
 	}
-	return (firstResponder == renderer);
 	return (firstResponder == renderer  && self.editable);
 }
 
@@ -352,7 +351,7 @@ static CAAnimation *ThrobAnimation()
 		// restore
 		renderer.attributedString = [renderer backingStore];
 	}
-		
+    
 	return r;
 }
 
@@ -406,7 +405,7 @@ static CAAnimation *ThrobAnimation()
 					unichar lastCharacter = [[[renderer backingStore] string] characterAtIndex:self.selectedRange.location - 1];
 					if(lastCharacter == '\'') continue;
 				}
-								
+                
 				if(result.resultType == NSTextCheckingTypeCorrection || result.resultType == NSTextCheckingTypeReplacement) {
 					NSString *backingString = [[renderer backingStore] string];
 					if(NSMaxRange(result.range) <= backingString.length) {
@@ -439,7 +438,7 @@ static CAAnimation *ThrobAnimation()
 			
 			[[renderer backingStore] endEditing];
 			[renderer reset]; // make sure we reset so that the renderer uses our new attributes
-
+            
 			[self setNeedsDisplay];
 			
 			self.lastCheckResults = results;
@@ -470,7 +469,7 @@ static CAAnimation *ThrobAnimation()
 	}
 	
 	if(selectedTextCheckingResult == nil) return nil;
-		
+    
 	NSMenu *menu = [[NSMenu alloc] initWithTitle:@""];
 	if(selectedTextCheckingResult.resultType == NSTextCheckingTypeCorrection && matchingAutocorrectPair != nil) {
 		NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:NSLocalizedString(@"Change Back to \"%@\"", @""), matchingAutocorrectPair.originalString] action:@selector(_replaceAutocorrectedWord:) keyEquivalent:@""];
@@ -603,6 +602,7 @@ static CAAnimation *ThrobAnimation()
 - (BOOL)acceptsFirstResponder
 {
     if (!self.editable)
+        return NO;
     return YES;
 }
 
@@ -620,7 +620,7 @@ static CAAnimation *ThrobAnimation()
 		BOOL consumed = [delegate textView:self doCommandBySelector:selector];
 		if(consumed) return YES;
 	}
-		
+    
 	if(selector == @selector(moveUp:)) {
 		if([self singleLine]) {
 			self.selectedRange = NSMakeRange(0, 0);

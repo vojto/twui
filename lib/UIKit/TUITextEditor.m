@@ -23,6 +23,7 @@
 @synthesize defaultAttributes;
 @synthesize markedAttributes;
 @dynamic selectedRange; // getter in TUITextRenderer
+@synthesize editable;
 
 - (id)init
 {
@@ -100,8 +101,8 @@
 
 - (void)paste:(id)sender
 {
-	[self insertText:[[NSPasteboard generalPasteboard] stringForType:NSPasteboardTypeString]];
     if (self.isEditable)
+        [self insertText:[[NSPasteboard generalPasteboard] stringForType:NSPasteboardTypeString]];
 }
 
 - (void)patchMenuWithStandardEditingMenuItems:(NSMenu *)menu
@@ -116,15 +117,16 @@
 
 - (void)keyDown:(NSEvent *)event
 {
-	[inputContext handleEvent:event]; // transform into commands
+    if (self.isEditable)
+        [inputContext handleEvent:event]; // transform into commands
 }
 
 - (void)mouseDown:(NSEvent *)event
 {
-	BOOL handled = [inputContext handleEvent:event];
-	if(handled) return;
-	
-	[super mouseDown:event];
+    BOOL handled = [inputContext handleEvent:event];
+    if(handled) return;
+    
+    [super mouseDown:event];
 }
 
 - (void)mouseDragged:(NSEvent *)event
@@ -145,7 +147,9 @@
 
 - (void)deleteCharactersInRange:(NSRange)range // designated delete
 {
+    //no point in reacting to the delegate key if we aren't editable
     if (!self.isEditable)
+        return;
 	if(range.length == 0)
 		return;
 	
@@ -190,7 +194,7 @@
 	// Some key equivalents--most notably command-arrows--should be handled and translated into selectors by our input context. But the input context will claim it consumed the event when it really just translated it into the `noop:` selector. So in that case, we want to go ahead and send the event up the responder chain.
 	BOOL consumed = [inputContext handleEvent:event];
 	if(consumed && wasValidKeyEquivalentSelector) return YES;
-
+    
 	return [super performKeyEquivalent:event];
 }
 
@@ -233,11 +237,11 @@
 	[self _textDidChange];
 }
 
-/* The receiver inserts aString replacing the content specified by replacementRange. 
- aString can be either an NSString or NSAttributedString instance. 
- selectedRange specifies the selection inside the string being inserted; 
- hence, the location is relative to the beginning of aString. 
- When aString is an NSString, the receiver is expected to render the marked 
+/* The receiver inserts aString replacing the content specified by replacementRange.
+ aString can be either an NSString or NSAttributedString instance.
+ selectedRange specifies the selection inside the string being inserted;
+ hence, the location is relative to the beginning of aString.
+ When aString is an NSString, the receiver is expected to render the marked
  text with distinguishing appearance (i.e. NSTextView renders with -markedTextAttributes).
  */
 - (void)setMarkedText:(id)aString selectedRange:(NSRange)newSelection replacementRange:(NSRange)replacementRange
@@ -275,12 +279,12 @@
 	[self _textDidChange];
 }
 
-/* The receiver unmarks the marked text. If no marked text, the invocation of this 
+/* The receiver unmarks the marked text. If no marked text, the invocation of this
  method has no effect.
  */
 - (void)unmarkText
 {
-//	NSLog(@"unmarkText");
+    //	NSLog(@"unmarkText");
 	markedRange = NSMakeRange(NSNotFound, 0);
     [inputContext discardMarkedText];
 }
@@ -307,9 +311,9 @@
 	return (markedRange.location != NSNotFound);
 }
 
-/* Returns attributed string specified by aRange. It may return nil. 
- If non-nil return value and actualRange is non-NULL, it contains the actual range 
- for the return value. The range can be adjusted from various reasons 
+/* Returns attributed string specified by aRange. It may return nil.
+ If non-nil return value and actualRange is non-NULL, it contains the actual range
+ for the return value. The range can be adjusted from various reasons
  (i.e. adjust to grapheme cluster boundary, performance optimization, etc).
  */
 - (NSAttributedString *)attributedSubstringForProposedRange:(NSRange)aRange actualRange:(NSRangePointer)actualRange
@@ -331,8 +335,8 @@
 	return [NSArray arrayWithObjects:NSMarkedClauseSegmentAttributeName, NSGlyphInfoAttributeName, nil];
 }
 
-/* Returns the first logical rectangular area for aRange. The return value is in the screen 
- coordinate. The size value can be negative if the text flows to the left. 
+/* Returns the first logical rectangular area for aRange. The return value is in the screen
+ coordinate. The size value can be negative if the text flows to the left.
  If non-NULL, actuallRange contains the character range corresponding to the returned area.
  */
 - (NSRect)firstRectForCharacterRange:(NSRange)aRange actualRange:(NSRangePointer)actualRange
@@ -350,7 +354,7 @@
     return screenRect;
 }
 
-/* Returns the index for character that is nearest to aPoint. aPoint is in the 
+/* Returns the index for character that is nearest to aPoint. aPoint is in the
  screen coordinate system.
  */
 - (NSUInteger)characterIndexForPoint:(NSPoint)screenPoint
@@ -366,9 +370,9 @@
 }
 
 #pragma mark optional
-/* Returns an attributed string representing the receiver's document content. 
- An NSTextInputClient can implement this interface if can be done efficiently. 
- The caller of this interface can random access arbitrary portions of the 
+/* Returns an attributed string representing the receiver's document content.
+ An NSTextInputClient can implement this interface if can be done efficiently.
+ The caller of this interface can random access arbitrary portions of the
  receiver's content more efficiently.
  */
 - (NSAttributedString *)attributedString
@@ -376,7 +380,7 @@
 	return backingStore;
 }
 
-/* Returns the fraction of distance for aPoint from the left side of the character. 
+/* Returns the fraction of distance for aPoint from the left side of the character.
  This allows caller to perform precise selection handling.
  */
 #if 1
@@ -386,8 +390,8 @@
 }
 #endif
 
-/* Returns the baseline position relative to the origin of rectangle returned 
- by -firstRectForCharacterRange:actualRange:. This information allows the caller 
+/* Returns the baseline position relative to the origin of rectangle returned
+ by -firstRectForCharacterRange:actualRange:. This information allows the caller
  to access finer-grained character position inside the NSTextInputClient document.
  */
 #if 1
@@ -397,7 +401,7 @@
 }
 #endif
 
-/* Returns the window level of the receiver. An NSTextInputClient can implement 
+/* Returns the window level of the receiver. An NSTextInputClient can implement
  this interface to specify its window level if it is higher than NSFloatingWindowLevel.
  */
 - (NSInteger)windowLevel

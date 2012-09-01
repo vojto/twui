@@ -24,8 +24,6 @@
 	NSDictionary *defaultAttributes;
 	NSDictionary *markedAttributes;
 	BOOL wasValidKeyEquivalentSelector;
-    
-    BOOL editable;
 }
 
 - (NSTextInputContext *)inputContext;
@@ -41,6 +39,12 @@
 
 @property (nonatomic, assign) NSRange selectedRange;
 
+/*
+ * If NO: ignore key down, copy, and paste events while preserving click and tap responses.
+ *
+ * @note Automatically assumes value of owning TUITextView's (if any) property of the same name.
+ * 
+ */
 @property (nonatomic, assign, getter = isEditable) BOOL editable;
 
 - (void)insertText:(id)aString; // at cursor

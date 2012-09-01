@@ -601,9 +601,7 @@ static CAAnimation *ThrobAnimation()
 
 - (BOOL)acceptsFirstResponder
 {
-    if (!self.editable)
-        return NO;
-    return YES;
+    return self.editable;
 }
 
 - (BOOL)performKeyEquivalent:(NSEvent *)event {

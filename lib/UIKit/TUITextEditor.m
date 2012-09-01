@@ -23,7 +23,6 @@
 @synthesize defaultAttributes;
 @synthesize markedAttributes;
 @dynamic selectedRange; // getter in TUITextRenderer
-@synthesize editable;
 
 - (id)init
 {
@@ -101,8 +100,9 @@
 
 - (void)paste:(id)sender
 {
-    if (self.isEditable)
+    if (self.editable) {
         [self insertText:[[NSPasteboard generalPasteboard] stringForType:NSPasteboardTypeString]];
+    }
 }
 
 - (void)patchMenuWithStandardEditingMenuItems:(NSMenu *)menu
@@ -117,8 +117,9 @@
 
 - (void)keyDown:(NSEvent *)event
 {
-    if (self.isEditable)
+    if (self.editable) {
         [inputContext handleEvent:event]; // transform into commands
+    }
 }
 
 - (void)mouseDown:(NSEvent *)event
@@ -147,9 +148,10 @@
 
 - (void)deleteCharactersInRange:(NSRange)range // designated delete
 {
-    //no point in reacting to the delegate key if we aren't editable
-    if (!self.isEditable)
+    //no point in reacting to the delete key if we aren't editable
+    if (!self.editable) {
         return;
+    }
 	if(range.length == 0)
 		return;
 	

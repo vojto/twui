@@ -198,6 +198,11 @@
 	return [[self text] length] > 0;
 }
 
+-(void)setEditable:(BOOL)editable_ {
+    [renderer setEditable:editable_];
+    editable = editable_;
+}
+
 static CAAnimation *ThrobAnimation()
 {
 	CAKeyframeAnimation *a = [CAKeyframeAnimation animation];

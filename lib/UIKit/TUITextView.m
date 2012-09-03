@@ -466,8 +466,9 @@ static CAAnimation *ThrobAnimation()
 		}
 	}
 	
-	if(selectedTextCheckingResult == nil) return nil;
-	
+	if(selectedTextCheckingResult == nil)
+        return [[self.textRenderers objectAtIndex:0] menuForEvent:event];
+    
 	NSMenu *menu = [[NSMenu alloc] initWithTitle:@""];
 	if(selectedTextCheckingResult.resultType == NSTextCheckingTypeCorrection && matchingAutocorrectPair != nil) {
 		NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:NSLocalizedString(@"Change Back to \"%@\"", @""), matchingAutocorrectPair.originalString] action:@selector(_replaceAutocorrectedWord:) keyEquivalent:@""];

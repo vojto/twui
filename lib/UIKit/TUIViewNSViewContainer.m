@@ -168,6 +168,7 @@
 
 	NSLog(@"rootView isFlipped: %i", (int)[self.rootView isFlipped]);
 	NSLog(@"context isFlipped: %i", (int)[[NSGraphicsContext currentContext] isFlipped]);
+	NSLog(@"layer flipped: %i", (int)self.layer.geometryFlipped);
 
 	if ([self.rootView isFlipped]) {
 		CGContextTranslateCTM(context, 0, self.bounds.size.height);

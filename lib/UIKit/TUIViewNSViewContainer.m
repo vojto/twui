@@ -33,7 +33,7 @@
 	NSUInteger _renderingContainedViewCount;
 }
 
-- (void)synchronizeNSViewGeometry;
+- (void)synchronizeNSViewAppearance;
 - (void)startRenderingContainedView;
 - (void)stopRenderingContainedView;
 @end
@@ -68,7 +68,7 @@
 		[nsView recalculateNSViewOrdering];
 
 		_rootView.nextResponder = self;
-		[self synchronizeNSViewGeometry];
+		[self synchronizeNSViewAppearance];
 	} else {
 		// remove the old view from the TUINSView's clipping path
 		[nsView recalculateNSViewClipping];
@@ -84,17 +84,17 @@
 
 - (void)setFrame:(CGRect)frame {
 	[super setFrame:frame];
-	[self synchronizeNSViewGeometry];
+	[self synchronizeNSViewAppearance];
 }
 
 - (void)setBounds:(CGRect)bounds {
 	[super setBounds:bounds];
-	[self synchronizeNSViewGeometry];
+	[self synchronizeNSViewAppearance];
 }
 
 - (void)setCenter:(CGPoint)center {
 	[super setCenter:center];
-	[self synchronizeNSViewGeometry];
+	[self synchronizeNSViewAppearance];
 }
 
 - (void)didAddSubview:(TUIView *)subview {
@@ -140,7 +140,7 @@
 
 #pragma mark Geometry
 
-- (void)synchronizeNSViewGeometry; {
+- (void)synchronizeNSViewAppearance; {
 	NSAssert1([NSThread isMainThread], @"%s should only be called from the main thread", __func__);
 
 	if (!self.nsWindow) {
@@ -187,7 +187,7 @@
 - (void)startRenderingContainedView; {
 	if (_renderingContainedViewCount++ == 0) {
 		[CATransaction tui_performWithDisabledActions:^{
-			[self synchronizeNSViewGeometry];
+			[self synchronizeNSViewAppearance];
 			[self.rootView displayIfNeeded];
 			[self.layer display];
 		}];
@@ -205,7 +205,7 @@
 #pragma mark View hierarchy
 
 - (void)ancestorDidLayout; {
-	[self synchronizeNSViewGeometry];
+	[self synchronizeNSViewAppearance];
 	[super ancestorDidLayout];
 }
 
@@ -251,7 +251,7 @@
 	#endif
 
 	[self.ancestorTUINSView recalculateNSViewOrdering];
-	[self synchronizeNSViewGeometry];
+	[self synchronizeNSViewAppearance];
 	[self.rootView viewHierarchyDidChange];
 }
 
@@ -270,7 +270,7 @@
 
 - (void)layoutSubviews {
 	[super layoutSubviews];
-	[self synchronizeNSViewGeometry];
+	[self synchronizeNSViewAppearance];
 }
 
 - (CGSize)sizeThatFits:(CGSize)constraint {

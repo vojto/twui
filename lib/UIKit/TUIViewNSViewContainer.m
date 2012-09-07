@@ -143,6 +143,20 @@
 - (void)synchronizeNSViewAppearance; {
 	NSAssert1([NSThread isMainThread], @"%s should only be called from the main thread", __func__);
 
+	// update the view's hiddenness based on the TwUI hierarchy
+	BOOL shouldBeHidden = NO;
+	TUIView *view = self;
+	while (view != nil) {
+		if (view.hidden) {
+			shouldBeHidden = YES;
+			break;
+		}
+
+		view = view.superview;
+	}
+
+	self.rootView.hidden = shouldBeHidden;
+
 	if (!self.nsWindow) {
 		// can't do this without being in a window
 		return;

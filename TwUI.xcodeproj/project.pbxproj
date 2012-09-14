@@ -1667,7 +1667,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1690,7 +1689,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1708,6 +1706,97 @@
 			};
 			name = Release;
 		};
+		D03FC4BB1602EA0100BCFA73 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				OTHER_CFLAGS = "-DNS_BUILD_32_LIKE_64";
+				RUN_CLANG_STATIC_ANALYZER = YES;
+				SDKROOT = macosx;
+				TEST_AFTER_BUILD = YES;
+				VALID_ARCHS = x86_64;
+			};
+			name = Profile;
+		};
+		D03FC4BC1602EA0100BCFA73 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				FRAMEWORK_VERSION = A;
+				GCC_PREFIX_HEADER = "Resources/TwUI-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = NS_BLOCK_ASSERTIONS;
+				INFOPLIST_FILE = "Resources/TwUI-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				LD_DYLIB_INSTALL_NAME = "$(DYLIB_INSTALL_NAME_BASE:standardizepath)/$(EXECUTABLE_PATH)";
+				PRODUCT_NAME = TwUI;
+				SKIP_INSTALL = YES;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Profile;
+		};
+		D03FC4BD1602EA0100BCFA73 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Resources/TwUI-Prefix.pch";
+				INSTALL_PATH = /usr/local/lib;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PRODUCT_NAME = libtwui;
+			};
+			name = Profile;
+		};
+		D03FC4BE1602EA0100BCFA73 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREFIX_HEADER = "Resources/TwUI-Prefix.pch";
+				PRODUCT_NAME = twui;
+			};
+			name = Profile;
+		};
+		D03FC4BF1602EA0100BCFA73 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_PREFIX_HEADER = "TwUITests/TwUITests-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"TwUITests/expecta/src/**",
+					"TwUITests/specta/src/**",
+				);
+				INFOPLIST_FILE = "TwUITests/TwUITests-Info.plist";
+				OTHER_LDFLAGS = "-all_load";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Profile;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1716,6 +1805,7 @@
 			buildConfigurations = (
 				5EE983BD13BE7809005F430D /* Debug */,
 				5EE983BE13BE7809005F430D /* Release */,
+				D03FC4BE1602EA0100BCFA73 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1725,6 +1815,7 @@
 			buildConfigurations = (
 				CB5B267213BE6DA300579B1E /* Debug */,
 				CB5B267313BE6DA300579B1E /* Release */,
+				D03FC4BB1602EA0100BCFA73 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1734,6 +1825,7 @@
 			buildConfigurations = (
 				CB5B267513BE6DA300579B1E /* Debug */,
 				CB5B267613BE6DA300579B1E /* Release */,
+				D03FC4BC1602EA0100BCFA73 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1743,6 +1835,7 @@
 			buildConfigurations = (
 				CB5B267813BE6DA300579B1E /* Debug */,
 				CB5B267913BE6DA300579B1E /* Release */,
+				D03FC4BF1602EA0100BCFA73 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1752,6 +1845,7 @@
 			buildConfigurations = (
 				CB5E321913BE7099004B7899 /* Debug */,
 				CB5E321A13BE7099004B7899 /* Release */,
+				D03FC4BD1602EA0100BCFA73 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

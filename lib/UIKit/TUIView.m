@@ -235,20 +235,16 @@ static pthread_key_t TUICurrentContextScaleFactorTLSKey;
 
 - (void)windowDidBecomeKey
 {
-	if(self.needsDisplayWhenWindowsKeyednessChanges) {
+	if(self.needsDisplayWhenWindowsKeyednessChanges)
 		[self setNeedsDisplay];
-        self.windowHasFocus = YES;
-	}
 	
 	[self.subviews makeObjectsPerformSelector:@selector(windowDidBecomeKey)];
 }
 
 - (void)windowDidResignKey
 {
-	if(self.needsDisplayWhenWindowsKeyednessChanges) {
+	if(self.needsDisplayWhenWindowsKeyednessChanges)
 		[self setNeedsDisplay];
-        self.windowHasFocus = NO;
-	}
 	
 	[self.subviews makeObjectsPerformSelector:@selector(windowDidResignKey)];
 }

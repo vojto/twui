@@ -89,7 +89,9 @@
 
 - (void)dealloc {
 	renderer.delegate = nil;
-    [self removeObserver:self forKeyPath:@"windowHasFocus"];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidResignKeyNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidBecomeKeyNotification object:nil];
 }
 
 - (void)_updateDefaultAttributes
@@ -129,14 +131,18 @@
 		cursor.userInteractionEnabled = NO;
 		cursor.backgroundColor = [NSColor colorWithCalibratedRed:13 / 255.0 green:140 / 255.0 blue:231 / 255.0 alpha:1];
         
-        if(self.windowHasFocus)
+        if([self.nsWindow isKeyWindow])
             [self addSubview:cursor];
 		
         self.needsDisplayWhenWindowsKeyednessChanges = YES;
-        [self addObserver:self
-               forKeyPath:@"windowHasFocus"
-                  options:NSKeyValueObservingOptionNew
-                  context:NULL];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(_updateCursor:)
+                                                     name:NSWindowDidResignKeyNotification
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(_updateCursor:)
+                                                     name:NSWindowDidBecomeKeyNotification
+                                                   object:nil];
         
 		self.autocorrectedResults = [NSMutableDictionary dictionary];
 		
@@ -151,15 +157,11 @@
 	return self;
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath
-                      ofObject:(id)object
-                        change:(NSDictionary *)change
-                       context:(void *)context {
-    if([keyPath isEqualToString:@"windowHasFocus"]) {
-        if(self.windowHasFocus)
-             [self addSubview:cursor];
-        else [cursor removeFromSuperview];
-    }
+- (void)_updateCursor:(NSNotification *)notification {
+    if([notification.name isEqualToString:NSWindowDidBecomeKeyNotification])
+        [self addSubview:cursor];
+    else if([notification.name isEqualToString:NSWindowDidResignKeyNotification])
+        [cursor removeFromSuperview];
 }
 
 - (id)forwardingTargetForSelector:(SEL)sel

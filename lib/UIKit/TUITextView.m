@@ -148,10 +148,12 @@
 
 - (void)windowDidBecomeKey {
     [self addSubview:cursor];
+    [super windowDidBecomeKey];
 }
 
 - (void)windowDidResignKey {
     [cursor removeFromSuperview];
+    [super windowDidResignKey];
 }
 
 - (id)forwardingTargetForSelector:(SEL)sel

@@ -86,13 +86,16 @@
 	[_currentTextRenderer mouseDragged:event];
 	NSPoint p = [self localPointForEvent:event];
 	
-	if(_viewFlags.dragDistanceLock)
+	if(_viewFlags.dragDistanceLock) {
 		_viewFlags.dragDistanceLock = 0;
-	if(_viewFlags.dragDistanceLock == 1)
+	}
+	
+	if(_viewFlags.dragDistanceLock == 1) {
 		return;
+	}
 	
 	if(_viewFlags.moveWindowByDragging) {
-        startDrag = [self localPointForEvent:event];
+		startDrag = [self localPointForEvent:event];
 		NSWindow *window = [self nsWindow];
 		NSPoint o = [window frame].origin;
 		
@@ -102,23 +105,21 @@
 			_viewFlags.didStartMovingByDragging = 1;
 		}
         
-        NSEvent *nextEvent = event;
-        while(YES /* we break out when dragging stops */) {
-            switch(nextEvent.type) {
-                case NSLeftMouseDragged:
-                    p = [self localPointForEvent:nextEvent];
-                    o = window.frame.origin;
-                    o.x += p.x - startDrag.x;
-                    o.y += p.y - startDrag.y;
-                    window.frameOrigin = o;
-                    break;
-                case NSLeftMouseUp:
-                default:
-                    break;
-            }
-            
-            nextEvent = [window nextEventMatchingMask:NSLeftMouseDraggedMask | NSLeftMouseUpMask];
-        }
+		// Since we break out when dragging stops, while(YES) is appropritate.
+		NSEvent *nextEvent = event;
+		while(YES) {
+			if(nextEvent.type == NSLeftMouseDragged) {
+				p = [self localPointForEvent:nextEvent];
+                    		o = window.frame.origin;
+                    		o.x += p.x - startDrag.x;
+                    		o.y += p.y - startDrag.y;
+                    		window.frameOrigin = o;
+			} else if(nextEvent.type == NSLeftMouseUp) {
+				break;	
+			}
+			
+            		nextEvent = [window nextEventMatchingMask:NSLeftMouseDraggedMask | NSLeftMouseUpMask];
+        	}
 	} else if(_viewFlags.resizeWindowByDragging) {
 		if(!_viewFlags.didStartResizeByDragging) {
 			_viewFlags.didStartResizeByDragging = 1;
@@ -158,7 +159,10 @@
 			[self pasteboardDragMouseDragged:event];
 	}
 	
-	if(self.superview != nil){
+// We're done processing selective events.
+eventProcessingDone:
+
+	if(self.superview != nil) {
 		[self.superview mouseDragged:event onSubview:self];
 	}
 	

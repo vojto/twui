@@ -89,9 +89,6 @@
 
 - (void)dealloc {
 	renderer.delegate = nil;
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidResignKeyNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidBecomeKeyNotification object:nil];
 }
 
 - (void)_updateDefaultAttributes
@@ -135,15 +132,7 @@
             [self addSubview:cursor];
 		
         self.needsDisplayWhenWindowsKeyednessChanges = YES;
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(_updateCursor:)
-                                                     name:NSWindowDidResignKeyNotification
-                                                   object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(_updateCursor:)
-                                                     name:NSWindowDidBecomeKeyNotification
-                                                   object:nil];
-        
+
 		self.autocorrectedResults = [NSMutableDictionary dictionary];
 		
 		self.font = [NSFont fontWithName:@"HelveticaNeue" size:12];
@@ -157,11 +146,12 @@
 	return self;
 }
 
-- (void)_updateCursor:(NSNotification *)notification {
-    if([notification.name isEqualToString:NSWindowDidBecomeKeyNotification])
-        [self addSubview:cursor];
-    else if([notification.name isEqualToString:NSWindowDidResignKeyNotification])
-        [cursor removeFromSuperview];
+- (void)windowDidBecomeKey {
+    [self addSubview:cursor];
+}
+
+- (void)windowDidResignKey {
+    [cursor removeFromSuperview];
 }
 
 - (id)forwardingTargetForSelector:(SEL)sel

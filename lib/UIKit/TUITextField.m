@@ -106,7 +106,7 @@ doClear:
 
 - (void)insertNewlineIgnoringFieldEditor:(id)sender
 {
-    if([self _textField]->_textFieldFlags.delegateTextFieldShouldReturn)
+	if([self _textField]->_textFieldFlags.delegateTextFieldShouldReturn)
 		[(id<TUITextFieldDelegate>)[self _textField].delegate textFieldShouldReturn:(id)self];
 	[[self _textField] sendActionsForControlEvents:TUIControlEventEditingDidEndOnExit];
 }

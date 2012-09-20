@@ -310,8 +310,8 @@ normal:
 	if(_flags.delegateWillBecomeFirstResponder) [delegate textRendererWillBecomeFirstResponder:self];
 	if(_flags.delegateDidBecomeFirstResponder) [delegate textRendererDidBecomeFirstResponder:self];
 	
-    [[NSNotificationCenter defaultCenter] postNotificationName:TUITextRendererDidBecomeFirstResponder
-                                                        object:self];
+	[[NSNotificationCenter defaultCenter] postNotificationName:TUITextRendererDidBecomeFirstResponder
+							    object:self];
     
 	return YES;
 }
@@ -320,13 +320,13 @@ normal:
 {
 	// TODO: obviously these shouldn't be called at exactly the same time...
 	if(_flags.delegateWillResignFirstResponder) [delegate textRendererWillResignFirstResponder:self];
-    if([self isKindOfClass:[TUITextEditor class]])
-        [self setSelection:NSMakeRange(0, 0)];
+	if([self isKindOfClass:[TUITextEditor class]])
+		[self setSelection:NSMakeRange(0, 0)];
 	[self resetSelection];
 	if(_flags.delegateDidResignFirstResponder) [delegate textRendererDidResignFirstResponder:self];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:TUITextRendererDidResignFirstResponder
-                                                        object:self];
+	[[NSNotificationCenter defaultCenter] postNotificationName:TUITextRendererDidResignFirstResponder
+							    object:self];
     
 	return YES;
 }

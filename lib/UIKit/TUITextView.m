@@ -127,7 +127,7 @@
 		
 		cursor = [[TUIView alloc] initWithFrame:CGRectZero];
 		cursor.userInteractionEnabled = NO;
-        	cursorColor = [NSColor colorWithCalibratedRed:13 / 255.0 green:140 / 255.0 blue:231 / 255.0 alpha:1];
+		cursorColor = [NSColor colorWithCalibratedRed:13 / 255.0 green:140 / 255.0 blue:231 / 255.0 alpha:1];
 		cursor.backgroundColor = cursorColor;
 		[self addSubview:cursor];
 		
@@ -194,7 +194,7 @@
 - (void)setCursorColor:(NSColor *)c {
 	cursorColor = c;
 	cursor.backgroundColor = c;
-    	[cursor setNeedsDisplay];
+	[cursor setNeedsDisplay];
 }
 
 - (void)setTextAlignment:(TUITextAlignment)t
@@ -467,8 +467,8 @@ static CAAnimation *ThrobAnimation()
 	}
 	
 	if(selectedTextCheckingResult == nil)
-        return [[self.textRenderers objectAtIndex:0] menuForEvent:event];
-    
+		return [[self.textRenderers objectAtIndex:0] menuForEvent:event];
+	
 	NSMenu *menu = [[NSMenu alloc] initWithTitle:@""];
 	if(selectedTextCheckingResult.resultType == NSTextCheckingTypeCorrection && matchingAutocorrectPair != nil) {
 		NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:NSLocalizedString(@"Change Back to \"%@\"", @""), matchingAutocorrectPair.originalString] action:@selector(_replaceAutocorrectedWord:) keyEquivalent:@""];

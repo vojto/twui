@@ -127,7 +127,7 @@
 		
 		cursor = [[TUIView alloc] initWithFrame:CGRectZero];
 		cursor.userInteractionEnabled = NO;
-        cursorColor = [NSColor colorWithCalibratedRed:13 / 255.0 green:140 / 255.0 blue:231 / 255.0 alpha:1];
+        	cursorColor = [NSColor colorWithCalibratedRed:13 / 255.0 green:140 / 255.0 blue:231 / 255.0 alpha:1];
 		cursor.backgroundColor = cursorColor;
 		[self addSubview:cursor];
 		
@@ -192,9 +192,9 @@
 }
 
 - (void)setCursorColor:(NSColor *)c {
-    cursorColor = c;
-    cursor.backgroundColor = c;
-    [cursor setNeedsDisplay];
+	cursorColor = c;
+	cursor.backgroundColor = c;
+    	[cursor setNeedsDisplay];
 }
 
 - (void)setTextAlignment:(TUITextAlignment)t

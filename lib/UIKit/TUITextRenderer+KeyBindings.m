@@ -78,66 +78,64 @@
 }
 
 - (int)_indexByMovingIndex:(int)index
-                        by:(int)incr
+						by:(int)incr
 {
-    CFIndex lineIndex;
-    float xPosition;
-    AB_CTFrameGetLinePositionOfIndex(TEXT, [self ctFrame], index, &lineIndex, &xPosition);
-    if(lineIndex >= 0)
-    {
-        NSArray *lines = (__bridge NSArray *)CTFrameGetLines([self ctFrame]);
-        CFIndex linesCount = [lines count];
-        if(incr < 0 && lineIndex == 0)
-        {
-            return 0;
-        }
-        else if(lineIndex + incr >= linesCount)
-        {
-            return (int)[TEXT length];
-        }
-        else if(lineIndex + incr >= 0) {
-            CFIndex index;
-            AB_CTFrameGetIndexForPositionInLine(TEXT, [self ctFrame], lineIndex + incr, xPosition, &index);
-            return (int)index;
-        }
-    }
-    return -1;
+	CFIndex lineIndex;
+	float xPosition;
+	AB_CTFrameGetLinePositionOfIndex(TEXT, [self ctFrame], index, &lineIndex, &xPosition);
+	
+	if(lineIndex >= 0) {
+		NSArray *lines = (__bridge NSArray *)CTFrameGetLines([self ctFrame]);
+		CFIndex linesCount = [lines count];
+		
+		if(incr < 0 && lineIndex == 0) {
+			return 0;
+		} else if(lineIndex + incr >= linesCount) {
+			return (int)[TEXT length];
+		} else if(lineIndex + incr >= 0) {
+			CFIndex index;
+			AB_CTFrameGetIndexForPositionInLine(TEXT, [self ctFrame], lineIndex + incr, xPosition, &index);
+			return (int)index;
+		}
+	}
+	
+	return -1;
 }
 
 - (void)moveUp:(id)sender
 {
-    NSInteger selectionLength = abs((int)(_selectionStart - _selectionEnd));
-    if(selectionLength)
-        _selectionStart = _selectionEnd = (MIN(_selectionEnd,_selectionStart));
-    else
-        _selectionEnd = _selectionStart = [self _indexByMovingIndex:(int)MIN(_selectionStart,_selectionEnd)
-                                                                 by:-1];
-    [self.view setNeedsDisplay];
+	NSInteger selectionLength = abs((int)(_selectionStart - _selectionEnd));
+	if(selectionLength)
+		_selectionStart = _selectionEnd = (MIN(_selectionEnd,_selectionStart));
+	else
+		_selectionEnd = _selectionStart = [self _indexByMovingIndex:(int)MIN(_selectionStart,_selectionEnd)
+																 by:-1];
+	[self.view setNeedsDisplay];
 }
 
 - (void)moveUpAndModifySelection:(id)sender
 {
-    _selectionEnd = [self _indexByMovingIndex:(int)MIN(_selectionStart,_selectionEnd)
-                                           by:-1];
-    [self.view setNeedsDisplay];
+	_selectionEnd = [self _indexByMovingIndex:(int)MIN(_selectionStart,_selectionEnd)
+										   by:-1];
+	[self.view setNeedsDisplay];
 }
 
 - (void)moveDown:(id)sender
 {
-    NSInteger selectionLength = abs((int)(_selectionStart - _selectionEnd));
-    if(selectionLength)
-        _selectionStart = _selectionEnd = (MAX(_selectionEnd,_selectionStart));
-    else
-        _selectionEnd = _selectionStart = [self _indexByMovingIndex:(int)MAX(_selectionStart,_selectionEnd)
-                                                                 by:1];
-    [self.view setNeedsDisplay];
+	NSInteger selectionLength = abs((int)(_selectionStart - _selectionEnd));
+	if(selectionLength)
+		_selectionStart = _selectionEnd = (MAX(_selectionEnd,_selectionStart));
+	else
+		_selectionEnd = _selectionStart = [self _indexByMovingIndex:(int)MAX(_selectionStart,_selectionEnd)
+																 by:1];
+	[self.view setNeedsDisplay];
 }
 
 - (void)moveDownAndModifySelection:(id)sender
 {
-    _selectionEnd = [self _indexByMovingIndex:(int)MAX(_selectionStart,_selectionEnd)
-                                           by:1];
-    [self.view setNeedsDisplay];
+	_selectionEnd = [self _indexByMovingIndex:(int)MAX(_selectionStart,_selectionEnd)
+										   by:1];
+	[self.view setNeedsDisplay];
 }
 
 - (void)moveRight:(id)sender
@@ -220,22 +218,22 @@
 
 - (void)moveToBeginningOfParagraphAndModifySelection:(id)sender
 {
-    [self moveToBeginningOfLineAndModifySelection:sender];
+	[self moveToBeginningOfLineAndModifySelection:sender];
 }
 
 - (void)moveToEndOfParagraphAndModifySelection:(id)sender
 {
-    [self moveToEndOfLineAndModifySelection:sender];
+	[self moveToEndOfLineAndModifySelection:sender];
 }
 
 - (void)moveToBeginningOfDocumentAndModifySelection:(id)sender
 {
-    [self moveToBeginningOfLineAndModifySelection:sender];
+	[self moveToBeginningOfLineAndModifySelection:sender];
 }
 
 - (void)moveToEndOfDocumentAndModifySelection:(id)sender
 {
-    [self moveToEndOfLineAndModifySelection:sender];
+	[self moveToEndOfLineAndModifySelection:sender];
 }
 
 - (void)insertNewline:(id)sender
@@ -245,12 +243,12 @@
 
 - (void)insertNewlineIgnoringFieldEditor:(id)sender
 {
-    [[self _textEditor] insertText:@"\n"];
+	[[self _textEditor] insertText:@"\n"];
 }
 
 - (void)deleteBackward:(id)sender
 {
-    // Find the range to delete, handling an empty selection and the input point being at 0
+	// Find the range to delete, handling an empty selection and the input point being at 0
 	NSRange deleteRange = [self selectedRange];
 	if(deleteRange.length == 0) {
 		if(deleteRange.location == 0) {
@@ -260,13 +258,13 @@
 			deleteRange.length = 1;
 		}
 	}
-    
-    [[self _textEditor] deleteCharactersInRange:deleteRange];
+	
+	[[self _textEditor] deleteCharactersInRange:deleteRange];
 }
 
 - (void)deleteForward:(id)sender
 {
-    // Find the range to delete, handling an empty selection and the input point being at the end
+	// Find the range to delete, handling an empty selection and the input point being at the end
 	NSRange deleteRange = [self selectedRange];
 	if(deleteRange.length == 0) {
 		if(deleteRange.location == [TEXT length]) {
@@ -275,8 +273,8 @@
 			deleteRange.length = 1;
 		}
 	}
-    
-    [[self _textEditor] deleteCharactersInRange:deleteRange];
+	
+	[[self _textEditor] deleteCharactersInRange:deleteRange];
 }
 
 

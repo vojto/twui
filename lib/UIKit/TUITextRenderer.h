@@ -21,8 +21,8 @@
 @class TUIView;
 @protocol ABActiveTextRange;
 
-extern NSString *TUITextRendererDidBecomeFirstResponder;
-extern NSString *TUITextRendererDidResignFirstResponder;
+static NSString *const TUITextRendererDidBecomeFirstResponder = @"TUITextRendererDidBecomeFirstResponder";
+static NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidResignFirstResponder";
 
 typedef enum {
 	TUITextSelectionAffinityCharacter = 0,

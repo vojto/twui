@@ -18,6 +18,7 @@
 #import "TUITextEditor.h"
 #import "TUIView.h"
 #import "CoreText+Additions.h"
+#import "TUITextRenderer+Private.h"
 
 @interface NSString (ABTokenizerAdditions)
 @end
@@ -60,10 +61,6 @@
 	return ret;
 }
 
-@end
-
-@interface TUITextRenderer ()
-- (CTFrameRef)ctFrame;
 @end
 
 @implementation TUITextRenderer (KeyBindings)

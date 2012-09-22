@@ -20,13 +20,7 @@
 #import "TUINSView.h"
 #import "TUINSWindow.h"
 #import "TUITextEditor.h"
-
-@interface TUITextRenderer()
-- (CTFramesetterRef)ctFramesetter;
-- (CTFrameRef)ctFrame;
-- (CGPathRef)ctPath;
-- (CFRange)_selectedRange;
-@end
+#import "TUITextRenderer+Private.h"
 
 @implementation TUITextRenderer (Event)
 
@@ -378,6 +372,7 @@ normal:
     
     NSString *googleString = [NSString stringWithFormat:@"http://www.google.com/search?q=%@", encodedString];
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:googleString]];
+    CFBridgingRelease((__bridge CFStringRef)encodedString);
 }
 
 // Services

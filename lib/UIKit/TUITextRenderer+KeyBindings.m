@@ -74,34 +74,42 @@
 	return nil;
 }
 
-- (int)_indexByMovingIndex:(int)index
-						by:(int)incr
-{
+- (CFIndex)_indexByMovingIndex:(CFIndex)index
+                            by:(CFIndex)incr {
 	CFIndex lineIndex;
 	float xPosition;
-	AB_CTFrameGetLinePositionOfIndex(TEXT, [self ctFrame], index, &lineIndex, &xPosition);
+	AB_CTFrameGetLinePositionOfIndex(TEXT, [self ctFrame], (int)index, &lineIndex, &xPosition);
 	
 	if(lineIndex >= 0) {
 		NSArray *lines = (__bridge NSArray *)CTFrameGetLines([self ctFrame]);
 		CFIndex linesCount = [lines count];
 		
+        // If the incremental value is 0 or the line index is 0,
+        // the index doesn't change.
 		if(incr < 0 && lineIndex == 0) {
 			return 0;
+            
+        // If the line index after shifting is more than the line count,
+        // return the last character index.
 		} else if(lineIndex + incr >= linesCount) {
-			return (int)[TEXT length];
+			return [TEXT length];
+            
+        // If the line index is within text bounds after increment,
+        // return the real character index.
 		} else if(lineIndex + incr >= 0) {
 			CFIndex index;
 			AB_CTFrameGetIndexForPositionInLine(TEXT, [self ctFrame], lineIndex + incr, xPosition, &index);
-			return (int)index;
+			return index;
 		}
 	}
 	
+    // Oops! Something went wrong. Return error (-1).
 	return -1;
 }
 
 - (void)moveUp:(id)sender
 {
-	NSInteger selectionLength = abs((int)(_selectionStart - _selectionEnd));
+	NSInteger selectionLength = labs(_selectionStart - _selectionEnd);
 	if(selectionLength)
 		_selectionStart = _selectionEnd = (MIN(_selectionEnd,_selectionStart));
 	else

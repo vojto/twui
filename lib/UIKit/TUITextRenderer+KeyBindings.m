@@ -127,7 +127,7 @@
 
 - (void)moveDown:(id)sender
 {
-	NSInteger selectionLength = abs((int)(_selectionStart - _selectionEnd));
+	NSInteger selectionLength = labs(_selectionStart - _selectionEnd);
 	if(selectionLength)
 		_selectionStart = _selectionEnd = (MAX(_selectionEnd,_selectionStart));
 	else

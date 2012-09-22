@@ -371,8 +371,12 @@ normal:
 }
 
 - (void)searchGoogle:(NSMenuItem *)menuItem {
-    NSString *googleString = [NSString stringWithFormat:@"http://www.google.com/search?q=%@",
-                              [self.selectedString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    NSString *urlEscapes = @"!*'();:@&=+$,/?%#[]";
+    NSString *encodedString = (__bridge NSString *)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)self.selectedString,
+                                                                                           NULL, (CFStringRef)urlEscapes,
+                                                                                           kCFStringEncodingUTF8);
+    
+    NSString *googleString = [NSString stringWithFormat:@"http://www.google.com/search?q=%@", encodedString];
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:googleString]];
 }
 

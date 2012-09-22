@@ -19,6 +19,15 @@
 #import "TUINSWindow.h"
 #import "TUITextRenderer+Event.h"
 
+typedef void (^TUIMouseDraggedHandler)(NSEvent *dragEvent);
+
+@interface TUIView ()
+
+@property (nonatomic, copy) TUIMouseDraggedHandler dragHandler;
+
+@end
+
+
 @implementation TUIView (Event)
 
 - (TUITextRenderer *)_textRendererForEvent:(NSEvent *)event
@@ -45,10 +54,24 @@
 	_viewFlags.didStartMovingByDragging = 0;
 	_viewFlags.didStartResizeByDragging = 0;
 	
-	if(self.superview != nil){
+	__block id _self = self;
+	__block CGPoint _startDrag = startDrag;
+	self.dragHandler = ^(NSEvent *event) {
+		NSWindow *window = [_self nsWindow];
+		
+		if(event.type == NSLeftMouseDragged) {
+			NSPoint p = [_self localPointForEvent:event];
+			NSPoint o = window.frame.origin;
+			
+			o.x += p.x - _startDrag.x;
+			o.y += p.y - _startDrag.y;
+			window.frameOrigin = o;
+		}
+	};
+	
+	if(self.superview != nil) {
 		[self.superview mouseDown:event onSubview:self];
 	}
-	
 }
 
 - (void)mouseUp:(NSEvent *)event
@@ -61,7 +84,9 @@
 		[self.nsView viewDidEndLiveResize];
 	}
 	
-	if(self.superview != nil){
+	self.dragHandler = nil;
+	
+	if(self.superview != nil) {
 		[self.superview mouseUp:event fromSubview:self];
 	}
 	
@@ -69,14 +94,14 @@
 
 - (void)rightMouseDown:(NSEvent *)event
 {
-	if(self.superview != nil){
+	if(self.superview != nil) {
 		[self.superview rightMouseDown:event onSubview:self];
 	}
 }
 
 - (void)rightMouseUp:(NSEvent *)event
 {
-	if(self.superview != nil){
+	if(self.superview != nil) {
 		[self.superview rightMouseUp:event fromSubview:self];
 	}
 }
@@ -90,36 +115,19 @@
 		_viewFlags.dragDistanceLock = 0;
 	}
 	
-	if(_viewFlags.dragDistanceLock == 1) {
-		return;
-	}
-	
 	if(_viewFlags.moveWindowByDragging) {
 		startDrag = [self localPointForEvent:event];
 		NSWindow *window = [self nsWindow];
-		NSPoint o = [window frame].origin;
 		
 		if(!_viewFlags.didStartMovingByDragging) {
 			if([window respondsToSelector:@selector(windowWillStartLiveDrag)])
 				[window performSelector:@selector(windowWillStartLiveDrag)];
 			_viewFlags.didStartMovingByDragging = 1;
 		}
-        
-		// Since we break out when dragging stops, while(YES) is appropritate.
-		NSEvent *nextEvent = event;
-		while(YES) {
-			if(nextEvent.type == NSLeftMouseDragged) {
-				p = [self localPointForEvent:nextEvent];
-                    		o = window.frame.origin;
-                    		o.x += p.x - startDrag.x;
-                    		o.y += p.y - startDrag.y;
-                    		window.frameOrigin = o;
-			} else if(nextEvent.type == NSLeftMouseUp) {
-				break;	
-			}
-			
-            		nextEvent = [window nextEventMatchingMask:NSLeftMouseDraggedMask | NSLeftMouseUpMask];
-        	}
+		
+		if(self.dragHandler) {
+			self.dragHandler(event);
+		}
 	} else if(_viewFlags.resizeWindowByDragging) {
 		if(!_viewFlags.didStartResizeByDragging) {
 			_viewFlags.didStartResizeByDragging = 1;
@@ -158,9 +166,6 @@
 		if(!_currentTextRenderer && _viewFlags.pasteboardDraggingEnabled)
 			[self pasteboardDragMouseDragged:event];
 	}
-	
-// We're done processing selective events.
-eventProcessingDone:
 
 	if(self.superview != nil) {
 		[self.superview mouseDragged:event onSubview:self];

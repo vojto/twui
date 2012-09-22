@@ -342,35 +342,38 @@ normal:
 	[self resetSelection];
 }
 
-- (NSMenu*)menuForEvent:(NSEvent *)event
-{
-    if(self.selectedRange.length > 0)
-    {
+- (NSMenu *)menuForEvent:(NSEvent *)event {
+    if(self.selectedRange.length > 0) {
         NSMenu *menu = [[NSMenu alloc] init];
-        NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Search with Google", @"TwUI Context Menu")
-                                                      action:@selector(menuItemSearchGoogle:)
-                                               keyEquivalent:@""];
-        item.target = self;
-        [menu addItem:item];
+        
+        NSString *copyString = NSLocalizedString(@"Copy", @"Copy action menu item for TUITextRenderer.");
+        NSString *googleString = [NSString stringWithFormat:@"%@ '%@'",
+                                  NSLocalizedString(@"Search Google for", @"Google action menu item for TUITextRenderer."),
+                                  self.selectedString];
+        
+        NSMenuItem *copyItem = [[NSMenuItem alloc] initWithTitle:copyString
+                                                          action:@selector(copy:)
+                                                   keyEquivalent:@""];
+        copyItem.target = self;
+        [menu addItem:copyItem];
+        
+        NSMenuItem *googleItem = [[NSMenuItem alloc] initWithTitle:googleString
+                                                            action:@selector(searchGoogle:)
+                                                     keyEquivalent:@""];
+        googleItem.target = self;
+        [menu addItem:googleItem];
+        
         [menu addItem:[NSMenuItem separatorItem]];
-        item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy", @"TwUI Context Menu")
-                                          action:@selector(copy:)
-                                   keyEquivalent:@""];
-        item.target = self;
-        [menu addItem:item];
         return menu;
     }
+    
     return nil;
 }
 
-- (void)menuItemSearchGoogle:(NSMenuItem*)menuItem
-{
-    NSString *googleString = [NSString stringWithFormat:
-                              @"http://www.google.com/search?q=%@",
-                              [self.selectedString stringByAddingPercentEscapesUsingEncoding:
-                               NSUTF8StringEncoding]];
-    NSURL *googleUrl = [NSURL URLWithString:googleString];
-    [[NSWorkspace sharedWorkspace] openURL:googleUrl];
+- (void)searchGoogle:(NSMenuItem *)menuItem {
+    NSString *googleString = [NSString stringWithFormat:@"http://www.google.com/search?q=%@",
+                              [self.selectedString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:googleString]];
 }
 
 // Services

@@ -94,7 +94,9 @@ typedef enum {
 @property (nonatomic, assign) BOOL preDrawBlocksEnabled; // default = NO
 @property (nonatomic, assign) BOOL drawOverflowEllipses; // default = NO
 
-// Don't become first responder.
+// Don't become first responder. This might be useful to you if
+// you'd like to disable the ability to select text while using the
+// text renderer. Allows the renderer to become "active" as a responder.
 @property (nonatomic, assign) BOOL shouldRefuseFirstResponder;
 
 - (void)draw;

@@ -418,4 +418,8 @@
 	return NO;
 }
 
+- (void)prepareToResignFirstResponder {
+    [self setSelection:NSMakeRange(0, 0)];
+}
+
 @end

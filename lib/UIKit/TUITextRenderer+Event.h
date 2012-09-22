@@ -25,6 +25,15 @@
 
 - (void)copy:(id)sender;
 
+// Overridable methods used by subclasses to prepare
+// for responder changes. It is advised to always call
+// the super method after preparations are complete
+// in the subclass- there might be heavy duty plumbing
+// in the superclass. If you are directly subclassing
+// TUITextRenderer, no super method calls are required.
+- (void)prepareToBecomeFirstResponder;
+- (void)prepareToResignFirstResponder;
+
 @property (nonatomic, assign) id<TUITextRendererDelegate> delegate;
 
 @end

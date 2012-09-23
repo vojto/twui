@@ -23,6 +23,7 @@
 
 @synthesize defaultAttributes;
 @synthesize markedAttributes;
+@synthesize secure = _secure;
 @dynamic selectedRange; // getter in TUITextRenderer
 
 - (id)init

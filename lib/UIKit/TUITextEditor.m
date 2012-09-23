@@ -17,14 +17,7 @@
 #import "TUITextEditor.h"
 #import "TUINSView.h"
 #import "TUINSWindow.h"
-<<<<<<< HEAD
-
-@interface TUITextRenderer ()
-- (void)_resetFramesetter;
-@end
-=======
 #import "TUITextRenderer+Private.h"
->>>>>>> Added a private header for TUITextRenderer.
 
 @implementation TUITextEditor
 

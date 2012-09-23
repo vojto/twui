@@ -85,7 +85,7 @@ typedef enum {
 @property (nonatomic, assign) CGSize shadowOffset;
 @property (nonatomic, assign) CGFloat shadowBlur;
 @property (nonatomic, strong) NSColor *shadowColor; // default = nil for no shadow
-@property (strong, readwrite) NSColor *selectionColor;
+@property (nonatomic, strong) NSColor *selectionColor;
 
 @property (nonatomic, assign) TUITextVerticalAlignment verticalAlignment;
 

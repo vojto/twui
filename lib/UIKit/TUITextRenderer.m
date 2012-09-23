@@ -26,7 +26,7 @@ NSString *const TUITextRendererDidBecomeFirstResponder = @"TUITextRendererDidBec
 NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidResignFirstResponder";
 
 @interface TUITextRenderer ()
-@property (nonatomic, retain) NSMutableDictionary *lineRects;
+@property (nonatomic, strong) NSMutableDictionary *lineRects;
 @end
 
 @implementation TUITextRenderer
@@ -38,10 +38,8 @@ NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidRes
 @synthesize shadowColor;
 @synthesize shadowOffset;
 @synthesize shadowBlur;
-@synthesize selectionColor;
 @synthesize verticalAlignment;
 @synthesize lineRects;
-@synthesize shouldRefuseFirstResponder;
 
 - (void)_resetFrame
 {
@@ -65,6 +63,14 @@ NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidRes
 	}
 	
 	[self _resetFrame];
+}
+
+- (id)init {
+    if((self = [super init])) {
+        self.selectionColor = [NSColor selectedTextColor];
+    }
+    
+    return self;
 }
 
 - (void)dealloc
@@ -302,9 +308,8 @@ NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidRes
 		
 		CFRange selectedRange = [self _selectedRange];
 		if(selectedRange.length > 0) {
-            if(self.selectionColor)
-                 [self.selectionColor set];
-            else [[NSColor selectedTextBackgroundColor] set];
+            [self.selectionColor set];
+            
 			// draw (or mask) selection
 			CFIndex rectCount = 100;
 			CGRect rects[rectCount];

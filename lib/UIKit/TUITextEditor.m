@@ -23,7 +23,6 @@
 
 @synthesize defaultAttributes;
 @synthesize markedAttributes;
-@synthesize secure = _secure;
 @dynamic selectedRange; // getter in TUITextRenderer
 
 - (id)init
@@ -48,10 +47,6 @@
 	
 	_secure = secured;
 	[self _resetFramesetter];
-}
-
-- (BOOL)isSecure {
-    return _secure;
 }
 
 - (NSAttributedString*)drawingAttributedString {

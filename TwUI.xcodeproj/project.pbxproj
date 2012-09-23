@@ -21,7 +21,6 @@
 		5E6ECEB713BE792100109598 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB5B264F13BE6DA200579B1E /* Cocoa.framework */; };
 		5EE9839D13BE7650005F430D /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EE9839C13BE7650005F430D /* ApplicationServices.framework */; };
 		5EE983B813BE7809005F430D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB5B264F13BE6DA200579B1E /* Cocoa.framework */; };
-		5EE983BF13BE7834005F430D /* TUIKit.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C5B13BE6E1900C85CB5 /* TUIKit.m */; };
 		5EE983C013BE7834005F430D /* TUIAccessibility.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C3F13BE6E1900C85CB5 /* TUIAccessibility.m */; };
 		5EE983C113BE7834005F430D /* TUIActivityIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4113BE6E1900C85CB5 /* TUIActivityIndicatorView.m */; };
 		5EE983C213BE7834005F430D /* TUIAttributedString.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4313BE6E1900C85CB5 /* TUIAttributedString.m */; };
@@ -141,7 +140,6 @@
 		CB5E322B13BE70CA004B7899 /* TUIControl.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C4D13BE6E1900C85CB5 /* TUIControl.m */; };
 		CB5E323113BE70CA004B7899 /* TUIGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C5313BE6E1900C85CB5 /* TUIGeometry.m */; };
 		CB5E323713BE70CA004B7899 /* TUIImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C5913BE6E1900C85CB5 /* TUIImageView.m */; };
-		CB5E323913BE70CA004B7899 /* TUIKit.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C5B13BE6E1900C85CB5 /* TUIKit.m */; };
 		CB5E323B13BE70CA004B7899 /* TUILabel.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C5D13BE6E1900C85CB5 /* TUILabel.m */; };
 		CB5E323D13BE70CA004B7899 /* TUINSView+Hyperfocus.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C5F13BE6E1900C85CB5 /* TUINSView+Hyperfocus.m */; };
 		CB5E324013BE70CA004B7899 /* TUINSView.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C6213BE6E1900C85CB5 /* TUINSView.m */; };
@@ -194,7 +192,6 @@
 		CBB74CAF13BE6E1900C85CB5 /* TUIImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB74C5813BE6E1900C85CB5 /* TUIImageView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CBB74CB013BE6E1900C85CB5 /* TUIImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C5913BE6E1900C85CB5 /* TUIImageView.m */; };
 		CBB74CB113BE6E1900C85CB5 /* TUIKit.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB74C5A13BE6E1900C85CB5 /* TUIKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CBB74CB213BE6E1900C85CB5 /* TUIKit.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C5B13BE6E1900C85CB5 /* TUIKit.m */; };
 		CBB74CB313BE6E1900C85CB5 /* TUILabel.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB74C5C13BE6E1900C85CB5 /* TUILabel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CBB74CB413BE6E1900C85CB5 /* TUILabel.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C5D13BE6E1900C85CB5 /* TUILabel.m */; };
 		CBB74CB513BE6E1900C85CB5 /* TUINSView+Hyperfocus.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB74C5E13BE6E1900C85CB5 /* TUINSView+Hyperfocus.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -490,7 +487,6 @@
 		CBB74C5813BE6E1900C85CB5 /* TUIImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIImageView.h; sourceTree = "<group>"; };
 		CBB74C5913BE6E1900C85CB5 /* TUIImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIImageView.m; sourceTree = "<group>"; };
 		CBB74C5A13BE6E1900C85CB5 /* TUIKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TUIKit.h; path = lib/UIKit/TUIKit.h; sourceTree = "<group>"; };
-		CBB74C5B13BE6E1900C85CB5 /* TUIKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIKit.m; sourceTree = "<group>"; };
 		CBB74C5C13BE6E1900C85CB5 /* TUILabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUILabel.h; sourceTree = "<group>"; };
 		CBB74C5D13BE6E1900C85CB5 /* TUILabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUILabel.m; sourceTree = "<group>"; };
 		CBB74C5E13BE6E1900C85CB5 /* TUINSView+Hyperfocus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUINSView+Hyperfocus.h"; sourceTree = "<group>"; };
@@ -779,7 +775,6 @@
 				D0C7650415B6156A00E7AC2C /* TUIHostView.h */,
 				CBB74C5813BE6E1900C85CB5 /* TUIImageView.h */,
 				CBB74C5913BE6E1900C85CB5 /* TUIImageView.m */,
-				CBB74C5B13BE6E1900C85CB5 /* TUIKit.m */,
 				CBB74C5C13BE6E1900C85CB5 /* TUILabel.h */,
 				CBB74C5D13BE6E1900C85CB5 /* TUILabel.m */,
 				48A10E7D15B7769A007F9EE3 /* TUILayoutConstraint.h */,
@@ -1242,7 +1237,6 @@
 			files = (
 				5EE983EB13BE783A005F430D /* ABActiveRange.m in Sources */,
 				5EE983EC13BE783A005F430D /* CoreText+Additions.m in Sources */,
-				5EE983BF13BE7834005F430D /* TUIKit.m in Sources */,
 				5EE983C013BE7834005F430D /* TUIAccessibility.m in Sources */,
 				5EE983C113BE7834005F430D /* TUIActivityIndicatorView.m in Sources */,
 				5EE983C213BE7834005F430D /* TUIAttributedString.m in Sources */,
@@ -1323,7 +1317,6 @@
 				CBB74CA413BE6E1900C85CB5 /* TUIControl.m in Sources */,
 				CBB74CAA13BE6E1900C85CB5 /* TUIGeometry.m in Sources */,
 				CBB74CB013BE6E1900C85CB5 /* TUIImageView.m in Sources */,
-				CBB74CB213BE6E1900C85CB5 /* TUIKit.m in Sources */,
 				CBB74CB413BE6E1900C85CB5 /* TUILabel.m in Sources */,
 				CBB74CB613BE6E1900C85CB5 /* TUINSView+Hyperfocus.m in Sources */,
 				CBB74CB913BE6E1900C85CB5 /* TUINSView.m in Sources */,
@@ -1406,7 +1399,6 @@
 				CB5E322B13BE70CA004B7899 /* TUIControl.m in Sources */,
 				CB5E323113BE70CA004B7899 /* TUIGeometry.m in Sources */,
 				CB5E323713BE70CA004B7899 /* TUIImageView.m in Sources */,
-				CB5E323913BE70CA004B7899 /* TUIKit.m in Sources */,
 				CB5E323B13BE70CA004B7899 /* TUILabel.m in Sources */,
 				CB5E323D13BE70CA004B7899 /* TUINSView+Hyperfocus.m in Sources */,
 				CB5E324013BE70CA004B7899 /* TUINSView.m in Sources */,

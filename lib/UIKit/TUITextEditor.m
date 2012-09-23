@@ -57,10 +57,10 @@
 
 - (NSAttributedString*)drawingAttributedString {
     if(_secure) {
-        NSString *placeholder = @"•";
-        long backingStoreLength = backingStore.length;
+        NSString *placeholder = @"\u2022";
+        NSUInteger backingStoreLength = backingStore.length;
         NSMutableString *string = [NSMutableString string];
-        for(int i=0;i<backingStoreLength;i++)
+        for(int i = 0; i < backingStoreLength; i++)
             [string appendString:placeholder];
         NSAttributedString *securePlaceHolder = [[NSAttributedString alloc] initWithString:string
                                                                                 attributes:defaultAttributes];

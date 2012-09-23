@@ -45,10 +45,12 @@
 }
 
 - (void)setSecure:(BOOL)secured {
-    if(_secure == secured)
-        return;
-    _secure = secured;
-    [self _resetFramesetter];
+	if(_secure == secured) {
+		return;
+	}
+	
+	_secure = secured;
+	[self _resetFramesetter];
 }
 
 - (BOOL)isSecure {
@@ -60,10 +62,11 @@
         NSString *placeholder = @"\u2022";
         NSUInteger backingStoreLength = backingStore.length;
         NSMutableString *string = [NSMutableString string];
-        for(int i = 0; i < backingStoreLength; i++)
+        for(int i = 0; i < backingStoreLength; i++) {
             [string appendString:placeholder];
-        NSAttributedString *securePlaceHolder = [[NSAttributedString alloc] initWithString:string
-                                                                                attributes:defaultAttributes];
+        }
+        
+        NSAttributedString *securePlaceHolder = [[NSAttributedString alloc] initWithString:string attributes:defaultAttributes];
         return securePlaceHolder;
     }
     
@@ -132,7 +135,10 @@
 
 - (void)copy:(id)sender
 {
-    if(_secure) return;
+    if(_secure) {
+    	return;
+    }
+    
     [super copy:sender];
 }
 

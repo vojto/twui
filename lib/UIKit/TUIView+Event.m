@@ -54,8 +54,9 @@ typedef void (^TUIMouseDraggedHandler)(NSEvent *dragEvent);
 	_viewFlags.didStartMovingByDragging = 0;
 	_viewFlags.didStartResizeByDragging = 0;
 	
-	__block id _self = self;
-	__block CGPoint _startDrag = startDrag;
+	__unsafe_unretained id _self = self;
+	CGPoint _startDrag = startDrag;
+	
 	self.dragHandler = ^(NSEvent *event) {
 		NSWindow *window = [_self nsWindow];
 		

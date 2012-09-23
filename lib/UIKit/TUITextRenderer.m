@@ -228,8 +228,6 @@ NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidRes
 	if(attributedString) {
 		CGContextSaveGState(context);
 		
-		CTFrameRef f = [self ctFrame];
-		
 		if(_flags.preDrawBlocksEnabled && !_flags.drawMaskDragSelection) {
 			[self.attributedString enumerateAttribute:TUIAttributedStringPreDrawBlockName inRange:NSMakeRange(0, [self.attributedString length]) options:0 usingBlock:^(id value, NSRange range, BOOL *stop) {
 				if(value == NULL) return;
@@ -282,6 +280,7 @@ NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidRes
 			CGContextRestoreGState(context);
 		}
 		
+		CTFrameRef f = [self ctFrame];
 		if(hitRange && !_flags.drawMaskDragSelection) {
 			// draw highlight
 			CGContextSaveGState(context);
@@ -321,33 +320,34 @@ NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidRes
 			}
 		}
 		
-		CGContextSetTextMatrix(context, CGAffineTransformIdentity);
-		
 		if(shadowColor)
 			CGContextSetShadowWithColor(context, shadowOffset, shadowBlur, shadowColor.tui_CGColor);
-
+        
+		CGContextSetTextMatrix(context, CGAffineTransformIdentity);
         CFRange range = CTFrameGetVisibleStringRange(f);
-        if([self.attributedString length] > range.location + range.length && self.drawOverflowEllipses) {
-            // should have an ellipsis
+        
+        NSAttributedString *displayString = self.attributedString;
+        if([self.attributedString length] > range.location + range.length ){//&& self.drawOverflowEllipses) {
+            
+            // Should have an ellipses.
             float l = range.length - 3;
             if(l < 0) l = 0;
             
             NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithAttributedString:[attributedString attributedSubstringFromRange:NSMakeRange(range.location, l)]];
+            
             NSRange r;
             NSDictionary *attrs = [attributedString attributesAtIndex:l effectiveRange:&r];
             NSAttributedString *ellipsis = [[NSAttributedString alloc] initWithString:@"…" attributes:attrs];
             [string appendAttributedString:ellipsis];
-            CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((__bridge CFAttributedStringRef)string);
-            CGPathRef path = CGPathCreateMutable();
-            CGPathAddRect((CGMutablePathRef)path, NULL, frame);
-            CTFrameRef frameRef = CTFramesetterCreateFrame(framesetter, CFRangeMake(0, 0), path, NULL);
-            CTFrameDraw(frameRef, context); // draw actual text
-            CFRelease(frameRef);
-            CFRelease(framesetter);
-            CFRelease(path);
-        } else CTFrameDraw(f, context); // draw actual text
-				
+            
+            self.attributedString = string;
+            [self _resetFramesetter];
+            f = [self ctFrame];
+        }
+        
+        CTFrameDraw(f, context);
 		CGContextRestoreGState(context);
+        self.attributedString = displayString;
 	}
 }
 

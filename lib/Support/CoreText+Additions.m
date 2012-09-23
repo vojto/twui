@@ -88,10 +88,6 @@ CGFloat AB_CTFrameGetHeight(CTFrameRef f)
 
 CFIndex AB_CTFrameGetStringIndexForPosition(CTFrameRef frame, CGPoint p)
 {
-//	p = (CGPoint){0, 0};
-//	NSLog(@"checking p = %@", NSStringFromCGPoint(p));
-//	CGRect f = [self frame];
-//	NSLog(@"frame = %@", f);
 	NSArray *lines = (__bridge NSArray *)CTFrameGetLines(frame);
 	
 	CFIndex linesCount = [lines count];
@@ -104,7 +100,6 @@ CFIndex AB_CTFrameGetStringIndexForPosition(CTFrameRef frame, CGPoint p)
 	for(CFIndex i = 0; i < linesCount; ++i) {
 		line = (__bridge CTLineRef)[lines objectAtIndex:i];
 		lineOrigin = lineOrigins[i];
-//		NSLog(@"%d origin = %@", i, NSStringFromCGPoint(lineOrigin));
 		CGFloat descent, ascent;
 		CTLineGetTypographicBounds(line, &ascent, &descent, NULL);
 		if(p.y > (floor(lineOrigin.y) - floor(descent))) { // above bottom of line

@@ -19,7 +19,6 @@
 #import "TUINSWindow.h"
 
 @interface TUITextRenderer ()
-- (void)_scrollToIndex:(long)index;
 - (void)_resetFramesetter;
 @end
 

@@ -18,15 +18,7 @@
 #import "TUINSView.h"
 #import "TUINSWindow.h"
 #import "TUITextRenderer+Event.h"
-
-typedef void (^TUIMouseDraggedHandler)(NSEvent *dragEvent);
-
-@interface TUIView ()
-
-@property (nonatomic, copy) TUIMouseDraggedHandler dragHandler;
-
-@end
-
+#import "TUIView+Private.h"
 
 @implementation TUIView (Event)
 

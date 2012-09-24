@@ -128,11 +128,11 @@
 		cursor.userInteractionEnabled = NO;
 		cursor.backgroundColor = [NSColor colorWithCalibratedRed:13 / 255.0 green:140 / 255.0 blue:231 / 255.0 alpha:1];
         
-        if([self.nsWindow isKeyWindow])
-	        [self addSubview:cursor];
+		if([self.nsWindow isKeyWindow])
+			[self addSubview:cursor];
 		
-        	self.needsDisplayWhenWindowsKeyednessChanges = YES;
-
+		self.needsDisplayWhenWindowsKeyednessChanges = YES;
+		
 		self.autocorrectedResults = [NSMutableDictionary dictionary];
 		
 		self.font = [NSFont fontWithName:@"HelveticaNeue" size:12];

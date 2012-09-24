@@ -87,6 +87,7 @@ CGRect(^TUIViewCenteredLayout)(TUIView*) = nil;
 @synthesize drawQueue;
 // use the accessor from the main implementation block
 @synthesize subviews = _subviews;
+@synthesize dragHandler = _dragHandler;
 
 - (void)setSubviews:(NSArray *)s
 {

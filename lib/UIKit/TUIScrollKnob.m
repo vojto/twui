@@ -56,7 +56,7 @@ static NSTimeInterval const TUIScrollIndicatorStateRefreshSpeed = 0.01f;
 		[self addSubview:knob];
 		[self _updateKnob];
 		[self _updateKnobAlphaWithSpeed:0.0];
-        
+		
 		[[NSNotificationCenter defaultCenter] addObserver:self
 												 selector:@selector(preferredScrollerStyleChanged:)
 													 name:NSPreferredScrollerStyleDidChangeNotification
@@ -72,11 +72,7 @@ static NSTimeInterval const TUIScrollIndicatorStateRefreshSpeed = 0.01f;
 - (void)refreshKnobTimer {
 	if([NSScroller preferredScrollerStyle] == NSScrollerStyleOverlay) {
 		if(scrollView.scrollIndicatorStyle != TUIScrollViewIndicatorVisibleNever) {
-			if(self.hideKnobTimer) {
-				[self.hideKnobTimer invalidate];
-				self.hideKnobTimer = nil;
-			}
-			
+			self.hideKnobTimer = nil;
 			self.hideKnobTimer = [NSTimer scheduledTimerWithTimeInterval:TUIScrollIndicatorDisplayPeriod
 																  target:self
 																selector:@selector(_hideKnob)
@@ -92,18 +88,24 @@ static NSTimeInterval const TUIScrollIndicatorStateRefreshSpeed = 0.01f;
 	}
 }
 
+- (void)setHideKnobTimer:(NSTimer *)hideKnobTimer {
+	if(!hideKnobTimer && _hideKnobTimer) {
+		[_hideKnobTimer invalidate];
+		_hideKnobTimer = nil;
+	} else {
+		_hideKnobTimer = hideKnobTimer;
+	}
+}
+
 - (void)preferredScrollerStyleChanged:(id)sender {
-    if(self.hideKnobTimer) {
-        [self.hideKnobTimer invalidate];
-        self.hideKnobTimer = nil;
-    }
-    
-    if([NSScroller preferredScrollerStyle] == NSScrollerStyleOverlay)
-        [self _hideKnob];
-    else {
-        self.knobHidden = NO;
-        [self _updateKnobAlphaWithSpeed:TUIScrollIndicatorStateChangeSpeed];
-    }
+	self.hideKnobTimer = nil;
+	
+	if([NSScroller preferredScrollerStyle] == NSScrollerStyleOverlay) {
+		[self _hideKnob];
+	} else {
+		self.knobHidden = NO;
+		[self _updateKnobAlphaWithSpeed:TUIScrollIndicatorStateChangeSpeed];
+	}
 }
 
 - (BOOL)isVertical
@@ -133,16 +135,16 @@ static NSTimeInterval const TUIScrollIndicatorStateRefreshSpeed = 0.01f;
 	
 	if([self isVertical]) {
 		KNOB_CALCULATIONS(y, height, DEFAULT_MIN_KNOB_SIZE)
-        
+		
 		CGRect frame;
 		frame.origin.x = 0.0;
 		frame.origin.y = knobOffset;
 		frame.size.height = MIN(2000, knobLength);
 		frame.size.width = TUIScrollIndicatorWidth;
 		frame = ABRectRoundOrigin(CGRectInset(frame, 2, 4));
-        
+		
 		[self refreshKnobTimer];
-        knob.frame = frame;
+		knob.frame = frame;
 	} else {
 		KNOB_CALCULATIONS(x, width, DEFAULT_MIN_KNOB_SIZE)
 		
@@ -150,20 +152,19 @@ static NSTimeInterval const TUIScrollIndicatorStateRefreshSpeed = 0.01f;
 		frame.origin.x = knobOffset;
 		frame.origin.y = 0.0;
 		frame.size.width = MIN(2000, knobLength);
-        frame.size.height = TUIScrollIndicatorWidth;
-        frame = ABRectRoundOrigin(CGRectInset(frame, 4, 2));
-        
+		frame.size.height = TUIScrollIndicatorWidth;
+		frame = ABRectRoundOrigin(CGRectInset(frame, 4, 2));
+		
 		[self refreshKnobTimer];
 		knob.frame = frame;
 	}
 }
 
 - (void)_hideKnob {
-	[self.hideKnobTimer invalidate];
-    self.hideKnobTimer = nil;
+	self.hideKnobTimer = nil;
 	
-    self.knobHidden = YES;
-    [self _updateKnobAlphaWithSpeed:TUIScrollIndicatorStateChangeSpeed];
+	self.knobHidden = YES;
+	[self _updateKnobAlphaWithSpeed:TUIScrollIndicatorStateChangeSpeed];
 }
 
 - (void)layoutSubviews {

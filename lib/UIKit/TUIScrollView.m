@@ -569,15 +569,15 @@ static CGPoint PointLerp(CGPoint a, CGPoint b, CGFloat t)
 }
 
 - (BOOL)isBouncing {
-    return _bounce.bouncing;
+	return _bounce.bouncing;
 }
 
 - (void)stopThrowing {
-    if(_scrollViewFlags.animationMode == AnimationModeThrow) {
-        // ignore - let the bounce finish (_updateBounce will kill the timer when it's ready)
-        if(!_bounce.bouncing)
+	if(_scrollViewFlags.animationMode == AnimationModeThrow) {
+		// ignore - let the bounce finish (_updateBounce will kill the timer when it's ready)
+		if(!_bounce.bouncing)
 			[self _stopTimer];
-    }
+	}
 }
 
 /**

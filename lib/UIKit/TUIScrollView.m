@@ -65,7 +65,7 @@ static BOOL isAtleastLion = YES;
 	Gestalt(gestaltSystemVersionMajor, &major);
 	Gestalt(gestaltSystemVersionMinor, &minor);
 	
-	isAtleastLion = (major == 10 && minor >= 7) ? YES : NO;
+	isAtleastLion = ((major == 10 && minor >= 7) || major > 11);
 }
 
 + (Class)layerClass

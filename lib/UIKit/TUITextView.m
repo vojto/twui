@@ -261,6 +261,7 @@ static CAAnimation *ThrobAnimation()
 
 - (void)drawRect:(CGRect)rect
 {
+	CGContextRef ctx = TUIGraphicsGetCurrentContext();
 	static const CGFloat singleLineWidth = 20000.0f;
 	
 	if(drawFrame)
@@ -300,6 +301,13 @@ static CAAnimation *ThrobAnimation()
 		}];
 	}
 	
+	BOOL doMask = [self singleLine];
+	if(doMask) {
+		CGContextSaveGState(ctx);
+		CGFloat radius = floor(rect.size.height / 2);
+		CGContextClipToRoundRect(ctx, CGRectInset(textRect, 0.0f, -radius), radius);
+	}
+	
 	[renderer draw];
 	
 	if(renderer.attributedString.length < 1 && self.placeholder.length > 0) {
@@ -310,6 +318,10 @@ static CAAnimation *ThrobAnimation()
 		self.placeholderRenderer.attributedString = attributedString;
 		self.placeholderRenderer.frame = rendererFrame;
 		[self.placeholderRenderer draw];
+	}
+	
+	if(doMask) {
+		CGContextRestoreGState(ctx);
 	}
 }
 

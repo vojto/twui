@@ -177,7 +177,10 @@
 	[self _textDidChange];
 }
 
-
+// Reset selection when first responder lost.
+- (void)prepareToResignFirstResponder {
+    [self setSelection:NSMakeRange(0, 0)];
+}
 
 
 
@@ -419,7 +422,7 @@
 }
 
 - (void)prepareToResignFirstResponder {
-    [self setSelection:NSMakeRange(0, 0)];
+	[self setSelection:NSMakeRange(0, 0)];
 }
 
 @end

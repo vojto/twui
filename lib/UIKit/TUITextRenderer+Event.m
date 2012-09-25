@@ -26,7 +26,7 @@
 
 + (void)initialize
 {
-    static BOOL initialized = NO;
+	static BOOL initialized = NO;
 	if(!initialized) {
 		initialized = YES;
 		// set up Services
@@ -302,12 +302,12 @@ normal:
 {
 	// TODO: obviously these shouldn't be called at exactly the same time...
 	if(_flags.delegateWillBecomeFirstResponder) [delegate textRendererWillBecomeFirstResponder:self];
-    [self prepareToBecomeFirstResponder];
+	[self prepareToBecomeFirstResponder];
 	if(_flags.delegateDidBecomeFirstResponder) [delegate textRendererDidBecomeFirstResponder:self];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:TUITextRendererDidBecomeFirstResponder
-							    object:self];
-    
+								object:self];
+	
 	return YES;
 }
 
@@ -318,61 +318,57 @@ normal:
 	[self prepareToResignFirstResponder];
 	[self resetSelection];
 	if(_flags.delegateDidResignFirstResponder) [delegate textRendererDidResignFirstResponder:self];
-    
+	
 	[[NSNotificationCenter defaultCenter] postNotificationName:TUITextRendererDidResignFirstResponder
-							    object:self];
-    
+														object:self];
+	
 	return YES;
 }
 
 - (void)prepareToBecomeFirstResponder {
-    // Unimplemented.
+	// Unimplemented.
 }
 
 - (void)prepareToResignFirstResponder {
-    // Unimplemented.
-    if([self isKindOfClass:[TUITextEditor class]])
-		[self setSelection:NSMakeRange(0, 0)];
-	[self resetSelection];
+	// Unimplemented.
 }
 
 - (NSMenu *)menuForEvent:(NSEvent *)event {
-    if(self.selectedRange.length > 0) {
-        NSMenu *menu = [[NSMenu alloc] init];
-        
-        NSString *copyString = NSLocalizedString(@"Copy", @"Copy action menu item for TUITextRenderer.");
-        NSString *googleString = [NSString stringWithFormat:@"%@ '%@'",
-                                  NSLocalizedString(@"Search Google for", @"Google action menu item for TUITextRenderer."),
-                                  self.selectedString];
-        
-        NSMenuItem *copyItem = [[NSMenuItem alloc] initWithTitle:copyString
-                                                          action:@selector(copy:)
-                                                   keyEquivalent:@""];
-        copyItem.target = self;
-        [menu addItem:copyItem];
-        
-        NSMenuItem *googleItem = [[NSMenuItem alloc] initWithTitle:googleString
-                                                            action:@selector(searchGoogle:)
-                                                     keyEquivalent:@""];
-        googleItem.target = self;
-        [menu addItem:googleItem];
-        
-        [menu addItem:[NSMenuItem separatorItem]];
-        return menu;
-    }
-    
-    return nil;
+	if(self.selectedRange.length > 0) {
+		NSMenu *menu = [[NSMenu alloc] init];
+		
+		NSString *copyString = NSLocalizedString(@"Copy", @"Copy action menu item for TUITextRenderer.");
+		NSString *googleString = [NSString stringWithFormat:@"%@ '%@'",
+								  NSLocalizedString(@"Search Google for", @"Google action menu item for TUITextRenderer."),
+								  self.selectedString];
+		
+		NSMenuItem *copyItem = [[NSMenuItem alloc] initWithTitle:copyString
+														  action:@selector(copy:)
+												   keyEquivalent:@""];
+		copyItem.target = self;
+		[menu addItem:copyItem];
+		
+		NSMenuItem *googleItem = [[NSMenuItem alloc] initWithTitle:googleString
+															action:@selector(searchGoogle:)
+													 keyEquivalent:@""];
+		googleItem.target = self;
+		[menu addItem:googleItem];
+		
+		[menu addItem:[NSMenuItem separatorItem]];
+		return menu;
+	}
+	
+	return nil;
 }
 
 - (void)searchGoogle:(NSMenuItem *)menuItem {
-    NSString *urlEscapes = @"!*'();:@&=+$,/?%#[]";
-    NSString *encodedString = (__bridge NSString *)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)self.selectedString,
-                                                                                           NULL, (CFStringRef)urlEscapes,
-                                                                                           kCFStringEncodingUTF8);
-    
-    NSString *googleString = [NSString stringWithFormat:@"http://www.google.com/search?q=%@", encodedString];
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:googleString]];
-    CFBridgingRelease((__bridge CFStringRef)encodedString);
+	NSString *urlEscapes = @"!*'();:@&=+$,/?%#[]";
+	NSString *encodedString = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)self.selectedString,
+																									NULL, (CFStringRef)urlEscapes,
+																									kCFStringEncodingUTF8));
+	
+	NSString *googleString = [NSString stringWithFormat:@"http://www.google.com/search?q=%@", encodedString];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:googleString]];
 }
 
 // Services
@@ -388,11 +384,11 @@ normal:
 
 - (BOOL)writeSelectionToPasteboard:(NSPasteboard *)pboard types:(NSArray *)types
 {
-    if(![types containsObject:NSStringPboardType])
-        return NO;
+	if(![types containsObject:NSStringPboardType])
+		return NO;
 	
 	[pboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
-    return [pboard setString:[self selectedString] forType:NSStringPboardType];
+	return [pboard setString:[self selectedString] forType:NSStringPboardType];
 }
 
 @end

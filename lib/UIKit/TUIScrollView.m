@@ -57,15 +57,24 @@ enum {
 @synthesize decelerationRate;
 @synthesize resizeKnobSize;
 
-static BOOL isAtleastLion = YES;
+// Default to non-Lion behavior to prevent breakage.
+static BOOL isAtleastLion = NO;
+
 + (void)initialize {
-	SInt32 major = 0;
-	SInt32 minor = 0;
 	
-	Gestalt(gestaltSystemVersionMajor, &major);
-	Gestalt(gestaltSystemVersionMinor, &minor);
-	
-	isAtleastLion = ((major == 10 && minor >= 7) || major > 11);
+	// Since this class's subclasses can call +initialize,
+	// apply a dispatch_once reentrancy guard. After all,
+	// this only needs to be set once.
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		SInt32 major = 0;
+		SInt32 minor = 0;
+		
+		Gestalt(gestaltSystemVersionMajor, &major);
+		Gestalt(gestaltSystemVersionMinor, &minor);
+		
+		isAtleastLion = ((major == 10 && minor >= 7) || major > 11);
+	});
 }
 
 + (Class)layerClass

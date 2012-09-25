@@ -113,14 +113,14 @@
 	if(selectionLength)
 		_selectionStart = _selectionEnd = (MIN(_selectionEnd,_selectionStart));
 	else
-		_selectionEnd = _selectionStart = [self _indexByMovingIndex:(int)MIN(_selectionStart,_selectionEnd)
+		_selectionEnd = _selectionStart = [self _indexByMovingIndex:MIN(_selectionStart,_selectionEnd)
 																 by:-1];
 	[self.view setNeedsDisplay];
 }
 
 - (void)moveUpAndModifySelection:(id)sender
 {
-	_selectionEnd = [self _indexByMovingIndex:(int)MIN(_selectionStart,_selectionEnd)
+	_selectionEnd = [self _indexByMovingIndex:MIN(_selectionStart,_selectionEnd)
 										   by:-1];
 	[self.view setNeedsDisplay];
 }
@@ -131,21 +131,21 @@
 	if(selectionLength)
 		_selectionStart = _selectionEnd = (MAX(_selectionEnd,_selectionStart));
 	else
-		_selectionEnd = _selectionStart = [self _indexByMovingIndex:(int)MAX(_selectionStart,_selectionEnd)
+		_selectionEnd = _selectionStart = [self _indexByMovingIndex:MAX(_selectionStart,_selectionEnd)
 																 by:1];
 	[self.view setNeedsDisplay];
 }
 
 - (void)moveDownAndModifySelection:(id)sender
 {
-	_selectionEnd = [self _indexByMovingIndex:(int)MAX(_selectionStart,_selectionEnd)
+	_selectionEnd = [self _indexByMovingIndex:MAX(_selectionStart,_selectionEnd)
 										   by:1];
 	[self.view setNeedsDisplay];
 }
 
 - (void)moveRight:(id)sender
 {
-	NSInteger selectionLength = abs((int)(_selectionStart - _selectionEnd));
+	NSInteger selectionLength = labs(_selectionStart - _selectionEnd);
 	NSInteger max = [TEXT length];
 	_selectionStart = _selectionEnd = MIN(MAX(_selectionStart, _selectionEnd) + (selectionLength?0:1), max);
 	[self.view setNeedsDisplay];
@@ -153,7 +153,7 @@
 
 - (void)moveLeft:(id)sender
 {
-	NSInteger selectionLength = abs((int)(_selectionStart - _selectionEnd));
+	NSInteger selectionLength = labs(_selectionStart - _selectionEnd);
 	NSInteger min = 0;
 	_selectionStart = _selectionEnd = MAX(MIN(_selectionStart, _selectionEnd) - (selectionLength?0:1), min);
 	[self.view setNeedsDisplay];
@@ -285,7 +285,7 @@
 
 - (void)deleteToBeginningOfLine:(id)sender
 {
-	NSInteger selectionLength = abs((int)(_selectionStart - _selectionEnd));
+	NSInteger selectionLength = abs((_selectionStart - _selectionEnd));
 	if(selectionLength == 0) {
 		[[self _textEditor] deleteCharactersInRange:NSMakeRange(0, _selectionStart)];
 	} else {
@@ -295,7 +295,7 @@
 
 - (void)deleteWordBackward:(id)sender
 {
-	NSInteger selectionLength = abs((int)(_selectionStart - _selectionEnd));
+	NSInteger selectionLength = abs((_selectionStart - _selectionEnd));
 	if(selectionLength == 0) {
 		_selectionEnd = [TEXT ab_beginningOfWordGivenCursor:_selectionEnd];
 		[self deleteBackward:nil];

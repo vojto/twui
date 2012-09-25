@@ -87,10 +87,19 @@
 	return [super becomeFirstResponder];
 }
 
+
 - (BOOL)resignFirstResponder
 {
+	// TODO: obviously these shouldn't be called at exactly the same time...
+	if(_flags.delegateWillResignFirstResponder) [delegate textRendererWillResignFirstResponder:self];
 	[view setNeedsDisplay];
-	return [super resignFirstResponder];
+	[self setSelection:NSMakeRange(0, 0)];
+	if(_flags.delegateDidResignFirstResponder) [delegate textRendererDidResignFirstResponder:self];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:TUITextRendererDidResignFirstResponder
+														object:self];
+	
+	return YES;
 }
 
 - (void)_textDidChange
@@ -217,11 +226,6 @@
 	selectedRange.length = 0;
 	self.selectedRange = selectedRange;
 	[self _textDidChange];
-}
-
-// Reset selection when first responder lost.
-- (void)prepareToResignFirstResponder {
-    [self setSelection:NSMakeRange(0, 0)];
 }
 
 

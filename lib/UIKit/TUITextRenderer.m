@@ -66,11 +66,11 @@ NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidRes
 }
 
 - (id)init {
-    if((self = [super init])) {
-        self.selectionColor = [NSColor selectedTextColor];
-    }
-    
-    return self;
+	if((self = [super init])) {
+		self.selectionColor = [NSColor selectedTextColor];
+	}
+	
+	return self;
 }
 
 - (void)dealloc
@@ -307,8 +307,8 @@ NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidRes
 		
 		CFRange selectedRange = [self _selectedRange];
 		if(selectedRange.length > 0) {
-            [self.selectionColor set];
-            
+			[self.selectionColor set];
+			
 			// draw (or mask) selection
 			CFIndex rectCount = 100;
 			CGRect rects[rectCount];
@@ -322,32 +322,32 @@ NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidRes
 		
 		if(shadowColor)
 			CGContextSetShadowWithColor(context, shadowOffset, shadowBlur, shadowColor.tui_CGColor);
-        
+		
 		CGContextSetTextMatrix(context, CGAffineTransformIdentity);
-        CFRange range = CTFrameGetVisibleStringRange(f);
-        
-        NSAttributedString *displayString = self.attributedString;
-        if([self.attributedString length] > range.location + range.length ){//&& self.drawOverflowEllipses) {
-            
-            // Should have an ellipses.
-            float l = range.length - 3;
-            if(l < 0) l = 0;
-            
-            NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithAttributedString:[attributedString attributedSubstringFromRange:NSMakeRange(range.location, l)]];
-            
-            NSRange r;
-            NSDictionary *attrs = [attributedString attributesAtIndex:l effectiveRange:&r];
-            NSAttributedString *ellipsis = [[NSAttributedString alloc] initWithString:@"…" attributes:attrs];
-            [string appendAttributedString:ellipsis];
-            
-            self.attributedString = string;
-            [self _resetFramesetter];
-            f = [self ctFrame];
-        }
-        
-        CTFrameDraw(f, context);
+		CFRange range = CTFrameGetVisibleStringRange(f);
+		
+		NSAttributedString *displayString = self.attributedString;
+		if([self.attributedString length] > range.location + range.length && self.drawOverflowEllipses) {
+			
+			// Should have an ellipses.
+			float l = range.length - 3;
+			if(l < 0) l = 0;
+			
+			NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithAttributedString:[attributedString attributedSubstringFromRange:NSMakeRange(range.location, l)]];
+			
+			NSRange r;
+			NSDictionary *attrs = [attributedString attributesAtIndex:l effectiveRange:&r];
+			NSAttributedString *ellipsis = [[NSAttributedString alloc] initWithString:@"…" attributes:attrs];
+			[string appendAttributedString:ellipsis];
+			
+			self.attributedString = string;
+			[self _resetFramesetter];
+			f = [self ctFrame];
+		}
+		
+		CTFrameDraw(f, context);
 		CGContextRestoreGState(context);
-        self.attributedString = displayString;
+		self.attributedString = displayString;
 	}
 }
 

@@ -285,7 +285,7 @@
 
 - (void)deleteToBeginningOfLine:(id)sender
 {
-	NSInteger selectionLength = abs((_selectionStart - _selectionEnd));
+	NSInteger selectionLength = labs(_selectionStart - _selectionEnd);
 	if(selectionLength == 0) {
 		[[self _textEditor] deleteCharactersInRange:NSMakeRange(0, _selectionStart)];
 	} else {
@@ -295,7 +295,7 @@
 
 - (void)deleteWordBackward:(id)sender
 {
-	NSInteger selectionLength = abs((_selectionStart - _selectionEnd));
+	NSInteger selectionLength = labs(_selectionStart - _selectionEnd);
 	if(selectionLength == 0) {
 		_selectionEnd = [TEXT ab_beginningOfWordGivenCursor:_selectionEnd];
 		[self deleteBackward:nil];

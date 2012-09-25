@@ -6,5 +6,6 @@
 - (CTFrameRef)ctFrame;
 - (CGPathRef)ctPath;
 - (CFRange)_selectedRange;
+- (void)_resetFramesetter;
 
 @end

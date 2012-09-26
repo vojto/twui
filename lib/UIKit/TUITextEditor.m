@@ -90,16 +90,8 @@
 
 - (BOOL)resignFirstResponder
 {
-	// TODO: obviously these shouldn't be called at exactly the same time...
-	if(_flags.delegateWillResignFirstResponder) [delegate textRendererWillResignFirstResponder:self];
 	[view setNeedsDisplay];
-	[self setSelection:NSMakeRange(0, 0)];
-	if(_flags.delegateDidResignFirstResponder) [delegate textRendererDidResignFirstResponder:self];
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName:TUITextRendererDidResignFirstResponder
-														object:self];
-	
-	return YES;
+	return [super resignFirstResponder];
 }
 
 - (void)_textDidChange

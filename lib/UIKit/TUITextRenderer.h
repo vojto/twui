@@ -92,7 +92,6 @@ typedef enum {
 // These are advanced features that carry with them a potential performance hit.
 @property (nonatomic, assign) BOOL backgroundDrawingEnabled; // default = NO
 @property (nonatomic, assign) BOOL preDrawBlocksEnabled; // default = NO
-@property (nonatomic, assign) BOOL drawOverflowEllipses; // default = NO
 
 // Don't become first responder. This might be useful to you if
 // you'd like to disable the ability to select text while using the

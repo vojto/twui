@@ -78,7 +78,7 @@
                             by:(CFIndex)incr {
 	CFIndex lineIndex;
 	float xPosition;
-	AB_CTFrameGetLinePositionOfIndex(TEXT, [self ctFrame], (int)index, &lineIndex, &xPosition);
+	AB_CTFrameGetLinePositionOfIndex(TEXT, [self ctFrame], index, &lineIndex, &xPosition);
 	
 	if(lineIndex >= 0) {
 		NSArray *lines = (__bridge NSArray *)CTFrameGetLines([self ctFrame]);

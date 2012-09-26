@@ -153,7 +153,7 @@ void AB_CTFrameGetIndexForPositionInLine(NSString *string, CTFrameRef frame, CFI
 	}
 }
 
-void AB_CTFrameGetLinePositionOfIndex(NSString *string, CTFrameRef frame, int index, CFIndex *lineIndex, float *xPosition)
+void AB_CTFrameGetLinePositionOfIndex(NSString *string, CTFrameRef frame, CFIndex index, CFIndex *lineIndex, float *xPosition)
 {
 	NSArray *lines = (__bridge NSArray *)CTFrameGetLines(frame);
 	CFIndex linesCount = [lines count];

@@ -67,7 +67,7 @@ NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidRes
 
 - (id)init {
 	if((self = [super init])) {
-		self.selectionColor = [NSColor selectedTextColor];
+		self.selectionColor = [NSColor selectedTextBackgroundColor];
 	}
 	
 	return self;

@@ -127,9 +127,6 @@
 		cursor = [[TUIView alloc] initWithFrame:CGRectZero];
 		cursor.userInteractionEnabled = NO;
 		cursor.backgroundColor = [NSColor colorWithCalibratedRed:13 / 255.0 green:140 / 255.0 blue:231 / 255.0 alpha:1];
-        
-		if([self.nsWindow isKeyWindow])
-			[self addSubview:cursor];
 		
 		self.needsDisplayWhenWindowsKeyednessChanges = YES;
 		
@@ -144,6 +141,19 @@
 		self.editable = YES;
 	}
 	return self;
+}
+
+// The text view doesn't have a window when -init is called,
+// so the cursor can only be added or removed when the text
+// view is moved to a window or removed from a window.
+- (void)willMoveToWindow:(TUINSWindow *)newWindow {
+	[super willMoveToWindow:newWindow];
+	
+	if([newWindow isKeyWindow]) {
+		[self addSubview:cursor];
+	} else {
+		[cursor removeFromSuperview];
+	}
 }
 
 - (void)windowDidBecomeKey {

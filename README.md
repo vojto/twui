@@ -42,6 +42,8 @@ We will happily accept pull requests that meet one of the following criteria:
  2. It's something so basic or important that TwUI really should have it.
  3. It has to integrate with TwUI internals, and so can't easily be done outside of the framework. This one is the most ambiguous, because interesting things may match this criterion, but still be way out of scope. In some cases, a fork might be more appropriate. Use your best judgment.
 
+All contributions should match our [coding conventions](https://github.com/github/objective-c-conventions).
+
 # Community
 
 TwUI has a mailing list, subscribe by sending an email to <twui@librelist.com>.

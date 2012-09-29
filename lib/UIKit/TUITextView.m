@@ -127,6 +127,7 @@
 		cursor = [[TUIView alloc] initWithFrame:CGRectZero];
 		cursor.userInteractionEnabled = NO;
 		cursor.backgroundColor = [NSColor colorWithCalibratedRed:13 / 255.0 green:140 / 255.0 blue:231 / 255.0 alpha:1];
+		self.cursorWidth = 2.0f;
 		
 		self.needsDisplayWhenWindowsKeyednessChanges = YES;
 		
@@ -217,6 +218,14 @@
 	_cursorColor = c;
 	cursor.backgroundColor = c;
 	[cursor setNeedsDisplay];
+}
+
+- (void)setCursorWidth:(CGFloat)width {
+	if(width <= 0.0f)
+		return;
+	
+	_cursorWidth = width;
+	[self setNeedsDisplay];
 }
 
 - (void)setTextAlignment:(TUITextAlignment)t
@@ -363,7 +372,7 @@ static CAAnimation *ThrobAnimation()
 	
 	// Ugh. So this seems to be a decent approximation for the height of the cursor. It doesn't always match the native cursor but what ev.
 	CGRect r = CGRectIntegral([renderer firstRectForCharacterRange:ABCFRangeFromNSRange(selection)]);
-	r.size.width = 2.0f;
+	r.size.width = self.cursorWidth;
 	CGRect fontBoundingBox = CTFontGetBoundingBox((__bridge CTFontRef)self.font);
 	r.size.height = round(fontBoundingBox.origin.y + fontBoundingBox.size.height);
 	r.origin.y += floor(self.font.leading);

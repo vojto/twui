@@ -235,18 +235,16 @@ static pthread_key_t TUICurrentContextScaleFactorTLSKey;
 
 - (void)windowDidBecomeKey
 {
-	if(self.needsDisplayWhenWindowsKeyednessChanges) {
+	if(self.needsDisplayWhenWindowsKeyednessChanges)
 		[self setNeedsDisplay];
-	}
 	
 	[self.subviews makeObjectsPerformSelector:@selector(windowDidBecomeKey)];
 }
 
 - (void)windowDidResignKey
 {
-	if(self.needsDisplayWhenWindowsKeyednessChanges) {
+	if(self.needsDisplayWhenWindowsKeyednessChanges)
 		[self setNeedsDisplay];
-	}
 	
 	[self.subviews makeObjectsPerformSelector:@selector(windowDidResignKey)];
 }
@@ -386,8 +384,8 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 			CGContextSetRGBFillColor(context, 0, 1, 0, 0.3);
 		} else {
 			CGContextSetRGBFillColor(context, 1, 0, 0, 0.3);
-			CGContextFillRect(context, rectToDraw);
 		}
+		CGContextFillRect(context, rectToDraw);
 		#endif
 
 		layer.contents = TUIGraphicsGetImageFromCurrentImageContext();

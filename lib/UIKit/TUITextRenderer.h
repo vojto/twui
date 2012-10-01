@@ -21,6 +21,9 @@
 @class TUIView;
 @protocol ABActiveTextRange;
 
+extern NSString *const TUITextRendererDidBecomeFirstResponder;
+extern NSString *const TUITextRendererDidResignFirstResponder;
+
 typedef enum {
 	TUITextSelectionAffinityCharacter = 0,
 	TUITextSelectionAffinityWord = 1,
@@ -82,12 +85,18 @@ typedef enum {
 @property (nonatomic, assign) CGSize shadowOffset;
 @property (nonatomic, assign) CGFloat shadowBlur;
 @property (nonatomic, strong) NSColor *shadowColor; // default = nil for no shadow
+@property (nonatomic, strong) NSColor *selectionColor;
 
 @property (nonatomic, assign) TUITextVerticalAlignment verticalAlignment;
 
-// These are both advanced features that carry with them a potential performance hit.
+// These are advanced features that carry with them a potential performance hit.
 @property (nonatomic, assign) BOOL backgroundDrawingEnabled; // default = NO
 @property (nonatomic, assign) BOOL preDrawBlocksEnabled; // default = NO
+
+// Don't become first responder. This might be useful to you if
+// you'd like to disable the ability to select text while using the
+// text renderer. Allows the renderer to become "active" as a responder.
+@property (nonatomic, assign) BOOL shouldRefuseFirstResponder;
 
 - (void)draw;
 - (void)drawInContext:(CGContextRef)context;
@@ -95,6 +104,14 @@ typedef enum {
 - (CGSize)sizeConstrainedToWidth:(CGFloat)width;
 - (CGSize)sizeConstrainedToWidth:(CGFloat)width numberOfLines:(NSUInteger)numberOfLines;
 - (void)reset;
+
+// The -drawingAttributedString method allows for direct access
+// to the string being drawn to the screen. For example, if the
+// text rendering control is secure, this string would then 
+// contain a string with the same length as the original string,
+// but all characters replaced by large ellipses instead.
+// This method may be expanded or removed in the future.
+- (NSAttributedString *)drawingAttributedString;
 
 - (NSRange)selectedRange;
 - (void)setSelection:(NSRange)selection;

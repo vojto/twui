@@ -22,8 +22,11 @@
 #import "TUIStringDrawing.h"
 #import "TUIView.h"
 
+NSString *const TUITextRendererDidBecomeFirstResponder = @"TUITextRendererDidBecomeFirstResponder";
+NSString *const TUITextRendererDidResignFirstResponder = @"TUITextRendererDidResignFirstResponder";
+
 @interface TUITextRenderer ()
-@property (nonatomic, retain) NSMutableDictionary *lineRects;
+@property (nonatomic, strong) NSMutableDictionary *lineRects;
 @end
 
 @implementation TUITextRenderer
@@ -60,6 +63,14 @@
 	}
 	
 	[self _resetFrame];
+}
+
+- (id)init {
+	if((self = [super init])) {
+		self.selectionColor = [NSColor selectedTextBackgroundColor];
+	}
+	
+	return self;
 }
 
 - (void)dealloc
@@ -102,7 +113,7 @@
 - (void)_buildFramesetter
 {
 	if(!_ct_framesetter) {
-		_ct_framesetter = CTFramesetterCreateWithAttributedString((__bridge CFAttributedStringRef)attributedString);
+		_ct_framesetter = CTFramesetterCreateWithAttributedString((__bridge CFAttributedStringRef)self.drawingAttributedString);
 	}
 	
 	[self _buildFrame];
@@ -189,6 +200,10 @@
 	return CFRangeMake(first, last - first);
 }
 
+- (NSAttributedString*)drawingAttributedString {
+    return attributedString;
+}
+
 - (NSRange)selectedRange
 {
 	return ABNSRangeFromCFRange([self _selectedRange]);
@@ -217,15 +232,13 @@
 	if(attributedString) {
 		CGContextSaveGState(context);
 		
-		CTFrameRef f = [self ctFrame];
-		
 		if(_flags.preDrawBlocksEnabled && !_flags.drawMaskDragSelection) {
-			[self.attributedString enumerateAttribute:TUIAttributedStringPreDrawBlockName inRange:NSMakeRange(0, [self.attributedString length]) options:0 usingBlock:^(id value, NSRange range, BOOL *stop) {
+			[self.drawingAttributedString enumerateAttribute:TUIAttributedStringPreDrawBlockName inRange:NSMakeRange(0, [self.drawingAttributedString length]) options:0 usingBlock:^(id value, NSRange range, BOOL *stop) {
 				if(value == NULL) return;
 				
 				CGContextSaveGState(context);
 				
-				AB_CTLineRectAggregationType aggregationType = (AB_CTLineRectAggregationType) [[self.attributedString attribute:TUIAttributedStringBackgroundFillStyleName atIndex:range.location effectiveRange:NULL] integerValue];
+				AB_CTLineRectAggregationType aggregationType = (AB_CTLineRectAggregationType) [[self.drawingAttributedString attribute:TUIAttributedStringBackgroundFillStyleName atIndex:range.location effectiveRange:NULL] integerValue];
 				NSArray *rectsArray = [self rectsForCharacterRange:CFRangeMake(range.location, range.length) aggregationType:aggregationType];
 				
 				CFIndex rectCount = rectsArray.count;
@@ -235,7 +248,7 @@
 				}
 				
 				TUIAttributedStringPreDrawBlock block = value;
-				block(self.attributedString, range, rects, rectCount);
+				block(self.drawingAttributedString, range, rects, rectCount);
 					
 				CGContextRestoreGState(context);
 			}];
@@ -244,13 +257,13 @@
 		if(_flags.backgroundDrawingEnabled && !_flags.drawMaskDragSelection) {
 			CGContextSaveGState(context);
 			
-			[self.attributedString enumerateAttribute:TUIAttributedStringBackgroundColorAttributeName inRange:NSMakeRange(0, [self.attributedString length]) options:0 usingBlock:^(id value, NSRange range, BOOL *stop) {
+			[self.drawingAttributedString enumerateAttribute:TUIAttributedStringBackgroundColorAttributeName inRange:NSMakeRange(0, [self.drawingAttributedString length]) options:0 usingBlock:^(id value, NSRange range, BOOL *stop) {
 				if(value == NULL) return;
 				
 				CGColorRef color = (__bridge CGColorRef) value;
 				CGContextSetFillColorWithColor(context, color);
 				
-				AB_CTLineRectAggregationType aggregationType = (AB_CTLineRectAggregationType) [[self.attributedString attribute:TUIAttributedStringBackgroundFillStyleName atIndex:range.location effectiveRange:NULL] integerValue];
+				AB_CTLineRectAggregationType aggregationType = (AB_CTLineRectAggregationType) [[self.drawingAttributedString attribute:TUIAttributedStringBackgroundFillStyleName atIndex:range.location effectiveRange:NULL] integerValue];
 				NSArray *rectsArray = [self rectsForCharacterRange:CFRangeMake(range.location, range.length) aggregationType:aggregationType];
 				
 				CFIndex rectCount = rectsArray.count;
@@ -271,6 +284,7 @@
 			CGContextRestoreGState(context);
 		}
 		
+		CTFrameRef f = [self ctFrame];
 		if(hitRange && !_flags.drawMaskDragSelection) {
 			// draw highlight
 			CGContextSaveGState(context);
@@ -297,7 +311,8 @@
 		
 		CFRange selectedRange = [self _selectedRange];
 		if(selectedRange.length > 0) {
-			[[NSColor selectedTextBackgroundColor] set];
+			[self.selectionColor set];
+			
 			// draw (or mask) selection
 			CFIndex rectCount = 100;
 			CGRect rects[rectCount];
@@ -309,13 +324,11 @@
 			}
 		}
 		
-		CGContextSetTextMatrix(context, CGAffineTransformIdentity);
-		
 		if(shadowColor)
 			CGContextSetShadowWithColor(context, shadowOffset, shadowBlur, shadowColor.tui_CGColor);
-
-		CTFrameDraw(f, context); // draw actual text
-				
+		
+		CGContextSetTextMatrix(context, CGAffineTransformIdentity);
+		CTFrameDraw(f, context);
 		CGContextRestoreGState(context);
 	}
 }
@@ -355,7 +368,7 @@
 
 - (CGSize)sizeConstrainedToWidth:(CGFloat)width numberOfLines:(NSUInteger)numberOfLines
 {
-	NSMutableAttributedString *fake = [self.attributedString mutableCopy];
+	NSMutableAttributedString *fake = [self.drawingAttributedString mutableCopy];
 	[fake replaceCharactersInRange:NSMakeRange(0, [fake length]) withString:@"M"];
 	CGFloat singleLineHeight = [fake ab_sizeConstrainedToWidth:width].height;
 	CGFloat maxHeight = singleLineHeight * numberOfLines;

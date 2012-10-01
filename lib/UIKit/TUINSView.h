@@ -28,7 +28,7 @@
 	TUIView *_hoverView;
 
 	__unsafe_unretained TUIView *_trackingView; // dragging view, weak
-	__unsafe_unretained TUIView *_hyperFocusView; // weak
+	__unsafe_unretained TUIView *_hyperFocusView; // hyperfocus view, weak
 
 	TUIView *_hyperFadeView;
 	void(^_hyperCompletion)(BOOL);
@@ -59,8 +59,6 @@
 - (BOOL)isTrackingSubviewOfView:(TUIView *)v;
 - (BOOL)isHoveringSubviewOfView:(TUIView *)v; // v or subview of v
 - (BOOL)isHoveringView:(TUIView *)v; // only v
-
-- (void)ab_setIsOpaque:(BOOL)o __attribute__((deprecated)); // don't use this
 
 - (void)tui_setOpaque:(BOOL)o;
 

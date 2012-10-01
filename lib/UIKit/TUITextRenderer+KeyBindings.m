@@ -18,6 +18,7 @@
 #import "TUITextEditor.h"
 #import "TUIView.h"
 #import "CoreText+Additions.h"
+#import "TUITextRenderer+Private.h"
 #import "TUIScrollView.h"
 
 static NSAttributedString *killBuffer = nil;
@@ -65,11 +66,6 @@ static NSAttributedString *killBuffer = nil;
 
 @end
 
-@interface TUITextRenderer (Private)
-- (CTFrameRef)ctFrame;
-- (void)_scrollToIndex:(long)index;
-@end
-
 @implementation TUITextRenderer (KeyBindings)
 
 #define TEXT [attributedString string]
@@ -96,40 +92,46 @@ static NSAttributedString *killBuffer = nil;
         }
 }
 
-- (int)_indexByMovingIndex:(int)index
-                        by:(int)incr
-{
-    CFIndex lineIndex;
-    float xPosition;
-    AB_CTFrameGetLinePositionOfIndex(TEXT, [self ctFrame], index, &lineIndex, &xPosition);
-    if(lineIndex >= 0)
-    {
-        NSArray *lines = (__bridge NSArray *)CTFrameGetLines([self ctFrame]);
-        CFIndex linesCount = [lines count];
-        if(incr < 0 && lineIndex == 0)
-        {
-            return 0;
-        }
-        else if(lineIndex + incr >= linesCount)
-        {
-            return (int)[TEXT length];
-        }
-        else if(lineIndex + incr >= 0) {
-            CFIndex index;
-            AB_CTFrameGetIndexForPositionInLine(TEXT, [self ctFrame], lineIndex + incr, xPosition, &index);
-            return (int)index;
-        }
-    }
-    return -1;
+- (CFIndex)_indexByMovingIndex:(CFIndex)index
+							by:(CFIndex)incr {
+	CFIndex lineIndex;
+	float xPosition;
+	AB_CTFrameGetLinePositionOfIndex(TEXT, [self ctFrame], index, &lineIndex, &xPosition);
+	
+	if(lineIndex >= 0) {
+		NSArray *lines = (__bridge NSArray *)CTFrameGetLines([self ctFrame]);
+		CFIndex linesCount = [lines count];
+		
+		// If the incremental value is less than 0 and the line index
+		// is 0, the index doesn't change.
+		if(incr <= 0 && lineIndex == 0) {
+			return 0;
+			
+			// If the line index after shifting is more than the line count,
+			// return the last character index.
+		} else if(lineIndex + incr >= linesCount) {
+			return [TEXT length];
+			
+			// If the line index is within text bounds after increment,
+			// return the real character index.
+		} else if(lineIndex + incr >= 0) {
+			CFIndex index;
+			AB_CTFrameGetIndexForPositionInLine(TEXT, [self ctFrame], lineIndex + incr, xPosition, &index);
+			return index;
+		}
+	}
+	
+	// Oops! Something went wrong. Return error (-1).
+	return -1;
 }
 
 - (void)moveUp:(id)sender
 {
-    NSInteger selectionLength = abs((int)(_selectionStart - _selectionEnd));
+	NSInteger selectionLength = labs(_selectionStart - _selectionEnd);
     if(selectionLength)
-        _selectionStart = _selectionEnd = (MIN(_selectionEnd,_selectionStart));
+        _selectionStart = _selectionEnd = MIN(_selectionEnd,_selectionStart);
     else
-        _selectionEnd = _selectionStart = [self _indexByMovingIndex:(int)MIN(_selectionStart,_selectionEnd)
+        _selectionEnd = _selectionStart = [self _indexByMovingIndex:MIN(_selectionStart,_selectionEnd)
                                                                  by:-1];
     [self.view setNeedsDisplay];
     [self _scrollToIndex:MIN(_selectionStart, _selectionEnd)];
@@ -137,7 +139,7 @@ static NSAttributedString *killBuffer = nil;
 
 - (void)moveUpAndModifySelection:(id)sender
 {
-    _selectionEnd = [self _indexByMovingIndex:(int)MIN(_selectionStart,_selectionEnd)
+	_selectionEnd = [self _indexByMovingIndex:MIN(_selectionStart,_selectionEnd)
                                            by:-1];
     [self.view setNeedsDisplay];
     [self _scrollToIndex:MIN(_selectionStart, _selectionEnd)];
@@ -145,11 +147,11 @@ static NSAttributedString *killBuffer = nil;
 
 - (void)moveDown:(id)sender
 {
-    NSInteger selectionLength = abs((int)(_selectionStart - _selectionEnd));
+	NSInteger selectionLength = labs(_selectionStart - _selectionEnd);
     if(selectionLength)
-        _selectionStart = _selectionEnd = (MAX(_selectionEnd,_selectionStart));
+        _selectionStart = _selectionEnd = MAX(_selectionEnd,_selectionStart);
     else
-        _selectionEnd = _selectionStart = [self _indexByMovingIndex:(int)MAX(_selectionStart,_selectionEnd)
+        _selectionEnd = _selectionStart = [self _indexByMovingIndex:MAX(_selectionStart,_selectionEnd)
                                                                  by:1];
     [self.view setNeedsDisplay];
     [self _scrollToIndex:MIN(_selectionStart, _selectionEnd)];
@@ -157,7 +159,7 @@ static NSAttributedString *killBuffer = nil;
 
 - (void)moveDownAndModifySelection:(id)sender
 {
-    _selectionEnd = [self _indexByMovingIndex:(int)MAX(_selectionStart,_selectionEnd)
+	_selectionEnd = [self _indexByMovingIndex:MAX(_selectionStart,_selectionEnd)
                                            by:1];
     [self.view setNeedsDisplay];
     [self _scrollToIndex:MIN(_selectionStart, _selectionEnd)];
@@ -165,7 +167,7 @@ static NSAttributedString *killBuffer = nil;
 
 - (void)moveRight:(id)sender
 {
-	NSInteger selectionLength = abs((int)(_selectionStart - _selectionEnd));
+	NSInteger selectionLength = labs(_selectionStart - _selectionEnd);
 	NSInteger max = [TEXT length];
 	_selectionStart = _selectionEnd = MIN(MAX(_selectionStart, _selectionEnd) + (selectionLength?0:1), max);
 	[self.view setNeedsDisplay];
@@ -174,7 +176,7 @@ static NSAttributedString *killBuffer = nil;
 
 - (void)moveLeft:(id)sender
 {
-	NSInteger selectionLength = abs((int)(_selectionStart - _selectionEnd));
+	NSInteger selectionLength = labs(_selectionStart - _selectionEnd);
 	NSInteger min = 0;
 	_selectionStart = _selectionEnd = MAX(MIN(_selectionStart, _selectionEnd) - (selectionLength?0:1), min);
 	[self.view setNeedsDisplay];
@@ -253,6 +255,26 @@ static NSAttributedString *killBuffer = nil;
     [self _scrollToIndex:MIN(_selectionStart, _selectionEnd)];
 }
 
+- (void)moveToBeginningOfParagraphAndModifySelection:(id)sender
+{
+	[self moveToBeginningOfLineAndModifySelection:sender];
+}
+
+- (void)moveToEndOfParagraphAndModifySelection:(id)sender
+{
+	[self moveToEndOfLineAndModifySelection:sender];
+}
+
+- (void)moveToBeginningOfDocumentAndModifySelection:(id)sender
+{
+	[self moveToBeginningOfLineAndModifySelection:sender];
+}
+
+- (void)moveToEndOfDocumentAndModifySelection:(id)sender
+{
+	[self moveToEndOfLineAndModifySelection:sender];
+}
+
 - (void)insertNewline:(id)sender
 {
 	[[self _textEditor] insertText:@"\n"];
@@ -267,7 +289,7 @@ static NSAttributedString *killBuffer = nil;
 
 - (void)deleteBackward:(id)sender
 {
-    // Find the range to delete, handling an empty selection and the input point being at 0
+	// Find the range to delete, handling an empty selection and the input point being at 0
 	NSRange deleteRange = [self selectedRange];
 	if(deleteRange.length == 0) {
 		if(deleteRange.location == 0) {
@@ -277,14 +299,14 @@ static NSAttributedString *killBuffer = nil;
 			deleteRange.length = 1;
 		}
 	}
-    
-    [[self _textEditor] deleteCharactersInRange:deleteRange];
+	
+	[[self _textEditor] deleteCharactersInRange:deleteRange];
     [self _scrollToIndex:MIN(_selectionStart, _selectionEnd)];
 }
 
 - (void)deleteForward:(id)sender
 {
-    // Find the range to delete, handling an empty selection and the input point being at the end
+	// Find the range to delete, handling an empty selection and the input point being at the end
 	NSRange deleteRange = [self selectedRange];
 	if(deleteRange.length == 0) {
 		if(deleteRange.location == [TEXT length]) {
@@ -293,15 +315,15 @@ static NSAttributedString *killBuffer = nil;
 			deleteRange.length = 1;
 		}
 	}
-    
-    [[self _textEditor] deleteCharactersInRange:deleteRange];
+
+	[[self _textEditor] deleteCharactersInRange:deleteRange];
     [self _scrollToIndex:MIN(_selectionStart, _selectionEnd)];
 }
 
 
 - (void)deleteToBeginningOfLine:(id)sender
 {
-	NSInteger selectionLength = abs((int)(_selectionStart - _selectionEnd));
+	NSInteger selectionLength = labs(_selectionStart - _selectionEnd);
 	if(selectionLength == 0) {
 		[[self _textEditor] deleteCharactersInRange:NSMakeRange(0, _selectionStart)];
 	} else {
@@ -312,7 +334,7 @@ static NSAttributedString *killBuffer = nil;
 
 - (void)deleteWordBackward:(id)sender
 {
-	NSInteger selectionLength = abs((int)(_selectionStart - _selectionEnd));
+	NSInteger selectionLength = labs(_selectionStart - _selectionEnd);
 	if(selectionLength == 0) {
 		_selectionEnd = [TEXT ab_beginningOfWordGivenCursor:_selectionEnd];
 		[self deleteBackward:nil];

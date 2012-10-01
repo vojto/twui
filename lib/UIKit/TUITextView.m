@@ -215,9 +215,12 @@
 }
 
 - (void)setCursorColor:(NSColor *)c {
-	_cursorColor = c;
 	cursor.backgroundColor = c;
 	[cursor setNeedsDisplay];
+}
+
+- (NSColor *)cursorColor {
+	return cursor.backgroundColor;
 }
 
 - (void)setCursorWidth:(CGFloat)width {

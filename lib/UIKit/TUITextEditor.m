@@ -19,10 +19,6 @@
 #import "TUINSWindow.h"
 #import "TUITextRenderer+Private.h"
 
-@interface TUITextRenderer ()
-- (void)_scrollToIndex:(long)index;
-@end
-
 @implementation TUITextEditor
 
 @synthesize defaultAttributes;
@@ -150,7 +146,6 @@
 	if (self.editable) {
 		[self insertText:[[NSPasteboard generalPasteboard] stringForType:NSPasteboardTypeString]];
 	}
-	[self insertText:[[NSPasteboard generalPasteboard] stringForType:NSPasteboardTypeString]];
 	[self _scrollToIndex:MAX(_selectionStart, _selectionEnd)];
 }
 

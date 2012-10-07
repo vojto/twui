@@ -14,15 +14,16 @@
  limitations under the License.
  */
 
-#import "TUIView.h"
 #import <pthread.h>
 #import "NSColor+TUIExtensions.h"
 #import "TUICGAdditions.h"
+#import "TUIView.h"
 #import "TUILayoutManager.h"
 #import "TUINSView.h"
 #import "TUINSWindow.h"
 #import "TUITextRenderer.h"
 #import "TUIViewController.h"
+#import "TUIScrollView.h"
 
 /*
  * Enable this to debug blending.
@@ -973,6 +974,12 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 	if([self isKindOfClass:c])
 		return self;
 	return [self.superview firstSuperviewOfClass:c];
+}
+
+- (TUIScrollView *)enclosingScrollView {
+	if([self.superview isKindOfClass:TUIScrollView.class])
+		return (TUIScrollView *)self.superview;
+	else return nil;
 }
 
 - (void)setNeedsLayout

@@ -77,18 +77,24 @@ static NSAttributedString *killBuffer = nil;
 	return nil;
 }
 
-- (void)_scrollToIndex:(long)index {
-	if(self.view && [self.view.superview isKindOfClass:[TUIScrollView class]]) {
-			TUIScrollView *scrollView = (TUIScrollView*)self.view.superview;
-			CFRange r = { index, 0 };
-			CFIndex nRects = 1;
-			CGRect rects[nRects];
-			AB_CTFrameGetRectsForRange([self ctFrame], r, rects, &nRects);
-			if(nRects == 1)
-				[scrollView scrollRectToVisible:rects[0] animated:YES];
-			else if(nRects == 0)
-				[scrollView scrollRectToVisible:CGRectMake(0, self.view.frame.size.height / 2, 0, 1)
-									   animated:YES];
+- (void)_scrollToIndex:(CFIndex)index {
+	TUIScrollView *scrollView = self.view.enclosingScrollView;
+	if(scrollView) {
+		
+		// Get the rect for the index passed within the text.
+		CFRange r = CFRangeMake(index, 0);
+		CFIndex nRects = 1;
+		CGRect rects[nRects];
+		AB_CTFrameGetRectsForRange([self ctFrame], r, rects, &nRects);
+		
+		// If it exists, then scroll the the beginning of the rects.
+		if(nRects == 1)
+			[scrollView scrollRectToVisible:rects[0] animated:YES];
+		
+		// Otherwise, scroll to the middle of the text rects.
+		else if(nRects == 0)
+			[scrollView scrollRectToVisible:CGRectMake(0, self.view.frame.size.height / 2, 0, 1)
+								   animated:YES];
 		}
 }
 
@@ -401,6 +407,10 @@ static NSAttributedString *killBuffer = nil;
 }
 - (void)deleteToBeginningOfParagraph:(id)sender
 {
+	NSRange deleteRange = [self selectedRange];
+	if(deleteRange.length == 0)
+		deleteRange.length = [TEXT length] - deleteRange.location;
+	killBuffer = [[self _textEditor].backingStore attributedSubstringFromRange:deleteRange];
 	[self deleteToBeginningOfLine:sender];
 }
 
@@ -416,6 +426,10 @@ static NSAttributedString *killBuffer = nil;
 
 - (void)deleteToEndOfParagraph:(id)sender
 {
+	NSRange deleteRange = [self selectedRange];
+	if(deleteRange.length == 0)
+		deleteRange.length = [TEXT length] - deleteRange.location;
+	killBuffer = [[self _textEditor].backingStore attributedSubstringFromRange:deleteRange];
 	[self deleteToEndOfLine:sender];
 }
 

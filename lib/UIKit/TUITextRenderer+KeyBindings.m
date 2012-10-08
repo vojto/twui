@@ -95,7 +95,7 @@ static NSAttributedString *killBuffer = nil;
 		else if(nRects == 0)
 			[scrollView scrollRectToVisible:CGRectMake(0, self.view.frame.size.height / 2, 0, 1)
 								   animated:YES];
-		}
+	}
 }
 
 - (CFIndex)_indexByMovingIndex:(CFIndex)index

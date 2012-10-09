@@ -24,50 +24,58 @@ typedef enum {
 
 typedef enum {
 	
-	// The cell has no distinct seperator style.
+	// The cell has no distinct separator style.
 	TUITableViewCellSeparatorStyleNone,
 	
-	// The cell has a single gray seperator line at its base.
+	// The cell has a single gray separator line at its base.
 	TUITableViewCellSeparatorStyleLine,
 	
-	// The cell has double lines running across its width,
-	// giving it an etched or embossed look. The upper line
-	// is white, while the lower line is gray.
-	// This is the default value.
-	TUITableViewCellSeparatorStyleEtched
+	// The cell has double lines running across its width, giving it
+	// an etched or embossed look. The upper line is white, while
+	// the lower line is gray. Reversed swaps the line colors on the
+	// top and bottom. Etched, not Reversed is the default value.
+	TUITableViewCellSeparatorStyleEtched,
+	TUITableViewCellSeparatorStyleEtchedReversed
 } TUITableViewCellSeparatorStyle;
 
 typedef enum {
 	
-	// The cell has no distinct style for when it is selected.
-	TUITableViewCellSelectionStyleNone,
+	// The cell has no distinct color style for this state.
+	TUITableViewCellColorStyleNone,
+	
+	// The cell has uses a custom color for this state. If the
+	// color for this state is not set, it behaves the same way
+	// as TUITableViewCellColorStyleNone.
+	TUITableViewCellColorStyleCustom,
 	
 	// The cell, when selected has a blue background.
-	TUITableViewCellSelectionStyleBlue,
+	TUITableViewCellColorStyleBlue,
 	
 	// The cell, when selected, has a gray background.
-	TUITableViewCellSelectionStyleGray,
+	TUITableViewCellColorStyleGray,
 	
-	// This coalesces the highlight color and the background color
-	// of the cell to create an automatic selection color.
-	// This is the default value.
-	TUITableViewCellSelectionStyleAutomatic,
-} TUITableViewCellSelectionStyle;
+	// Coalesced: to come together or merge together gradually.
+	// This coalesces the state color with its next state's color
+	// to form a gradient background, if set. The coalescence is:
+	// Normal -> Highlight, Highlight -> Selection, Selection -> Normal.
+	// This coalescence pattern and angle can be modified.
+	TUITableViewCellColorStyleCoalesced,
+	
+	// This coalesces the state color with its alternate state
+	// color, to form a gradient background. If the alternate
+	// color is not set, then this behaves indentically to
+	// TUITableViewCellColorStyleCoalesced.
+	TUITableViewCellColorStyleCoalescedWithAlternates
+} TUITableViewCellColorStyle;
 
-typedef enum {
-	
-	// The cell, when selected is drawn with a flat color background.
-	TUITableViewCellDrawingStyleFlat = -1,
-	
-	// The cell, when selected, draws a gradiented background in an
-	// angle provided. You may also provide a custom angle, by casting it
-	// as a TUITableViewCellDrawingStyle, as long as it is between 0 and 360.
-	// TUITableViewCellDrawingStyleGradientDown is the default value.
-	TUITableViewCellDrawingStyleGradientLeft = 0,
-	TUITableViewCellDrawingStyleGradientUp = 90,
-	TUITableViewCellDrawingStyleGradientDown = 270,
-	TUITableViewCellDrawingStyleGradientRight = 360,
-} TUITableViewCellDrawingStyle;
+// If the color style requests for a coalesced gradient background,
+// the coalescence angle given is the angle at which the gradient
+// is drawn. The default is always TUITableViewCellCoalesceseAngleGradientUp.
+// If this is set to a negative value, the absolute value is taken.
+static CGFloat const TUITableViewCellCoalesceseAngleGradientLeft = 0.0f;
+static CGFloat const TUITableViewCellCoalesceseAngleGradientUp = 90.0f;
+static CGFloat const TUITableViewCellCoalesceseAngleGradientDown = 270.0f;
+static CGFloat const TUITableViewCellCoalesceseAngleGradientRight = 360.0f;
 
 @class TUITableView;
 
@@ -79,9 +87,14 @@ typedef enum {
 // cell in certain locations and with certain attributes. You can still
 // extend the standard TUITableViewCell by adding subviews to it, or
 // subclassing it to obtain custom cell characteristics and behavior.
-// If you do wish to subclass TUITableViewCell, and want to implement
-// custom drawing, call the super method drawRect: BEFORE your custom
-// drawing, or your drawing may not appear on the cell.
+// If you do wish to customize TUITableViewCell, to apply custom drawing,
+// it is advisable to use the customization methods and blocks below.
+//
+// Features not yet supported fully:
+//		- Pasteboard Dragging
+//		- Editing Mode
+//		- Accessories
+//		- Pre-styled label and image views.
 @interface TUITableViewCell : TUIView
 
 // The reuse identifier is associated with a TUITableViewCell that
@@ -102,23 +115,56 @@ typedef enum {
 // The style of this cell. It cannot be changed after initialization.
 @property (nonatomic, assign, readonly) TUITableViewCellStyle style;
 
-// The seperator, selection, and drawing styles of this cell.
-@property (nonatomic, assign) TUITableViewCellSeparatorStyle seperatorStyle;
-@property (nonatomic, assign) TUITableViewCellSelectionStyle selectionStyle;
-@property (nonatomic, assign) TUITableViewCellDrawingStyle drawingStyle;
+// The separator style of this cell.
+@property (nonatomic, assign) TUITableViewCellSeparatorStyle separatorStyle;
 
-// The color the cell highlights in, and optionally, animates to
-// and from this highlighted state. The default value is NO.
-// The alternate background color must be set to alternate background
-// colors every other cell. It defaults to nil.
+// The color styles for each state for the cell.
+// TUITableViewCellColorStyleNone does not apply to backgroundStyle.
+// Instead, the cell will draw its backgroundColor in this state.
+// If the style is a coalesced one, then there are optional angles
+// that can be set per style to adjust the coalesced gradient.
+@property (nonatomic, assign) TUITableViewCellColorStyle backgroundStyle;
+@property (nonatomic, assign) TUITableViewCellColorStyle highlightStyle;
+@property (nonatomic, assign) TUITableViewCellColorStyle selectionStyle;
+@property (nonatomic, assign) CGFloat backgroundCoalescenceAngle;
+@property (nonatomic, assign) CGFloat highlightCoalescenceAngle;
+@property (nonatomic, assign) CGFloat selectionCoalescenceAngle;
+
+// The color the cell draws a highlighted state in.
+//The highlighted state is not drawn if this is set to nil.
 @property (nonatomic, strong) NSColor *highlightColor;
+
+// The color the cell draws a selected state in. 
+@property (nonatomic, strong) NSColor *selectionColor;
+
+// The alternate background color must be set to alternate the background
+// color of every other cell. It defaults to nil. If a color is set,
+// it is used. To disable alternating background colors, set this to nil.
+// There is also an optional alternate highlight color, and if set, the
+// cell draws its highlighted state in an alternate color as well.
+// There is also an optional alternate selection color, and if set, the
+// cell draws its selected state in an alternate color as well.
 @property (nonatomic, strong) NSColor *alternateBackgroundColor;
+@property (nonatomic, strong) NSColor *alternateHighlightColor;
+@property (nonatomic, strong) NSColor *alternateSelectionColor;
+
+// The cell may optionally animate to and from the highlighted state.
+// The default value is NO.
 @property (nonatomic, assign) BOOL animatesHighlightChanges;
 
 // The cell's indentation level, and the size of each indent. The total
 // indentation level is indentationLevel * indentationWidth. Defaults to 10px.
 @property (nonatomic, assign) NSInteger indentationLevel;
 @property (nonatomic, assign) CGFloat indentationWidth;
+
+// The floating value affects the appearance of the cell. The default
+// value is NO. If the table view supports dragging, and the cell is
+// dragged, the floating state is set to YES. It is a temporary
+// attribute set when the cell is floating above other cells.
+// A floating state is still displayed as a highlighted state, so if
+// you are using custom drawing blocks or methods, then you may want
+// to check this property to render the cell properly in context.
+@property (nonatomic, readonly, getter = isFloating) BOOL floating;
 
 // The highlighting affects the appearance of the cell. The default
 // value is is NO. If you set the highlighted state to YES through
@@ -142,10 +188,7 @@ typedef enum {
 // dequeueReusableCellWithIdentifier:, passing in a reuse identifier,
 // to obtain the cell object to use as the basis for the current row.
 // If you want a table cell that has a configuration different that
-// those defined by TUITableViewCell for style, you must create your
-// own custom cell. If you want to set the row height of cells on
-// an individual basis, implement the delegate method
-// tableView:heightForRowAtIndexPath:.
+// those defined by TUITableViewCell for style, you must subclass.
 - (id)initWithStyle:(TUITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier;
 
 // If the cell is reusable (has a reuseIdentifier), this method
@@ -164,5 +207,25 @@ typedef enum {
 // where selected triggers a didSelectRowAtPath: delegate method call.
 - (void)setSelected:(BOOL)s animated:(BOOL)animated;
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated;
+
+// If you are subclassing to draw a custom table view cell, consider
+// overridding these methods instead of -drawRect. -drawBackground:
+// draws the standard background for the cell, -drawHighlightedBackground:
+// draws the highlighted background, and -drawSelectedBackground: draws
+// the selected background. -drawSeperators: draws the seperators for
+// the cell. The default implementations of these methods take into
+// account the cell style properties set. 
+- (void)drawBackground:(CGRect)rect;
+- (void)drawHighlightedBackground:(CGRect)rect;
+- (void)drawSelectedBackground:(CGRect)rect;
+- (void)drawSeparators:(CGRect)rect;
+
+// These blocks perform the same function as the methods above, but
+// without the added load of subclassing the cell. If you provide blocks
+// instead, but still override methods, the blocks will take priority.
+@property (nonatomic, copy) TUIViewDrawRect drawBackground;
+@property (nonatomic, copy) TUIViewDrawRect drawHighlightedBackground;
+@property (nonatomic, copy) TUIViewDrawRect drawSelectedBackground;
+@property (nonatomic, copy) TUIViewDrawRect drawSeparators;
 
 @end

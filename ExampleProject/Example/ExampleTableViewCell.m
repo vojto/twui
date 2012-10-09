@@ -21,8 +21,9 @@
 - (id)initWithStyle:(TUITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
 		_textRenderer = [[TUITextRenderer alloc] init];
-		_textRenderer.shadowBlur = 1.0f;
 		_textRenderer.verticalAlignment = TUITextVerticalAlignmentMiddle;
+		_textRenderer.shouldRefuseFirstResponder = YES;
+		_textRenderer.shadowBlur = 1.0f;
 		
 		// Add the text renderer to the view so events get routed to it
 		// properly. Text selection, dictionary popup, etc should just work.
@@ -33,12 +34,12 @@
 		// be set before it can be drawn, we do that in drawRect: below.
 		self.textRenderers = [NSArray arrayWithObjects:_textRenderer, nil];
 		
-		self.selectionStyle = TUITableViewCellSelectionStyleGray;
-		self.drawingStyle = TUITableViewCellDrawingStyleGradientDown;
-		self.backgroundColor = [NSColor colorWithCalibratedWhite:0.97 alpha:1.0f];
-		self.alternateBackgroundColor = [NSColor colorWithCalibratedWhite:0.92 alpha:1.0f];
-		self.highlightColor = [NSColor colorWithCalibratedWhite:0.87 alpha:1.0f];
-		self.animatesHighlightChanges = YES;
+		//self.selectionStyle = TUITableViewCellColorStyleGray;
+		//self.coalescenceAngle = TUITableViewCellCoalesceseAngleGradientDown;
+		//self.backgroundColor = [NSColor colorWithCalibratedWhite:0.97 alpha:1.0f];
+		//self.alternateBackgroundColor = [NSColor colorWithCalibratedWhite:0.92 alpha:1.0f];
+		//self.highlightColor = [NSColor colorWithCalibratedWhite:0.87 alpha:1.0f];
+		//self.animatesHighlightChanges = YES;
 		
 		NSTextField *textField = [[NSTextField alloc] initWithFrame:NSMakeRect(20, 180, 91, 22)];
 		[textField.cell setUsesSingleLineMode:YES];

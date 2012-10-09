@@ -976,10 +976,6 @@ static void TUISetCurrentContextScaleFactor(CGFloat s)
 	return [self.superview firstSuperviewOfClass:c];
 }
 
-- (TUIScrollView *)enclosingScrollView {
-	return (TUIScrollView *)[self.superview firstSuperviewOfClass:TUIScrollView.class];
-}
-
 - (void)setNeedsLayout
 {
 	[self.layer setNeedsLayout];

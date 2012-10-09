@@ -327,10 +327,6 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
  */
 - (TUIView *)firstSuperviewOfClass:(Class)c;
 
-// Return the scroll view responder this view is enclosed in.
-// This is not neccessarily the superview, and is not the reciever.
-- (TUIScrollView *)enclosingScrollView;
-
 - (void)setNeedsLayout;
 - (void)layoutIfNeeded;
 

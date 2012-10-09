@@ -20,6 +20,8 @@
 #import "CoreText+Additions.h"
 #import "TUITextRenderer+Private.h"
 #import "TUIScrollView.h"
+#import "TUIView+TUIBridgedView.h"
+#import "TUIScrollView+TUIBridgedScrollView.h"
 
 static NSAttributedString *killBuffer = nil;
 
@@ -78,7 +80,7 @@ static NSAttributedString *killBuffer = nil;
 }
 
 - (void)_scrollToIndex:(CFIndex)index {
-	TUIScrollView *scrollView = self.view.enclosingScrollView;
+	TUIScrollView *scrollView = (TUIScrollView *)self.view.ancestorScrollView;
 	if(scrollView) {
 		
 		// Get the rect for the index passed within the text.

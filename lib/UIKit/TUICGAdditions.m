@@ -250,7 +250,8 @@ NSImage *TUIGraphicsDrawAsImage(CGSize size, void(^draw)(void))
 	draw();
 	NSImage *image = TUIGraphicsGetImageFromCurrentImageContext();
 	TUIGraphicsEndImageContext();
-    
+
+	image.size = size;
 	return image;
 }
 

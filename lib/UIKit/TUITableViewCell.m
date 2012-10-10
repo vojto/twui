@@ -19,22 +19,24 @@
 #import "TUITableView+Cell.h"
 #import "TUICGAdditions.h"
 
-#define TUI_CELL_IS_ALTERNATE (self.indexPath.row % 2)
-#define TUI_CELL_ALTERNATE_BACKGROUND (self.alternateBackgroundColor && TUI_CELL_IS_ALTERNATE)
-#define TUI_CELL_ALTERNATE_HIGHLIGHT (self.alternateHighlightColor && TUI_CELL_IS_ALTERNATE)
-#define TUI_CELL_ALTERNATE_SELECTION (self.alternateSelectionColor && TUI_CELL_IS_ALTERNATE)
+#define TUI_CELL_IS_PRESET_COLOR(s)	\
+((s == TUITableViewCellColorStyleBlue) || \
+(s == TUITableViewCellColorStyleGraphite) || \
+(s == TUITableViewCellColorStyleGray))
 
-#define TUITableViewCellTopEtchColor			[NSColor colorWithCalibratedWhite:1.00 alpha:0.5f]
-#define TUITableViewCellBottomEtchColor			[NSColor colorWithCalibratedWhite:0.75 alpha:0.5f]
+#define TUI_CELL_IS_COALESCED_COLOR(s) \
+((!TUI_CELL_IS_PRESET_COLOR(s)) && \
+(s != TUITableViewCellColorStyleNone) && \
+(s != TUITableViewCellColorStyleCoalescedWithAlternates))
 
-#define TUITableViewCellDefaultBackgroundColor	[NSColor colorWithCalibratedWhite:0.95 alpha:1.0f]
-#define TUITableViewCellDefaultHighlightedColor	[NSColor colorWithCalibratedWhite:0.85 alpha:1.0f]
-#define TUITableViewCellDefaultSelectedColor	[NSColor colorWithCalibratedWhite:0.75 alpha:1.0f]
-
-#define TUITableViewCellSelectedBlueTopColor	[NSColor colorWithCalibratedRed:0.33 green:0.68 blue:0.91 alpha:1.0f]
-#define TUITableViewCellSelectedBlueBottomColor	[NSColor colorWithCalibratedRed:0.09 green:0.46 blue:0.78 alpha:1.0f]
-#define TUITableViewCellSelectedGrayTopColor	[NSColor colorWithCalibratedWhite:0.60 alpha:1.0]
-#define TUITableViewCellSelectedGrayBottomColor	[NSColor colorWithCalibratedWhite:0.45 alpha:1.0]
+#define TUITableViewCellEtchTopColor		[NSColor colorWithCalibratedWhite:1.00f alpha:0.80f]
+#define TUITableViewCellEtchBottomColor		[NSColor colorWithCalibratedWhite:0.00f alpha:0.20f]
+#define TUITableViewCellBlueTopColor		[NSColor colorWithCalibratedRed:0.33 green:0.68 blue:0.91 alpha:1.00]
+#define TUITableViewCellBlueBottomColor		[NSColor colorWithCalibratedRed:0.09 green:0.46 blue:0.78 alpha:1.00]
+#define TUITableViewCellGraphiteTopColor	[NSColor colorWithCalibratedRed:0.68 green:0.74 blue:0.85 alpha:1.00]
+#define TUITableViewCellGraphiteBottomColor	[NSColor colorWithCalibratedRed:0.50 green:0.58 blue:0.73 alpha:1.00]
+#define TUITableViewCellGrayTopColor		[NSColor colorWithCalibratedWhite:0.60 alpha:1.00]
+#define TUITableViewCellGrayBottomColor		[NSColor colorWithCalibratedWhite:0.45 alpha:1.00]
 
 @implementation TUITableViewCell {
 	CGPoint __mouseOffset;
@@ -52,24 +54,24 @@
 		
 		self.indentationLevel = 0;
 		self.indentationWidth = 10.0f;
-		self.animatesHighlightChanges = NO;
+		self.animatesStyleChanges = YES;
 		self.separatorStyle = TUITableViewCellSeparatorStyleEtched;
 		
-		self.backgroundColor = TUITableViewCellDefaultBackgroundColor;
-		self.highlightColor = TUITableViewCellDefaultHighlightedColor;
-		self.selectionColor = TUITableViewCellDefaultSelectedColor;
+		self.backgroundColor = [NSColor colorWithCalibratedWhite:0.95 alpha:1.0f];
+		self.highlightColor = [NSColor colorWithCalibratedWhite:0.85 alpha:1.0f];
+		self.selectionColor = [NSColor colorWithCalibratedWhite:0.75 alpha:1.0f];
 		
 		self.alternateBackgroundColor = nil;
 		self.alternateHighlightColor = nil;
 		self.alternateSelectionColor = nil;
 		
-		self.backgroundStyle = TUITableViewCellColorStyleCustom;
-		self.highlightStyle = TUITableViewCellColorStyleGray;
-		self.selectionStyle = TUITableViewCellColorStyleBlue;
+		self.backgroundStyle = TUITableViewCellColorStyleNone;
+		self.highlightStyle = TUITableViewCellColorStyleNone;
+		self.selectionStyle = TUITableViewCellColorStyleCoalescedBackgroundToHighlight;
 		
-		self.backgroundCoalescenceAngle = TUITableViewCellCoalesceseAngleGradientUp;
-		self.highlightCoalescenceAngle = TUITableViewCellCoalesceseAngleGradientUp;
-		self.selectionCoalescenceAngle = TUITableViewCellCoalesceseAngleGradientUp;
+		self.backgroundAngle = TUITableViewCellAngleNone;
+		self.highlightAngle = TUITableViewCellAngleNone;
+		self.selectionAngle = TUITableViewCellAngleUp;
 		
 		self.drawBackground = nil;
 		self.drawHighlightedBackground = nil;
@@ -115,74 +117,178 @@
 }
 
 - (void)drawBackground:(CGRect)rect {
-	if(self.backgroundStyle == TUITableViewCellColorStyleCustom)
-		[TUI_CELL_ALTERNATE_BACKGROUND ? self.alternateBackgroundColor : self.backgroundColor set];
-	else if(self.backgroundStyle == TUITableViewCellColorStyleBlue)
-		[TUITableViewCellSelectedBlueTopColor set];
-	else if(self.backgroundStyle == TUITableViewCellColorStyleGray)
-		[TUITableViewCellSelectedGrayTopColor set];
 	
-	CGContextFillRect(TUIGraphicsGetCurrentContext(), rect);
+	// Resolve gradient angle first, even if drawing flat.
+	// We can still check the original against no angle cases.
+	TUITableViewCellAngle angle = self.backgroundAngle;
+	if(angle > 360.0f)
+		angle = 360.0f;
+	else if(angle < -360.0f)
+		angle = -360.0f;
+	
+	// Resolve drawing in order: preset flat, preset coalesced,
+	// coalesced, coalesced alternates, custom/none.
+	if(TUI_CELL_IS_PRESET_COLOR(self.backgroundStyle)) {
+		if(self.backgroundAngle == TUITableViewCellAngleNone) {
+			
+			// Preset color drawn flat.
+			[[self flatColorForStyle:self.backgroundStyle] set];
+			CGContextFillRect(TUIGraphicsGetCurrentContext(), rect);
+		} else {
+			
+			// Preset color drawn coalesced.
+			NSColor *flatColor = [self flatColorForStyle:self.backgroundStyle];
+			NSColor *coalescedColor = [self coalescedColorForStyle:self.backgroundStyle];
+			[[[NSGradient alloc] initWithColors:@[flatColor, coalescedColor]] drawInRect:rect angle:angle];
+		}
+	} else if(TUI_CELL_IS_COALESCED_COLOR(self.backgroundStyle)) {
+		
+		// Coalesced state colors drawn coalesced.
+		NSColor *flatColor = [self flatColorForStyle:self.backgroundStyle];
+		NSColor *coalescedColor = [self coalescedColorForStyle:self.backgroundStyle];
+		[[[NSGradient alloc] initWithColors:@[flatColor, coalescedColor]] drawInRect:rect angle:angle];
+	} else if(self.backgroundStyle == TUITableViewCellColorStyleCoalescedWithAlternates && self.alternateBackgroundColor) {
+		
+		// Coalesced alternative colors drawn coalesced.
+		NSColor *flatColor = self.backgroundColor;
+		NSColor *coalescedColor = self.alternateBackgroundColor;
+		[[[NSGradient alloc] initWithColors:@[flatColor, coalescedColor]] drawInRect:rect angle:angle];
+	} else {
+		
+		// TUITableViewCellColorStyleNone defaulted.
+		BOOL alternated = (self.alternateBackgroundColor && (self.indexPath.row % 2));
+		[alternated ? self.alternateBackgroundColor : self.backgroundColor set];
+		CGContextFillRect(TUIGraphicsGetCurrentContext(), rect);
+	}
 }
 
 - (void)drawHighlightedBackground:(CGRect)rect {
-	if(self.highlightStyle == TUITableViewCellColorStyleCustom)
-	[TUI_CELL_ALTERNATE_HIGHLIGHT ? self.alternateHighlightColor : self.highlightColor set];
-	else if(self.highlightStyle == TUITableViewCellColorStyleBlue)
-		[TUITableViewCellSelectedBlueTopColor set];
-	else if(self.highlightStyle == TUITableViewCellColorStyleGray)
-		[TUITableViewCellSelectedGrayTopColor set];
+	if(!self.canDrawHighlighted)
+		return;
 	
-	CGContextFillRect(TUIGraphicsGetCurrentContext(), rect);
+	// Resolve gradient angle first, even if drawing flat.
+	// We can still check the original against no angle cases.
+	TUITableViewCellAngle angle = self.highlightAngle;
+	if(angle > 360.0f)
+		angle = 360.0f;
+	else if(angle < -360.0f)
+		angle = -360.0f;
+	
+	// Resolve drawing in order: preset flat, preset coalesced,
+	// coalesced, coalesced alternates, custom/none.
+	if(TUI_CELL_IS_PRESET_COLOR(self.highlightStyle)) {
+		if(self.highlightAngle == TUITableViewCellAngleNone) {
+			
+			// Preset color drawn flat.
+			[[self flatColorForStyle:self.highlightStyle] set];
+			CGContextFillRect(TUIGraphicsGetCurrentContext(), rect);
+		} else {
+			
+			// Preset color drawn coalesced.
+			NSColor *flatColor = [self flatColorForStyle:self.highlightStyle];
+			NSColor *coalescedColor = [self coalescedColorForStyle:self.highlightStyle];
+			[[[NSGradient alloc] initWithColors:@[flatColor, coalescedColor]] drawInRect:rect angle:angle];
+		}
+	} else if(TUI_CELL_IS_COALESCED_COLOR(self.highlightStyle)) {
+		
+		// Coalesced state colors drawn coalesced.
+		NSColor *flatColor = [self flatColorForStyle:self.highlightStyle];
+		NSColor *coalescedColor = [self coalescedColorForStyle:self.highlightStyle];
+		[[[NSGradient alloc] initWithColors:@[flatColor, coalescedColor]] drawInRect:rect angle:angle];
+	} else if(self.highlightStyle == TUITableViewCellColorStyleCoalescedWithAlternates && self.alternateHighlightColor) {
+		
+		// Coalesced alternative colors drawn coalesced.
+		NSColor *flatColor = self.highlightColor;
+		NSColor *coalescedColor = self.alternateHighlightColor;
+		[[[NSGradient alloc] initWithColors:@[flatColor, coalescedColor]] drawInRect:rect angle:angle];
+	} else {
+		
+		// TUITableViewCellColorStyleNone defaulted.
+		BOOL alternated = (self.alternateHighlightColor && (self.indexPath.row % 2));
+		[alternated ? self.alternateHighlightColor : self.highlightColor set];
+		CGContextFillRect(TUIGraphicsGetCurrentContext(), rect);
+	}
 }
 
 - (void)drawSelectedBackground:(CGRect)rect {
-	if(self.selectionStyle == TUITableViewCellColorStyleCustom)
-	[TUI_CELL_ALTERNATE_SELECTION ? self.alternateSelectionColor : self.selectionColor set];
-	else if(self.selectionStyle == TUITableViewCellColorStyleBlue)
-		[TUITableViewCellSelectedBlueTopColor set];
-	else if(self.selectionStyle == TUITableViewCellColorStyleGray)
-		[TUITableViewCellSelectedGrayTopColor set];
+	if(!self.canDrawSelected)
+		return;
 	
-	CGContextFillRect(TUIGraphicsGetCurrentContext(), rect);
+	// Resolve gradient angle first, even if drawing flat.
+	// We can still check the original against no angle cases.
+	TUITableViewCellAngle angle = self.selectionAngle;
+	if(angle > 360.0f)
+		angle = 360.0f;
+	else if(angle < -360.0f)
+		angle = -360.0f;
+	
+	// Resolve drawing in order: preset flat, preset coalesced,
+	// coalesced, coalesced alternates, custom/none.
+	if(TUI_CELL_IS_PRESET_COLOR(self.selectionStyle)) {
+		if(self.selectionAngle == TUITableViewCellAngleNone) {
+			
+			// Preset color drawn flat.
+			[[self flatColorForStyle:self.selectionStyle] set];
+			CGContextFillRect(TUIGraphicsGetCurrentContext(), rect);
+		} else {
+			
+			// Preset color drawn coalesced.
+			NSColor *flatColor = [self flatColorForStyle:self.selectionStyle];
+			NSColor *coalescedColor = [self coalescedColorForStyle:self.selectionStyle];
+			[[[NSGradient alloc] initWithColors:@[flatColor, coalescedColor]] drawInRect:rect angle:angle];
+		}
+	} else if(TUI_CELL_IS_COALESCED_COLOR(self.selectionStyle)) {
+		
+		// Coalesced state colors drawn coalesced.
+		NSColor *flatColor = [self flatColorForStyle:self.selectionStyle];
+		NSColor *coalescedColor = [self coalescedColorForStyle:self.selectionStyle];
+		[[[NSGradient alloc] initWithColors:@[flatColor, coalescedColor]] drawInRect:rect angle:angle];
+	} else if(self.selectionStyle == TUITableViewCellColorStyleCoalescedWithAlternates && self.alternateSelectionColor) {
+		
+		// Coalesced alternative colors drawn coalesced.
+		NSColor *flatColor = self.selectionColor;
+		NSColor *coalescedColor = self.alternateSelectionColor;
+		[[[NSGradient alloc] initWithColors:@[flatColor, coalescedColor]] drawInRect:rect angle:angle];
+	} else {
+		
+		// TUITableViewCellColorStyleNone defaulted.
+		BOOL alternated = (self.alternateSelectionColor && (self.indexPath.row % 2));
+		[alternated ? self.alternateSelectionColor : self.selectionColor set];
+		CGContextFillRect(TUIGraphicsGetCurrentContext(), rect);
+	}
 }
 
 - (void)drawSeparators:(CGRect)rect {
 	BOOL flipped = self.separatorStyle == TUITableViewCellSeparatorStyleEtchedReversed;
 	
 	if(self.separatorStyle != TUITableViewCellSeparatorStyleLine) {
-		[flipped ? TUITableViewCellBottomEtchColor : TUITableViewCellTopEtchColor set];
+		[flipped ? TUITableViewCellEtchBottomColor : TUITableViewCellEtchTopColor set];
 		CGContextFillRect(TUIGraphicsGetCurrentContext(),
 						  CGRectMake(0, rect.size.height-1, rect.size.width, 1));
 	}
 	
 	// Default for TUITableViewCellSeparatorStyleEtched.
-	[flipped ? TUITableViewCellTopEtchColor : TUITableViewCellBottomEtchColor set];
+	[flipped ? TUITableViewCellEtchTopColor : TUITableViewCellEtchBottomColor set];
 	CGContextFillRect(TUIGraphicsGetCurrentContext(),
 					  CGRectMake(0, 0, rect.size.width, 1));
 }
 
 - (void)drawRect:(CGRect)rect {
-	BOOL drawHighlighted = (self.highlightColor && self.highlightStyle != TUITableViewCellColorStyleNone);
-	BOOL drawSelected = (self.selectionColor && self.selectionStyle != TUITableViewCellColorStyleNone);
 	
 	// Draw the appropriate background for the state of the cell.
 	// If a block exists, then use the block instead of the method.
-	if(self.highlighted && drawHighlighted) {
+	if(self.highlighted) {
 		if(self.drawHighlightedBackground)
 			self.drawHighlightedBackground(self, self.bounds);
-		else
-			[self drawHighlightedBackground:self.bounds];
-	} else if(self.selected && drawSelected) {
+		else 	[self drawHighlightedBackground:self.bounds];
+	} else if(self.selected) {
 		if(self.drawSelectedBackground)
 			self.drawSelectedBackground(self, self.bounds);
-		else
-			[self drawSelectedBackground:self.bounds];
+		else 	[self drawSelectedBackground:self.bounds];
 	} else {
 		if(self.drawBackground)
 			self.drawBackground(self, self.bounds);
-		else
-			[self drawBackground:self.bounds];
+		else 	[self drawBackground:self.bounds];
 	}
 	
 	// Draw the separators if the style dictates we are to draw them.
@@ -190,9 +296,60 @@
 	if(self.separatorStyle != TUITableViewCellSeparatorStyleNone) {
 		if(self.drawSeparators)
 			self.drawSeparators(self, self.bounds);
-		else
-			[self drawSeparators:self.bounds];
+		else 	[self drawSeparators:self.bounds];
 	}
+}
+
+- (BOOL)canDrawHighlighted {
+	if(self.highlightStyle == TUITableViewCellColorStyleNone ||
+	   self.highlightStyle == TUITableViewCellColorStyleCoalescedBackgroundToHighlight ||
+	   self.highlightStyle == TUITableViewCellColorStyleCoalescedHighlightToSelection) {
+		return (self.highlightColor != nil);
+	} else if(self.highlightStyle == TUITableViewCellColorStyleCoalescedWithAlternates) {
+		return (self.highlightColor != nil && self.alternateHighlightColor != nil);
+	} else return NO;
+}
+
+- (BOOL)canDrawSelected {
+	if(self.selectionStyle == TUITableViewCellColorStyleNone ||
+	   self.selectionStyle == TUITableViewCellColorStyleCoalescedBackgroundToHighlight ||
+	   self.selectionStyle == TUITableViewCellColorStyleCoalescedHighlightToSelection) {
+		return (self.selectionColor != nil);
+	} else if(self.selectionStyle == TUITableViewCellColorStyleCoalescedWithAlternates) {
+		return (self.selectionColor != nil && self.alternateSelectionColor != nil);
+	} else return NO;
+}
+
+- (NSColor *)flatColorForStyle:(TUITableViewCellColorStyle)style {
+	if(style == TUITableViewCellColorStyleBlue)
+		return TUITableViewCellBlueTopColor;
+	else if(style == TUITableViewCellColorStyleGraphite)
+		return TUITableViewCellGraphiteTopColor;
+	else if(style == TUITableViewCellColorStyleGray)
+		return TUITableViewCellGrayTopColor;
+	else if(style == TUITableViewCellColorStyleCoalescedBackgroundToHighlight)
+		return self.backgroundColor;
+	else if(style == TUITableViewCellColorStyleCoalescedHighlightToSelection)
+		return self.highlightColor;
+	else if(style == TUITableViewCellColorStyleCoalescedSelectionToBackground)
+		return self.selectionColor;
+	else return nil;
+}
+
+- (NSColor *)coalescedColorForStyle:(TUITableViewCellColorStyle)style {
+	if(style == TUITableViewCellColorStyleBlue)
+		return TUITableViewCellBlueBottomColor;
+	else if(style == TUITableViewCellColorStyleGraphite)
+		return TUITableViewCellGraphiteBottomColor;
+	else if(style == TUITableViewCellColorStyleGray)
+		return TUITableViewCellGrayBottomColor;
+	else if(style == TUITableViewCellColorStyleCoalescedBackgroundToHighlight)
+		return self.highlightColor;
+	else if(style == TUITableViewCellColorStyleCoalescedHighlightToSelection)
+		return self.selectionColor;
+	else if(style == TUITableViewCellColorStyleCoalescedSelectionToBackground)
+		return self.backgroundColor;
+	else return nil;
 }
 
 - (void)mouseDown:(NSEvent *)event {
@@ -212,7 +369,7 @@
 									animated:self.tableView.animateSelectionChanges
 							  scrollPosition:TUITableViewScrollPositionNone];
 		
-		[self setHighlighted:YES animated:self.animatesHighlightChanges];
+		[self setHighlighted:YES animated:self.animatesStyleChanges];
 	}
 	
 	if([self acceptsFirstResponder]) {
@@ -233,7 +390,7 @@
 	// notify our table view of the event
 	[self.tableView __mouseUpInCell:self offset:__mouseOffset event:event];
 	
-	[self setHighlighted:NO animated:self.animatesHighlightChanges];
+	[self setHighlighted:NO animated:self.animatesStyleChanges];
 	
 	if([self eventInside:event]) {
 		TUITableView *tableView = self.tableView;
@@ -254,13 +411,13 @@
 							   animated:tableView.animateSelectionChanges
 						 scrollPosition:TUITableViewScrollPositionNone];
 		
-		[self setHighlighted:YES animated:self.animatesHighlightChanges];
+		[self setHighlighted:YES animated:self.animatesStyleChanges];
 	}
 }
 
 - (void)rightMouseUp:(NSEvent *)event{
 	[super rightMouseUp:event];
-	[self setHighlighted:NO animated:self.animatesHighlightChanges];
+	[self setHighlighted:NO animated:self.animatesStyleChanges];
 	
 	if([self eventInside:event]) {
 		TUITableView *tableView = self.tableView;
@@ -283,18 +440,13 @@
 }
 
 - (void)setFloating:(BOOL)f animated:(BOOL)animated display:(BOOL)display {
-	if(animated) {
-		[TUIView beginAnimations:NSStringFromSelector(_cmd) context:nil];
-	}
-	
 	_tableViewCellFlags.floating = f;
 	
-	if(animated) {
-		[self redraw];
-		[TUIView commitAnimations];
-	} else if(display) {
-		[self setNeedsDisplay];
-	}
+	if(animated)
+		[TUIView animateWithDuration:0.25 animations:^{
+			[self redraw];
+		}];
+	else [self setNeedsDisplay];
 }
 
 - (BOOL)isHighlighted {
@@ -306,18 +458,13 @@
 }
 
 - (void)setHighlighted:(BOOL)h animated:(BOOL)animated {
-	if(animated) {
-		[TUIView beginAnimations:NSStringFromSelector(_cmd) context:nil];
-	}
-	
 	_tableViewCellFlags.highlighted = h;
 	
-	if(animated) {
-		[self redraw];
-		[TUIView commitAnimations];
-	} else {
-		[self setNeedsDisplay];
-	}
+	if(animated)
+		[TUIView animateWithDuration:0.25 animations:^{
+			[self redraw];
+		}];
+	else [self setNeedsDisplay];
 }
 
 - (BOOL)isSelected {
@@ -329,78 +476,133 @@
 }
 
 - (void)setSelected:(BOOL)s animated:(BOOL)animated {
-	if(animated) {
-		[TUIView beginAnimations:NSStringFromSelector(_cmd) context:nil];
-	}
-	
 	_tableViewCellFlags.selected = s;
 	
-	if(animated) {
-		[self redraw];
-		[TUIView commitAnimations];
-	} else {
-		[self setNeedsDisplay];
-	}
+	if(animated)
+		[TUIView animateWithDuration:0.25 animations:^{
+			[self redraw];
+		}];
+	else [self setNeedsDisplay];
 }
 
 - (void)setSeparatorStyle:(TUITableViewCellSeparatorStyle)separatorStyle {
 	_separatorStyle = separatorStyle;
-	[self setNeedsDisplay];
+	
+	if(self.animatesStyleChanges)
+		[TUIView animateWithDuration:0.25 animations:^{
+			[self redraw];
+		}];
+	else [self setNeedsDisplay];
 }
 
 - (void)setBackgroundStyle:(TUITableViewCellColorStyle)style {
 	_backgroundStyle = style;
-	[self setNeedsDisplay];
+	
+	if(self.animatesStyleChanges)
+		[TUIView animateWithDuration:0.25 animations:^{
+			[self redraw];
+		}];
+	else [self setNeedsDisplay];
 }
 
 - (void)setHighlightStyle:(TUITableViewCellColorStyle)style {
 	_highlightStyle = style;
-	[self setNeedsDisplay];
+	
+	if(self.animatesStyleChanges)
+		[TUIView animateWithDuration:0.25 animations:^{
+			[self redraw];
+		}];
+	else [self setNeedsDisplay];
 }
 
 - (void)setSelectionStyle:(TUITableViewCellColorStyle)style {
 	_selectionStyle = style;
-	[self setNeedsDisplay];
+	
+	if(self.animatesStyleChanges)
+		[TUIView animateWithDuration:0.25 animations:^{
+			[self redraw];
+		}];
+	else [self setNeedsDisplay];
 }
 
-- (void)setBackgroundCoalescenceAngle:(CGFloat)coalescenceAngle {
-	_backgroundCoalescenceAngle = coalescenceAngle;
-	[self setNeedsDisplay];
+- (void)setBackgroundAngle:(TUITableViewCellAngle)angle {
+	_backgroundAngle = angle;
+	
+	if(self.animatesStyleChanges)
+		[TUIView animateWithDuration:0.25 animations:^{
+			[self redraw];
+		}];
+	else [self setNeedsDisplay];
 }
 
-- (void)setHighlightCoalescenceAngle:(CGFloat)coalescenceAngle {
-	_highlightCoalescenceAngle = coalescenceAngle;
-	[self setNeedsDisplay];
+- (void)setHighlightAngle:(TUITableViewCellAngle)angle {
+	_highlightAngle = angle;
+	
+	if(self.animatesStyleChanges)
+		[TUIView animateWithDuration:0.25 animations:^{
+			[self redraw];
+		}];
+	else [self setNeedsDisplay];
 }
 
-- (void)setSelectionCoalescenceAngle:(CGFloat)coalescenceAngle {
-	_selectionCoalescenceAngle = coalescenceAngle;
-	[self setNeedsDisplay];
+- (void)setSelectionAngle:(TUITableViewCellAngle)angle {
+	_selectionAngle = angle;
+	
+	if(self.animatesStyleChanges)
+		[TUIView animateWithDuration:0.25 animations:^{
+			[self redraw];
+		}];
+	else [self setNeedsDisplay];
 }
 
 - (void)setHighlightColor:(NSColor *)highlightColor {
 	_highlightColor = highlightColor;
-	[self setNeedsDisplay];
+	
+	if(self.animatesStyleChanges)
+		[TUIView animateWithDuration:0.25 animations:^{
+			[self redraw];
+		}];
+	else [self setNeedsDisplay];
 }
 
 - (void)setSelectionColor:(NSColor *)selectionColor {
 	_selectionColor = selectionColor;
-	[self setNeedsDisplay];
+	
+	if(self.animatesStyleChanges)
+		[TUIView animateWithDuration:0.25 animations:^{
+			[self redraw];
+		}];
+	else [self setNeedsDisplay];
 }
 
 - (void)setAlternateBackgroundColor:(NSColor *)alternateColor {
 	_alternateBackgroundColor = alternateColor;
-	[self setNeedsDisplay];
+	
+	if(self.animatesStyleChanges)
+		[TUIView animateWithDuration:0.25 animations:^{
+			[self redraw];
+		}];
+	else [self setNeedsDisplay];
 }
 
 - (void)setAlternateHighlightColor:(NSColor *)alternateColor {
 	_alternateHighlightColor = alternateColor;
-	[self setNeedsDisplay];
+	
+	if(self.animatesStyleChanges)
+		[TUIView animateWithDuration:0.25 animations:^{
+			[self redraw];
+		}];
+	else [self setNeedsDisplay];
 }
 
 - (void)setAlternateSelectionColor:(NSColor *)alternateColor {
 	_alternateSelectionColor = alternateColor;
-	[self setNeedsDisplay];
+	
+	if(self.animatesStyleChanges)
+		[TUIView animateWithDuration:0.25 animations:^{
+			[self redraw];
+		}];
+	else [self setNeedsDisplay];
 }
 
 @end

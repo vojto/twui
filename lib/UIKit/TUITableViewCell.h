@@ -16,9 +16,20 @@
 
 #import "TUIView.h"
 
+// A TUITableViewCellAngle is used to determine the angle at which the
+// coalescence gradient draws. If there TUITableViewCellAngleNone is
+// used, a flat surface is drawn instead. There are also convenience
+// angles for the four basic gradient driections.
+typedef CGFloat TUITableViewCellAngle;
+static TUITableViewCellAngle const TUITableViewCellAngleNone = INFINITY;
+static TUITableViewCellAngle const TUITableViewCellAngleLeft = 0.0f;
+static TUITableViewCellAngle const TUITableViewCellAngleUp = 90.0f;
+static TUITableViewCellAngle const TUITableViewCellAngleRight = 180.0f;
+static TUITableViewCellAngle const TUITableViewCellAngleDown = 270.0f;
+
 typedef enum {
 	
-	// A basic table view cell.
+	// A basic table view cell with no additional styles or formats.
 	TUITableViewCellStyleDefault,
 } TUITableViewCellStyle;
 
@@ -32,50 +43,46 @@ typedef enum {
 	
 	// The cell has double lines running across its width, giving it
 	// an etched or embossed look. The upper line is white, while
-	// the lower line is gray. Reversed swaps the line colors on the
-	// top and bottom. Etched, not Reversed is the default value.
+	// the lower line is gray. This is the default value.
 	TUITableViewCellSeparatorStyleEtched,
+	
+	// This style is similar to TUITableViewCellSeparatorStyleEtched,
+	// but swaps the line colors on the top and bottom.
 	TUITableViewCellSeparatorStyleEtchedReversed
 } TUITableViewCellSeparatorStyle;
 
 typedef enum {
 	
-	// The cell has no distinct color style for this state.
+	// The cell has no distinct color style for this state. Instead,
+	// if custom colors are provided, they will be used. This always
+	// defaults the coalesce angle to TUITableViewCellAngleNone.
 	TUITableViewCellColorStyleNone,
 	
-	// The cell has uses a custom color for this state. If the
-	// color for this state is not set, it behaves the same way
-	// as TUITableViewCellColorStyleNone.
-	TUITableViewCellColorStyleCustom,
-	
-	// The cell, when selected has a blue background.
+	// The cell either has a blue, graphite, or gray background.
+	// Optionally, by setting the gradient angle to anything other
+	// than TUITableViewCellAngleNone, you may coalesce these colors.
 	TUITableViewCellColorStyleBlue,
-	
-	// The cell, when selected, has a gray background.
+	TUITableViewCellColorStyleGraphite,
 	TUITableViewCellColorStyleGray,
 	
 	// Coalesced: to come together or merge together gradually.
-	// This coalesces the state color with its next state's color
-	// to form a gradient background, if set. The coalescence is:
-	// Normal -> Highlight, Highlight -> Selection, Selection -> Normal.
-	// This coalescence pattern and angle can be modified.
-	TUITableViewCellColorStyleCoalesced,
+	// This coalesces the first state's color to the next state's
+	// color forming a gradient. Although the definition is from
+	// one state to the next, you may adjust the coalescence angle
+	// to form the reverse as well, from the second state to the first.
+	// If the gradient angle for the style is TUITableViewCellAngleNone,
+	// these styles act identically to TUITableViewCellColorStyleNone.
+	TUITableViewCellColorStyleCoalescedBackgroundToHighlight,
+	TUITableViewCellColorStyleCoalescedHighlightToSelection,
+	TUITableViewCellColorStyleCoalescedSelectionToBackground,
 	
-	// This coalesces the state color with its alternate state
-	// color, to form a gradient background. If the alternate
-	// color is not set, then this behaves indentically to
-	// TUITableViewCellColorStyleCoalesced.
-	TUITableViewCellColorStyleCoalescedWithAlternates
+	// If alternate colors are set for each or any of the styles,
+	// a coalesced gradient can be formed between the base color and
+	// the alternating color as well. If the alternating color for the
+	// style is nil, or the angle for the style is TUITableViewCellAngleNone,
+	// it reverts to TUITableViewCellColorStyleNone.
+	TUITableViewCellColorStyleCoalescedWithAlternates,
 } TUITableViewCellColorStyle;
-
-// If the color style requests for a coalesced gradient background,
-// the coalescence angle given is the angle at which the gradient
-// is drawn. The default is always TUITableViewCellCoalesceseAngleGradientUp.
-// If this is set to a negative value, the absolute value is taken.
-static CGFloat const TUITableViewCellCoalesceseAngleGradientLeft = 0.0f;
-static CGFloat const TUITableViewCellCoalesceseAngleGradientUp = 90.0f;
-static CGFloat const TUITableViewCellCoalesceseAngleGradientDown = 270.0f;
-static CGFloat const TUITableViewCellCoalesceseAngleGradientRight = 360.0f;
 
 @class TUITableView;
 
@@ -115,47 +122,51 @@ static CGFloat const TUITableViewCellCoalesceseAngleGradientRight = 360.0f;
 // The style of this cell. It cannot be changed after initialization.
 @property (nonatomic, assign, readonly) TUITableViewCellStyle style;
 
-// The separator style of this cell.
+// The cell's indentation level, and the size of each indent.
+// The indentation is used stylistically, for example, to represent a tree.
+// Formula: totalIndentation = indentationLevel * indentationWidth
+// The default indentation width is 10.0f, and the default level is 0.
+@property (nonatomic, assign) NSInteger indentationLevel;
+@property (nonatomic, assign) CGFloat indentationWidth;
+
+// The cell can animate changes when its state changes, or when any
+// of its style elements changes. The default value is NO.
+@property (nonatomic, assign) BOOL animatesStyleChanges;
+
+// The separator style of this cell. Defaults to TUITableViewCellSeparatorStyleNone.
 @property (nonatomic, assign) TUITableViewCellSeparatorStyle separatorStyle;
 
-// The color styles for each state for the cell.
-// TUITableViewCellColorStyleNone does not apply to backgroundStyle.
-// Instead, the cell will draw its backgroundColor in this state.
-// If the style is a coalesced one, then there are optional angles
-// that can be set per style to adjust the coalesced gradient.
+// The color the cell draws when highlighted or selected. If the color
+// style is set to TUITableViewCellColorStyleNone, and these colors are
+// not set to nil, they will be used to draw the cell. Defaults to nil.
+// If no style or colors are set, the background color is used everywhere.
+@property (nonatomic, strong) NSColor *highlightColor;
+@property (nonatomic, strong) NSColor *selectionColor;
+
+// The color styles for each state for the cell. If the backgroundStyle
+// is set to TUITableViewCellColorStyleNone, the background color is used.
+// All styles default to TUITableViewCellColorStyleNone.
 @property (nonatomic, assign) TUITableViewCellColorStyle backgroundStyle;
 @property (nonatomic, assign) TUITableViewCellColorStyle highlightStyle;
 @property (nonatomic, assign) TUITableViewCellColorStyle selectionStyle;
-@property (nonatomic, assign) CGFloat backgroundCoalescenceAngle;
-@property (nonatomic, assign) CGFloat highlightCoalescenceAngle;
-@property (nonatomic, assign) CGFloat selectionCoalescenceAngle;
 
-// The color the cell draws a highlighted state in.
-//The highlighted state is not drawn if this is set to nil.
-@property (nonatomic, strong) NSColor *highlightColor;
+// If the color style draws coalesced, the angle of coalescence can be
+// adjusted per state. The value may not exceed 360.0f or -360.0f.
+// If set to TUITableViewCellAngleNone, coalescence is disabled.
+// All angles default to TUITableViewCellAngleNone.
+@property (nonatomic, assign) TUITableViewCellAngle backgroundAngle;
+@property (nonatomic, assign) TUITableViewCellAngle highlightAngle;
+@property (nonatomic, assign) TUITableViewCellAngle selectionAngle;
 
-// The color the cell draws a selected state in. 
-@property (nonatomic, strong) NSColor *selectionColor;
-
-// The alternate background color must be set to alternate the background
-// color of every other cell. It defaults to nil. If a color is set,
-// it is used. To disable alternating background colors, set this to nil.
-// There is also an optional alternate highlight color, and if set, the
-// cell draws its highlighted state in an alternate color as well.
-// There is also an optional alternate selection color, and if set, the
-// cell draws its selected state in an alternate color as well.
+// Every other cell may also draw each of its states in an alternate color,
+// if the corresponding alternating color for the state is set. If it
+// is set to nil, then this is alternation is disabled. Defaults to nil.
+// Only applicable if the color style is TUITableViewCellColorStyleNone.
+// If the style is TUITableViewCellColorStyleCoalescedWithAlternates,
+// the alternating color is coalesced with the standard color in a gradient.
 @property (nonatomic, strong) NSColor *alternateBackgroundColor;
 @property (nonatomic, strong) NSColor *alternateHighlightColor;
 @property (nonatomic, strong) NSColor *alternateSelectionColor;
-
-// The cell may optionally animate to and from the highlighted state.
-// The default value is NO.
-@property (nonatomic, assign) BOOL animatesHighlightChanges;
-
-// The cell's indentation level, and the size of each indent. The total
-// indentation level is indentationLevel * indentationWidth. Defaults to 10px.
-@property (nonatomic, assign) NSInteger indentationLevel;
-@property (nonatomic, assign) CGFloat indentationWidth;
 
 // The floating value affects the appearance of the cell. The default
 // value is NO. If the table view supports dragging, and the cell is

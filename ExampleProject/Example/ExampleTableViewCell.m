@@ -35,11 +35,11 @@
 		self.textRenderers = [NSArray arrayWithObjects:_textRenderer, nil];
 		
 		//self.selectionStyle = TUITableViewCellColorStyleGray;
-		//self.coalescenceAngle = TUITableViewCellCoalesceseAngleGradientDown;
+		//self.coalescenceAngle = TUITableViewCellAngleDown;
 		//self.backgroundColor = [NSColor colorWithCalibratedWhite:0.97 alpha:1.0f];
 		//self.alternateBackgroundColor = [NSColor colorWithCalibratedWhite:0.92 alpha:1.0f];
 		//self.highlightColor = [NSColor colorWithCalibratedWhite:0.87 alpha:1.0f];
-		//self.animatesHighlightChanges = YES;
+		//self.animatesStyleChanges = YES;
 		
 		NSTextField *textField = [[NSTextField alloc] initWithFrame:NSMakeRect(20, 180, 91, 22)];
 		[textField.cell setUsesSingleLineMode:YES];

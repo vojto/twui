@@ -122,13 +122,6 @@ typedef enum {
 // The style of this cell. It cannot be changed after initialization.
 @property (nonatomic, assign, readonly) TUITableViewCellStyle style;
 
-// The cell's indentation level, and the size of each indent.
-// The indentation is used stylistically, for example, to represent a tree.
-// Formula: totalIndentation = indentationLevel * indentationWidth
-// The default indentation width is 10.0f, and the default level is 0.
-@property (nonatomic, assign) NSInteger indentationLevel;
-@property (nonatomic, assign) CGFloat indentationWidth;
-
 // The cell can animate changes when its state changes, or when any
 // of its style elements changes. The default value is YES. To avoid
 // overhead or complexities in subclasses, you may disable this.

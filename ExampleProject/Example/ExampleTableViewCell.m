@@ -21,9 +21,6 @@
 - (id)initWithStyle:(TUITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
 		
-		// Set our indentation level to let the text renderer pad its frame.
-		self.indentationLevel = 1;
-		
 		// Set up the alternating row "look". Very slick, clean look. Just by
 		// setting up a few colors (and optionally a few styles, and if we
 		// need more, overridable methods) we can achieve whatever look we want.
@@ -88,11 +85,10 @@
 	self.textFieldContainer.frame = CGRectMake(textFieldLeft, 14, textFieldSize.width, textFieldSize.height);
 	
 	// Set the text renderer's frame. Take indentation into account.
-	CGFloat totalIndentation = self.indentationWidth * self.indentationLevel;
+	CGFloat indentation = 10.0f;
 	CGRect textRect = self.bounds;
-	textRect.origin.x += totalIndentation;
-	textRect.size.width -= (self.textFieldContainer.frame.size.width + 16) +
-						   (totalIndentation + self.indentationWidth);
+	textRect.origin.x += indentation;
+	textRect.size.width -= (self.textFieldContainer.frame.size.width + 16) + (indentation * 2);
 	_textRenderer.frame = textRect;
 }
 

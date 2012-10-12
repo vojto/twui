@@ -61,8 +61,6 @@ static inline void tui_viewAnimateRedrawConditionally(TUIView *view, BOOL condit
 		_style = style;
 		_reuseIdentifier = [reuseIdentifier copy];
 		
-		self.indentationLevel = 0;
-		self.indentationWidth = 10.0f;
 		self.animatesAppearanceChanges = YES;
 		self.separatorStyle = TUITableViewCellSeparatorStyleEtched;
 		

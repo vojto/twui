@@ -114,7 +114,7 @@ typedef enum {
 @property (nonatomic, copy, readonly) NSString *reuseIdentifier;
 
 // A weak accessor to the table view this cell is currently managed by.
-@property (nonatomic, assign, readonly) TUITableView *tableView;
+@property (nonatomic, unsafe_unretained, readonly) TUITableView *tableView;
 
 // The current index path, if on screen, of this cell in the table view.
 @property (nonatomic, strong, readonly) NSIndexPath *indexPath;
@@ -130,8 +130,9 @@ typedef enum {
 @property (nonatomic, assign) CGFloat indentationWidth;
 
 // The cell can animate changes when its state changes, or when any
-// of its style elements changes. The default value is NO.
-@property (nonatomic, assign) BOOL animatesStyleChanges;
+// of its style elements changes. The default value is YES. To avoid
+// overhead or complexities in subclasses, you may disable this.
+@property (nonatomic, assign) BOOL animatesAppearanceChanges;
 
 // The separator style of this cell. Defaults to TUITableViewCellSeparatorStyleNone.
 @property (nonatomic, assign) TUITableViewCellSeparatorStyle separatorStyle;
@@ -209,13 +210,14 @@ typedef enum {
 - (void)prepareForReuse;
 
 // This method is called after frame is set, but before it is
-// brought on screen. This method does not require a super method
-// call if overridden.
+// brought on screen. If overriden, it should call the super method.
 - (void)prepareForDisplay;
 
-// Called by a table view (avoid direct calls). Subclasses may override.
-// Highlighted is set upon mouse down, and selected upon mouse up, and
-// where selected triggers a didSelectRowAtPath: delegate method call.
+
+// Highlighted is set upon mouse down, and selected upon mouse up,
+// selected upon mouse up. Setting selected state triggers a
+// didSelectRowAtPath: delegate method call. You may override these
+// methods with a super method call to add custom behavior.
 - (void)setSelected:(BOOL)s animated:(BOOL)animated;
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated;
 
@@ -223,7 +225,7 @@ typedef enum {
 // overridding these methods instead of -drawRect. -drawBackground:
 // draws the standard background for the cell, -drawHighlightedBackground:
 // draws the highlighted background, and -drawSelectedBackground: draws
-// the selected background. -drawSeperators: draws the seperators for
+// the selected background. -drawSeparators: draws the seperators for
 // the cell. The default implementations of these methods take into
 // account the cell style properties set. 
 - (void)drawBackground:(CGRect)rect;

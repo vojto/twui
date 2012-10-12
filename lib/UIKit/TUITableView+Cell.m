@@ -15,13 +15,10 @@
  */
 
 #import "TUITableView+Cell.h"
+#import "TUITableViewCell+Private.h"
 
 // Dragged cells should be just above pinned headers
 #define kTUITableViewDraggedCellZPosition 1001
-
-@interface TUITableViewCell ()
-- (void)setFloating:(BOOL)f animated:(BOOL)animated display:(BOOL)display;
-@end
 
 @interface TUITableView (CellPrivate)
 

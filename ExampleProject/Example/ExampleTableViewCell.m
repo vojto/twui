@@ -50,7 +50,7 @@
 		// The attributed string in this case is set by setAttributedString:
 		// which is configured by the table view delegate.  The frame needs to
 		// be set before it can be drawn, we do that in drawRect: below.
-		self.textRenderers = [NSArray arrayWithObjects:_textRenderer, nil];
+		self.textRenderers = @[_textRenderer];
 		
 		// Add in a standard Cocoa text field. We have to enclose this within
 		// a TUIViewNSViewContainer, and we MUST adjust only the frame of that

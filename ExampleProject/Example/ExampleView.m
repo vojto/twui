@@ -154,6 +154,10 @@
 	// Dragging a title can drag the window too.
 	[view setMoveWindowByDragging:YES];
 	
+	TUIActivityIndicator *v = [[TUIActivityIndicator alloc] initWithFrame:CGRectMake(300, 0, 32, 32)];
+	[view addSubview:v];
+	[v startAnimating];
+	
 	return view;
 }
 

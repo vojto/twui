@@ -34,7 +34,7 @@ typedef enum {
 
 // The basic appearance of the activity indicator.
 // The default value is TUIActivityIndicatorStyleWhite.
-@property (nonatomic, assign) TUIActivityIndicatorStyle style;
+@property (nonatomic, assign) TUIActivityIndicatorStyle activityIndicatorStyle;
 
 // Controls whether the receiver is hidden when the animation is stopped.
 // If the value of this property is YES (default), the indicator sets
@@ -51,7 +51,10 @@ typedef enum {
 
 // Sets the animations that the indicator will perform while animating.
 // Any duration, timing, fill mode, or repeat count information will be
-// discarded to ensure consistent indicator animations.
+// discarded to ensure consistent indicator animations. Due to the
+// mutable nature of the animations array, you may combine several
+// unrelated animations to achieve a single complex animation. Also note
+// that anything that is not a CAAnimation object will be discarded.
 @property (nonatomic, strong) NSMutableArray *animations;
 
 @property (nonatomic, copy) TUIViewDrawRect indicatorFrame;
@@ -77,6 +80,27 @@ typedef enum {
 
 @end
 
-extern TUIViewDrawRect TUIActivityIndicatorWhiteGearFrame();
-extern NSArray * TUIActivityIndicatorPulseAnimations();
+// Returns an indicator frame with a basic centered gray circle.
+extern TUIViewDrawRect TUIActivityIndicatorCircleFrame();
+
+// Returns an indicator frame designed like a gear with a set number of
+// teeth with a set tooth width, drawn with a custom tooth color.
+// The default is 12 teeth with a 2.0 pixel width. The color is decided
+// by the preset activityIndicatorStyle.
+extern TUIViewDrawRect TUIActivityIndicatorGearFrame(CGFloat toothCount,
+													 CGFloat toothWidth,
+													 NSColor *toothColor);
+
+// Returns an array of animations designed to pulse the indicator. Consists
+// of a scaling transformation paired with an opacity blend for pulsing.
+// Pass a CGFloat for the peak opacity of the pulse animation.
+extern NSArray * TUIActivityIndicatorPulseAnimations(CGFloat);
+
+// Returns an array of animations tailored to gears. Consists of a number
+// of discrete steps that rotate the indicator around its center.
+// Pass a CGFloat of the number of steps you wish to animate. For example,
+// for a standard gear with 12 teeth, pass 12.0f as the value.
+extern NSArray * TUIActivityIndicatorGearAnimations(CGFloat);
+
+// Returns an array of animations that rotate the indicator smoothly.
 extern NSArray * TUIActivityIndicatorWheelAnimations();

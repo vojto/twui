@@ -17,8 +17,10 @@
 #import "TUIActivityIndicator.h"
 #import "TUICGAdditions.h"
 
-#define TUIActivityIndicatorDefaultFrame CGRectMake(0, 0, 32, 32)
-#define TUIActivityIndicatorDefaultStyle TUIActivityIndicatorStyleWhite
+#define TUIActivityIndicatorDefaultFrame		CGRectMake(0, 0, 32, 32)
+#define TUIActivityIndicatorDefaultStyle		TUIActivityIndicatorStyleWhite
+#define TUIActivityIndicatorDefaultToothCount	12.0f
+#define TUIActivityIndicatorDefaultToothWidth	2.0f
 
 @interface TUIActivityIndicator ()
 
@@ -39,10 +41,16 @@
 		self.spinner.hidden = YES;
 		[self addSubview:self.spinner];
 		
-		self.style = style;
-		self.animations = [TUIActivityIndicatorPulseAnimations() mutableCopy];
+		self.activityIndicatorStyle = style;
+		self.animations = [TUIActivityIndicatorGearAnimations(TUIActivityIndicatorDefaultToothCount) mutableCopy];
 		self.animationSpeed = 1.0f;
-		self.indicatorFrame = TUIActivityIndicatorWhiteGearFrame();
+		
+		NSColor *selectedColor = [NSColor whiteColor];
+		if(style == TUIActivityIndicatorStyleGray)
+			selectedColor = [NSColor grayColor];
+		self.indicatorFrame = TUIActivityIndicatorGearFrame(TUIActivityIndicatorDefaultToothCount,
+															TUIActivityIndicatorDefaultToothWidth,
+															selectedColor);
 	}
 	return self;
 }
@@ -123,46 +131,70 @@
 
 @end
 
-TUIViewDrawRect TUIActivityIndicatorWhiteGearFrame() {
+TUIViewDrawRect TUIActivityIndicatorCircleFrame() {
 	return [^(TUIActivityIndicator *indicator, CGRect rect) {
-		CGFloat radius = rect.size.width / 2.f;
-		CGFloat numberOfTeeth = 12;
-		CGFloat toothWidth = 2.0f;
-		NSColor *toothColor = [NSColor whiteColor];
+		CGContextRef ctx = TUIGraphicsGetCurrentContext();
+		CGContextClearRect(ctx, rect);
+		
+		[[NSColor colorWithCalibratedWhite:1.0f alpha:0.5f] set];
+		CGContextFillEllipseInRect(ctx, rect);
+	} copy];
+}
+
+TUIViewDrawRect TUIActivityIndicatorGearFrame(CGFloat toothCount, CGFloat toothWidth, NSColor *toothColor) {
+	return [^(TUIActivityIndicator *indicator, CGRect rect) {
+		CGFloat radius = rect.size.width / 2.0f;
 		
 		CGContextRef ctx = TUIGraphicsGetCurrentContext();
 		CGContextTranslateCTM(ctx, radius, radius);
 		CGContextClearRect(ctx, rect);
 		
-		for(int toothNumber = 0; toothNumber < numberOfTeeth; toothNumber++) {
-			CGFloat alpha = 0.3 + ((toothNumber / numberOfTeeth) * 0.7);
+		for(int toothNumber = 0; toothNumber < toothCount; toothNumber++) {
+			CGFloat alpha = 0.3 + ((toothNumber / toothCount) * 0.7);
 			[[toothColor colorWithAlphaComponent:alpha] setFill];
 			
-			CGContextRotateCTM(ctx, 1 / numberOfTeeth * (M_PI * 2.0f));
+			CGContextRotateCTM(ctx, 1 / toothCount * (M_PI * 2.0f));
 			CGRect toothRect = CGRectMake(-toothWidth / 2.0f, -radius, toothWidth, ceilf(radius * 0.54f));
 			CGContextFillRoundRect(ctx, toothRect, toothWidth / 2.0f);
 		}
 	} copy];
 }
 
-NSArray * TUIActivityIndicatorPulseAnimations() {
+NSArray * TUIActivityIndicatorPulseAnimations(CGFloat peakOpacity) {
 	CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
 	scale.fromValue = @0.1f;
 	scale.toValue = @1.0f;
 	
 	CAKeyframeAnimation *alpha = [CAKeyframeAnimation animationWithKeyPath:@"opacity"];
-	alpha.values = @[@0.0, @0.3, @0.0];
+	alpha.values = @[@0.0, @(peakOpacity), @0.0];
 	
 	return @[scale, alpha];
 }
 
+NSArray * TUIActivityIndicatorGearAnimations(CGFloat frameCount) {
+	NSMutableArray *values = [NSMutableArray array];
+	for(int i = 0; i < frameCount + 1; i++) {
+		[values addObject:@(2.0 * (i / frameCount) * M_PI)];
+	}
+	
+	NSMutableArray *times = [NSMutableArray array];
+	for(int i = 0; i < frameCount + 1; i++) {
+		[times addObject:@(1.0 * (i / frameCount))];
+	}
+	
+	CAKeyframeAnimation *rotate = [CAKeyframeAnimation animationWithKeyPath:@"transform.rotation.z"];
+	rotate.calculationMode = kCAAnimationDiscrete;
+	rotate.values = values;
+	rotate.keyTimes = times;
+	rotate.cumulative = YES;
+	
+	return @[rotate];
+}
+
 NSArray * TUIActivityIndicatorWheelAnimations() {
-	CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
-	scale.fromValue = @0.1f;
-	scale.toValue = @1.0f;
+	CABasicAnimation *rotate = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+	rotate.toValue = @(2.0 * M_PI);
+	rotate.cumulative = YES;
 	
-	CAKeyframeAnimation *alpha = [CAKeyframeAnimation animationWithKeyPath:@"opacity"];
-	alpha.values = @[@0.0, @0.3, @0.0];
-	
-	return @[scale, alpha];
+	return @[rotate];
 }

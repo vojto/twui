@@ -11,7 +11,7 @@
 - (NSColor *)coalescedColorForStyle:(TUITableViewCellColorStyle)style;
 
 - (void)drawBackgroundWithStyle:(TUITableViewCellColorStyle)style
-						  angle:(TUITableViewCellAngle)styleAngle
+						  angle:(CGFloat)styleAngle
 						  color:(NSColor *)color
 				 alternateColor:(NSColor *)alternateColor
 						 inRect:(CGRect)rect;

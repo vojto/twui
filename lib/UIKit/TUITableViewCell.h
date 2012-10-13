@@ -16,16 +16,9 @@
 
 #import "TUIView.h"
 
-// A TUITableViewCellAngle is used to determine the angle at which the
-// coalescence gradient draws. If there TUITableViewCellAngleNone is
-// used, a flat surface is drawn instead. There are also convenience
-// angles for the four basic gradient driections.
-typedef CGFloat TUITableViewCellAngle;
-static TUITableViewCellAngle const TUITableViewCellAngleNone = INFINITY;
-static TUITableViewCellAngle const TUITableViewCellAngleLeft = 0.0f;
-static TUITableViewCellAngle const TUITableViewCellAngleUp = 90.0f;
-static TUITableViewCellAngle const TUITableViewCellAngleRight = 180.0f;
-static TUITableViewCellAngle const TUITableViewCellAngleDown = 270.0f;
+// Convenience CGFloat undefined value mapping to INFINITY.
+// Used for coalescence gradient angles.
+#define CGFLOAT_UNDEFINED INFINITY
 
 typedef enum {
 	
@@ -55,12 +48,12 @@ typedef enum {
 	
 	// The cell has no distinct color style for this state. Instead,
 	// if custom colors are provided, they will be used. This always
-	// defaults the coalesce angle to TUITableViewCellAngleNone.
+	// defaults the coalesce angle to CGFLOAT_UNDEFINED.
 	TUITableViewCellColorStyleNone,
 	
 	// The cell either has a blue, graphite, or gray background.
 	// Optionally, by setting the gradient angle to anything other
-	// than TUITableViewCellAngleNone, you may coalesce these colors.
+	// than CGFLOAT_UNDEFINED, you may coalesce these colors.
 	TUITableViewCellColorStyleBlue,
 	TUITableViewCellColorStyleGraphite,
 	TUITableViewCellColorStyleGray,
@@ -70,7 +63,7 @@ typedef enum {
 	// color forming a gradient. Although the definition is from
 	// one state to the next, you may adjust the coalescence angle
 	// to form the reverse as well, from the second state to the first.
-	// If the gradient angle for the style is TUITableViewCellAngleNone,
+	// If the gradient angle for the style is CGFLOAT_UNDEFINED,
 	// these styles act identically to TUITableViewCellColorStyleNone.
 	TUITableViewCellColorStyleCoalescedBackgroundToHighlight,
 	TUITableViewCellColorStyleCoalescedHighlightToSelection,
@@ -79,7 +72,7 @@ typedef enum {
 	// If alternate colors are set for each or any of the styles,
 	// a coalesced gradient can be formed between the base color and
 	// the alternating color as well. If the alternating color for the
-	// style is nil, or the angle for the style is TUITableViewCellAngleNone,
+	// style is nil, or the angle for the style is CGFLOAT_UNDEFINED,
 	// it reverts to TUITableViewCellColorStyleNone.
 	TUITableViewCellColorStyleCoalescedWithAlternates,
 } TUITableViewCellColorStyle;
@@ -145,12 +138,11 @@ typedef enum {
 @property (nonatomic, assign) TUITableViewCellColorStyle selectionStyle;
 
 // If the color style draws coalesced, the angle of coalescence can be
-// adjusted per state. The value may not exceed 360.0f or -360.0f.
-// If set to TUITableViewCellAngleNone, coalescence is disabled.
-// All angles default to TUITableViewCellAngleNone.
-@property (nonatomic, assign) TUITableViewCellAngle backgroundAngle;
-@property (nonatomic, assign) TUITableViewCellAngle highlightAngle;
-@property (nonatomic, assign) TUITableViewCellAngle selectionAngle;
+// adjusted per state. The value may not exceed the bounds 360.0f or -360.0f.
+// If set to CGFLOAT_UNDEFINED, coalescence is disabled.
+@property (nonatomic, assign) CGFloat backgroundAngle;
+@property (nonatomic, assign) CGFloat highlightAngle;
+@property (nonatomic, assign) CGFloat selectionAngle;
 
 // Every other cell may also draw each of its states in an alternate color,
 // if the corresponding alternating color for the state is set. If it
@@ -205,7 +197,6 @@ typedef enum {
 // This method is called after frame is set, but before it is
 // brought on screen. If overriden, it should call the super method.
 - (void)prepareForDisplay;
-
 
 // Highlighted is set upon mouse down, and selected upon mouse up,
 // selected upon mouse up. Setting selected state triggers a

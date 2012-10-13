@@ -76,9 +76,9 @@ static inline void tui_viewAnimateRedrawConditionally(TUIView *view, BOOL condit
 		self.highlightStyle = TUITableViewCellColorStyleNone;
 		self.selectionStyle = TUITableViewCellColorStyleCoalescedBackgroundToHighlight;
 		
-		self.backgroundAngle = TUITableViewCellAngleNone;
-		self.highlightAngle = TUITableViewCellAngleNone;
-		self.selectionAngle = TUITableViewCellAngleUp;
+		self.backgroundAngle = CGFLOAT_UNDEFINED;
+		self.highlightAngle = CGFLOAT_UNDEFINED;
+		self.selectionAngle = 90.0f;
 		
 		self.drawBackground = nil;
 		self.drawHighlightedBackground = nil;
@@ -124,19 +124,19 @@ static inline void tui_viewAnimateRedrawConditionally(TUIView *view, BOOL condit
 }
 
 - (void)drawBackgroundWithStyle:(TUITableViewCellColorStyle)style
-						  angle:(TUITableViewCellAngle)styleAngle
+						  angle:(CGFloat)styleAngle
 						  color:(NSColor *)color
 				 alternateColor:(NSColor *)alternateColor
 						 inRect:(CGRect)rect {
 	
 	// Resolve gradient angle first, even if drawing flat.
 	// We can still check the original against no angle cases.
-	TUITableViewCellAngle angle = (styleAngle > 360.0f ? 360 : (styleAngle < -360.0f ? - 360.0f : styleAngle));
+	CGFloat angle = (styleAngle > 360.0f ? 360 : (styleAngle < -360.0f ? - 360.0f : styleAngle));
 	
 	// Resolve drawing in order: preset flat, preset coalesced,
 	// coalesced, coalesced alternates, custom/none.
 	if(TUI_CELL_IS_PRESET_COLOR(style)) {
-		if(styleAngle == TUITableViewCellAngleNone) {
+		if(styleAngle == CGFLOAT_UNDEFINED) {
 			
 			// Preset color drawn flat.
 			[[self flatColorForStyle:style] set];
@@ -448,17 +448,17 @@ static inline void tui_viewAnimateRedrawConditionally(TUIView *view, BOOL condit
 	TUI_CELL_REFRESH_DRAWING;
 }
 
-- (void)setBackgroundAngle:(TUITableViewCellAngle)angle {
+- (void)setBackgroundAngle:(CGFloat)angle {
 	_backgroundAngle = angle;
 	TUI_CELL_REFRESH_DRAWING;
 }
 
-- (void)setHighlightAngle:(TUITableViewCellAngle)angle {
+- (void)setHighlightAngle:(CGFloat)angle {
 	_highlightAngle = angle;
 	TUI_CELL_REFRESH_DRAWING;
 }
 
-- (void)setSelectionAngle:(TUITableViewCellAngle)angle {
+- (void)setSelectionAngle:(CGFloat)angle {
 	_selectionAngle = angle;
 	TUI_CELL_REFRESH_DRAWING;
 }

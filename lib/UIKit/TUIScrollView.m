@@ -980,7 +980,7 @@ static float clampBounce(float x) {
 		
 		[self _startTimer:AnimationModeThrow];
 			
-		BOOL pulling = self._pulling;
+		BOOL pulling = self._pulling; // prefetch the pulling state before resetting it
 		
 		if(_pull.xPulling) {
 			_pull.xPulling = NO;

@@ -65,9 +65,8 @@ static NSTimeInterval const TUIScrollerStateRefreshSpeed = 0.01f;
 	if((self = [super initWithFrame:frame])) {
 		_knob = [[TUIView alloc] initWithFrame:CGRectMake(0, 0, 12, 12)];
 		self.knob.userInteractionEnabled = NO;
-		self.knob.layer.cornerRadius = TUIScrollerDefaultCornerRadius;
 		self.knob.layer.borderWidth = 1.0f;
-		self.scrollIndicatorStyle = TUIScrollViewIndicatorStyleLight;
+		self.scrollIndicatorStyle = TUIScrollViewIndicatorStyleDark;
 		
 		[self addSubview:self.knob];
 		[self _updateKnob];
@@ -211,10 +210,9 @@ if(isnan(knobLength)) \
 - (void)flash {
 	_scrollerFlags.flashing = 1;
 	
-	static const CFTimeInterval duration = 0.6f;
-	CAKeyframeAnimation *animation = [CAKeyframeAnimation animation];
+	CFTimeInterval duration = 0.6f;
+	CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"opacity"];
 	animation.duration = duration;
-	animation.keyPath = @"opacity";
 	animation.values = @[@0.5f, @0.2f, @0.0f];
 	[self.knob.layer addAnimation:animation forKey:@"opacity"];
 	

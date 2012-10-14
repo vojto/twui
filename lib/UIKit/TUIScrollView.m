@@ -55,14 +55,16 @@ enum {
 
 @end
 
+// Default to non-Lion and non-MountainLion behavior to prevent breakage.
+BOOL isAtleastLion = NO;
+BOOL isAtleastMountainLion = NO;
+
 @implementation TUIScrollView
 
 @synthesize decelerationRate;
 @synthesize resizeKnobSize;
 
-// Default to non-Lion behavior to prevent breakage.
-static BOOL isAtleastLion = NO;
-
+// Apply Lion or Mountain Lion specific features.
 + (void)initialize {
 	if(self.class != TUIScrollView.class)
 		return;
@@ -74,6 +76,7 @@ static BOOL isAtleastLion = NO;
 	Gestalt(gestaltSystemVersionMinor, &minor);
 	
 	isAtleastLion = ((major == 10 && minor >= 7) || major > 11);
+	isAtleastMountainLion = ((major == 10 && minor >= 8) || major > 11);
 }
 
 + (Class)layerClass
@@ -286,7 +289,7 @@ static BOOL isAtleastLion = NO;
 	_scrollViewFlags.animationMode = AnimationModeNone;
 	_bounce.bouncing = 0;
 	[self _updateBounce];
-	[self _updateScrollersAnimated:YES];
+	[self _updateScrollersAnimated:NO];
 }
 
 - (void)willMoveToWindow:(TUINSWindow *)newWindow
@@ -380,7 +383,7 @@ static BOOL isAtleastLion = NO;
 	BOOL hVisible = [self _horizontalScrollerNeededForContentSize:self.contentSize];
 	BOOL hEffectiveVisible = hVisible;
 	
-	switch(self.verticalScrollIndicatorVisibility){
+	switch(self.verticalScrollIndicatorVisibility) {
 		case TUIScrollViewIndicatorVisibleNever:
 			vEffectiveVisible = self.verticalScroller.flashing;
 			break;
@@ -400,7 +403,7 @@ static BOOL isAtleastLion = NO;
 			break;
 	}
 		
-	switch(self.horizontalScrollIndicatorVisibility){
+	switch(self.horizontalScrollIndicatorVisibility) {
 		case TUIScrollViewIndicatorVisibleNever:
 			hEffectiveVisible = NO;
 			break;
@@ -423,11 +426,8 @@ static BOOL isAtleastLion = NO;
 	CGFloat pullX = +(self.bounceOffset.x + self.pullOffset.x);
 	CGFloat pullY = -(self.bounceOffset.y + self.pullOffset.y);
 	
-	//CGFloat bounceX = pullX * 1.2;
-	//CGFloat bounceY = pullY * 1.2;
-	
 	CGFloat verticalScrollerStart = bounds.size.width - verticalScrollerSize;
-	CGFloat horizontalScrollerStart = bounds.origin.y;
+	CGFloat horizontalScrollerStart = 0;
 	
 	CGFloat verticalScrollerOffset = isAtleastLion ? 0 : ((hVisible ? verticalScrollerSize : 0) + resizeKnobSize.height);
 	CGFloat horizontalScrollerOffset = isAtleastLion ? 0 : ((vVisible ? horizontalScrollerSize : 0) + resizeKnobSize.width);
@@ -437,15 +437,22 @@ static BOOL isAtleastLion = NO;
 	CGRect newHScrollerRect = CGRectMake(roundf(-offset.x - pullX), roundf(-offset.y + horizontalScrollerStart + pullY),
 										 bounds.size.width - horizontalScrollerOffset, horizontalScrollerSize);
 	
-	// Optionally animate the scroller frame.
+	// Optionally animate the scroller frame. Always trigger
+	// a cross-fade, to display the scroller track expansion.
 	void (^updateBlock)(void) = ^{
 		self.verticalScroller.frame = newVScrollerRect;
 		self.horizontalScroller.frame = newHScrollerRect;
 	};
 	if(!animated) {
+		[TUIView animateWithDuration:0.25 animations:^{
+			[self.verticalScroller redraw];
+			[self.horizontalScroller redraw];
+		}];
 		updateBlock();
 	} else {
 		[TUIView animateWithDuration:0.25 animations:^{
+			[self.verticalScroller redraw];
+			[self.horizontalScroller redraw];
 			updateBlock();
 		}];
 	}
@@ -927,7 +934,7 @@ static float clampBounce(float x) {
 {
 	[self.horizontalScroller flash];
 	[self.verticalScroller flash];
-	[self _updateScrollersAnimated:YES];
+	[self _updateScrollersAnimated:NO];
 }
 
 - (BOOL)isDragging

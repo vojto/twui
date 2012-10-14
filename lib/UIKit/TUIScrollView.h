@@ -22,8 +22,8 @@ typedef enum {
   TUIScrollViewIndicatorStyleDark,
   /** Light scroll indicator style suitable for dark backgrounds */
   TUIScrollViewIndicatorStyleLight,
-  /** Default scroll indicator style (dark) */
-  TUIScrollViewIndicatorStyleDefault = TUIScrollViewIndicatorStyleDark
+  /** Dark scroll indicator with a light border style suitable for all backgrounds */
+  TUIScrollViewIndicatorStyleDefault
 } TUIScrollViewIndicatorStyle;
 
 typedef enum {

@@ -18,6 +18,9 @@
 #import "TUICGAdditions.h"
 #import "NSColor+TUIExtensions.h"
 
+extern BOOL isAtleastLion;
+extern BOOL isAtleastMountainLion;
+
 static CGFloat const TUIScrollerMinimumKnobSize = 25.0f;
 static CGFloat const TUIScrollerDefaultCornerRadius = 3.5f;
 static CGFloat const TUIScrollerExpandedCornerRadius = 5.5f;
@@ -28,7 +31,7 @@ static NSTimeInterval const TUIScrollerDisplayPeriod = 1.0f;
 
 static CGFloat const TUIScrollerTrackVisibleAlpha = 1.0f;
 static CGFloat const TUIScrollerHiddenAlpha = 0.0f;
-static CGFloat const TUIScrollerHoverAlpha = 0.5f;
+static CGFloat const TUIScrollerHoverAlpha = 0.6f;
 
 static NSTimeInterval const TUIScrollerStateChangeSpeed = 0.2f;
 static NSTimeInterval const TUIScrollerStateRefreshSpeed = 0.01f;
@@ -183,6 +186,11 @@ if(isnan(knobLength)) \
 }
 
 - (void)_hideKnob {
+	if(_scrollerFlags.hover || _scrollerFlags.active) {
+		[self _refreshKnobTimer];
+		return;
+	}
+	
 	self.hideKnobTimer = nil;
 	self.knobHidden = YES;
 	[self _updateKnobAlphaWithSpeed:TUIScrollerStateChangeSpeed];
@@ -193,17 +201,21 @@ if(isnan(knobLength)) \
 }
 
 - (void)drawRect:(CGRect)rect {
-	if(!self.expanded)
+	if(!self.expanded) {
+		self.knob.layer.borderWidth = 1.0f;
 		return;
+	} else if(isAtleastMountainLion) {
+		self.knob.layer.borderWidth = 0.0f;
+	}
 	
 	NSArray *darkTrack = @[[NSColor colorWithCalibratedWhite:0.90 alpha:0.85],
 						   [NSColor colorWithCalibratedWhite:0.95 alpha:0.85]];
 	NSArray *lightTrack = @[[NSColor colorWithCalibratedWhite:0.15 alpha:0.85],
 							[NSColor colorWithCalibratedWhite:0.20 alpha:0.85]];
-	BOOL drawDark = self.scrollIndicatorStyle == TUIScrollViewIndicatorStyleDark;
+	BOOL drawLight = self.scrollIndicatorStyle == TUIScrollViewIndicatorStyleLight;
 	
-	[[[NSGradient alloc] initWithColors:drawDark ? darkTrack : lightTrack] drawInRect:rect angle:0];
-	[[NSColor colorWithCalibratedWhite:drawDark ? 0.75 : 0.25 alpha:0.75] set];
+	[[[NSGradient alloc] initWithColors:drawLight ? lightTrack : darkTrack] drawInRect:rect angle:0];
+	[[NSColor colorWithCalibratedWhite:drawLight ? 0.25 : 0.75 alpha:0.75] set];
 	NSRectFill(CGRectMake(0, 0, 1, rect.size.height));
 }
 
@@ -234,13 +246,16 @@ if(isnan(knobLength)) \
 	
 	switch(style) {
 		case TUIScrollViewIndicatorStyleLight:
-			self.knob.backgroundColor = [NSColor whiteColor];
-			self.knob.layer.borderColor = [[NSColor blackColor] colorWithAlphaComponent:0.25].tui_CGColor;
+			self.knob.backgroundColor = [NSColor colorWithCalibratedWhite:1.0 alpha:1.0];
+			self.knob.layer.borderColor = [NSColor colorWithCalibratedWhite:0.15 alpha:0.25].tui_CGColor;
 			break;
 		case TUIScrollViewIndicatorStyleDark:
+			self.knob.backgroundColor = [NSColor colorWithCalibratedWhite:0.0 alpha:1.0];
+			self.knob.layer.borderColor = [NSColor colorWithCalibratedWhite:0.90 alpha:0.25].tui_CGColor;
+			break;
 		default:
-			self.knob.backgroundColor = [NSColor blackColor];
-			self.knob.layer.borderColor = [[NSColor whiteColor] colorWithAlphaComponent:0.25].tui_CGColor;
+			self.knob.backgroundColor = [NSColor colorWithCalibratedWhite:0.0 alpha:1.0];
+			self.knob.layer.borderColor = [NSColor colorWithCalibratedWhite:0.5 alpha:1.0].tui_CGColor;
 			break;
 	}
 	
@@ -262,7 +277,7 @@ if(isnan(knobLength)) \
 }
 
 - (BOOL)isExpanded {
-	return _scrollerFlags.hover || _scrollerFlags.active;
+	return (_scrollerFlags.hover || _scrollerFlags.active) && isAtleastMountainLion;
 }
 
 - (BOOL)isFlashing {

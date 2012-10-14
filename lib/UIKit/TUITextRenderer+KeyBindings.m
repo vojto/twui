@@ -80,7 +80,7 @@ static NSAttributedString *killBuffer = nil;
 }
 
 - (void)_scrollToIndex:(CFIndex)index {
-	TUIScrollView *scrollView = (TUIScrollView *)self.view.ancestorScrollView;
+	TUIScrollView <TUIBridgedScrollView> *scrollView = (TUIScrollView <TUIBridgedScrollView> *)self.view.ancestorScrollView;
 	if(scrollView) {
 		
 		// Get the rect for the index passed within the text.

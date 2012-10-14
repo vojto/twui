@@ -18,8 +18,11 @@
 #import "TUICGAdditions.h"
 
 static CGFloat const TUIScrollerMinimumKnobSize = 25.0f;
+static CGFloat const TUIScrollerDefaultCornerRadius = 3.5f;
+static CGFloat const TUIScrollerExpandedCornerRadius = 5.5f;
+
 static CGFloat const TUIScrollerDefaultWidth = 11.0f;
-static CGFloat const TUIScrollerExpandedWidth = 11.0f;
+static CGFloat const TUIScrollerExpandedWidth = 15.0f;
 static NSTimeInterval const TUIScrollerDisplayPeriod = 1.0f;
 
 static CGFloat const TUIScrollerHiddenAlpha = 0.0f;
@@ -49,6 +52,7 @@ static NSTimeInterval const TUIScrollerStateRefreshSpeed = 0.01f;
 
 - (void)_hideKnob;
 - (void)_updateKnob;
+- (void)_refreshKnobTimer;
 - (void)_updateKnobAlphaWithSpeed:(CGFloat)duration;
 - (void)_endFlashing;
 
@@ -59,7 +63,7 @@ static NSTimeInterval const TUIScrollerStateRefreshSpeed = 0.01f;
 - (id)initWithFrame:(CGRect)frame {
 	if((self = [super initWithFrame:frame])) {
 		_knob = [[TUIView alloc] initWithFrame:CGRectMake(0, 0, 12, 12)];
-		self.knob.layer.cornerRadius = 3.5;
+		self.knob.layer.cornerRadius = TUIScrollerDefaultCornerRadius;
 		self.knob.userInteractionEnabled = NO;
 		self.knob.backgroundColor = [NSColor blackColor];
 		
@@ -79,7 +83,7 @@ static NSTimeInterval const TUIScrollerStateRefreshSpeed = 0.01f;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)refreshKnobTimer {
+- (void)_refreshKnobTimer {
 	if([NSScroller preferredScrollerStyle] == NSScrollerStyleOverlay) {
 		TUIScrollViewIndicatorVisibility visibility;
 		if(self.vertical)
@@ -113,7 +117,7 @@ static NSTimeInterval const TUIScrollerStateRefreshSpeed = 0.01f;
 	}
 }
 
-- (void)preferredScrollerStyleChanged:(id)sender {
+- (void)preferredScrollerStyleChanged:(NSNotification *)notification {
 	self.hideKnobTimer = nil;
 	
 	if([NSScroller preferredScrollerStyle] == NSScrollerStyleOverlay) {
@@ -125,8 +129,7 @@ static NSTimeInterval const TUIScrollerStateRefreshSpeed = 0.01f;
 }
 
 - (BOOL)isVertical {
-	CGRect b = self.bounds;
-	return b.size.height > b.size.width;
+	return self.bounds.size.height > self.bounds.size.width;
 }
 
 #define TUIScrollerCalculations(OFFSET, LENGTH, MIN_KNOB_SIZE) \
@@ -142,7 +145,7 @@ float knobOffset = offsetProportion * rangeOfMotion; \
 if(isnan(knobOffset)) \
 	knobOffset = 0.0; \
 if(isnan(knobLength)) \
-	knobLength = 0.0
+	knobLength = 0.0;
 
 - (void)_updateKnob {
 	CGRect trackBounds = self.bounds;
@@ -156,11 +159,12 @@ if(isnan(knobLength)) \
 		frame.origin.x = 0.0;
 		frame.origin.y = knobOffset;
 		frame.size.height = MIN(2000, knobLength);
-		frame.size.width = _scrollerFlags.hover ? TUIScrollerExpandedWidth : TUIScrollerDefaultWidth;
+		frame.size.width = self.expanded ? TUIScrollerExpandedWidth : TUIScrollerDefaultWidth;
 		frame = ABRectRoundOrigin(CGRectInset(frame, 2, 4));
 		
-		[self refreshKnobTimer];
+		[self _refreshKnobTimer];
 		self.knob.frame = frame;
+		self.knob.layer.cornerRadius = self.expanded ? TUIScrollerExpandedCornerRadius : TUIScrollerDefaultCornerRadius;
 	} else {
 		TUIScrollerCalculations(x, width, TUIScrollerMinimumKnobSize);
 		
@@ -168,23 +172,39 @@ if(isnan(knobLength)) \
 		frame.origin.x = knobOffset;
 		frame.origin.y = 0.0;
 		frame.size.width = MIN(2000, knobLength);
-		frame.size.height = _scrollerFlags.hover ? TUIScrollerExpandedWidth : TUIScrollerDefaultWidth;
+		frame.size.height = self.expanded ? TUIScrollerExpandedWidth : TUIScrollerDefaultWidth;
 		frame = ABRectRoundOrigin(CGRectInset(frame, 4, 2));
 		
-		[self refreshKnobTimer];
+		[self _refreshKnobTimer];
 		self.knob.frame = frame;
+		self.knob.layer.cornerRadius = self.expanded ? TUIScrollerExpandedCornerRadius : TUIScrollerDefaultCornerRadius;
 	}
 }
 
 - (void)_hideKnob {
-	self.hideKnobTimer = nil;
+	if(self.expanded) {
+		[self _refreshKnobTimer];
+		return;
+	}
 	
+	self.hideKnobTimer = nil;
 	self.knobHidden = YES;
 	[self _updateKnobAlphaWithSpeed:TUIScrollerStateChangeSpeed];
 }
 
 - (void)layoutSubviews {
 	[self _updateKnob];
+}
+
+- (void)drawRect:(CGRect)rect {
+	if(!self.expanded)
+		return;
+	
+	[[[NSGradient alloc] initWithColors:@[[NSColor colorWithCalibratedWhite:0.90 alpha:0.80],
+										  [NSColor colorWithCalibratedWhite:0.95 alpha:0.80],
+										  [NSColor colorWithCalibratedWhite:0.90 alpha:0.80]]] drawInRect:rect angle:0];
+	[[NSColor colorWithCalibratedWhite:0.75 alpha:0.80] set];
+	NSRectFill(CGRectMake(0, 0, 1, rect.size.height));
 }
 
 - (void)flash {
@@ -236,7 +256,7 @@ if(isnan(knobLength)) \
 }
 
 - (BOOL)isExpanded {
-	return _scrollerFlags.hover;
+	return _scrollerFlags.hover || _scrollerFlags.active || _scrollerFlags.trackingInsideKnob;
 }
 
 - (BOOL)isFlashing {
@@ -273,10 +293,10 @@ if(isnan(knobLength)) \
 		
 		// Paged scroll.
 		_scrollerFlags.trackingInsideKnob = 0;
-
+		
 		CGRect visible = self.scrollView.visibleRect;
 		CGPoint contentOffset = self.scrollView.contentOffset;
-
+		
 		if(self.vertical) {
 			if(_mouseDown.y < _knobStartFrame.origin.y)
 				contentOffset.y += visible.size.height;
@@ -288,7 +308,7 @@ if(isnan(knobLength)) \
 			else
 				contentOffset.x -= visible.size.width;
 		}
-
+		
 		[self.scrollView setContentOffset:contentOffset animated:YES];
 	}
 	
@@ -311,10 +331,11 @@ CGFloat knobOffset = knobFrame.origin.OFFSET; \
 CGFloat minKnobOffset = 0.0; \
 CGFloat maxKnobOffset = trackBounds.size.LENGTH - knobFrame.size.LENGTH; \
 CGFloat proportion = (knobOffset - 1.0) / (maxKnobOffset - minKnobOffset); \
-CGFloat maxContentOffset = (contentSize.LENGTH - visible.size.LENGTH)
+CGFloat maxContentOffset = contentSize.LENGTH - visible.size.LENGTH;
 
 - (void)mouseDragged:(NSEvent *)event {
-	if(_scrollerFlags.trackingInsideKnob) { // normal knob drag
+	// Normal knob dragging.
+	if(_scrollerFlags.trackingInsideKnob) {
 		CGPoint p = [self localPointForEvent:event];
 		CGSize diff = CGSizeMake(p.x - _mouseDown.x, p.y - _mouseDown.y);
 		

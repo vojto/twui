@@ -39,7 +39,7 @@
 		5EE983D213BE7834005F430D /* TUINSView.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C6213BE6E1900C85CB5 /* TUINSView.m */; };
 		5EE983D313BE7834005F430D /* TUINSWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C6413BE6E1900C85CB5 /* TUINSWindow.m */; };
 		5EE983D413BE7834005F430D /* TUIResponder.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C6613BE6E1900C85CB5 /* TUIResponder.m */; };
-		5EE983D513BE7834005F430D /* TUIScrollKnob.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C6813BE6E1900C85CB5 /* TUIScrollKnob.m */; };
+		5EE983D513BE7834005F430D /* TUIScroller.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C6813BE6E1900C85CB5 /* TUIScroller.m */; };
 		5EE983D613BE7834005F430D /* TUIScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C6A13BE6E1900C85CB5 /* TUIScrollView.m */; };
 		5EE983D713BE7834005F430D /* TUIStringDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C6C13BE6E1900C85CB5 /* TUIStringDrawing.m */; };
 		5EE983D813BE7834005F430D /* TUITableView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C6E13BE6E1900C85CB5 /* TUITableView+Additions.m */; };
@@ -148,7 +148,7 @@
 		CB5E324013BE70CA004B7899 /* TUINSView.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C6213BE6E1900C85CB5 /* TUINSView.m */; };
 		CB5E324213BE70CA004B7899 /* TUINSWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C6413BE6E1900C85CB5 /* TUINSWindow.m */; };
 		CB5E324413BE70CA004B7899 /* TUIResponder.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C6613BE6E1900C85CB5 /* TUIResponder.m */; };
-		CB5E324613BE70CA004B7899 /* TUIScrollKnob.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C6813BE6E1900C85CB5 /* TUIScrollKnob.m */; };
+		CB5E324613BE70CA004B7899 /* TUIScroller.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C6813BE6E1900C85CB5 /* TUIScroller.m */; };
 		CB5E324813BE70CA004B7899 /* TUIScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C6A13BE6E1900C85CB5 /* TUIScrollView.m */; };
 		CB5E324A13BE70CA004B7899 /* TUIStringDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C6C13BE6E1900C85CB5 /* TUIStringDrawing.m */; };
 		CB5E324C13BE70CA004B7899 /* TUITableView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C6E13BE6E1900C85CB5 /* TUITableView+Additions.m */; };
@@ -205,8 +205,8 @@
 		CBB74CBB13BE6E1900C85CB5 /* TUINSWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C6413BE6E1900C85CB5 /* TUINSWindow.m */; };
 		CBB74CBC13BE6E1900C85CB5 /* TUIResponder.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB74C6513BE6E1900C85CB5 /* TUIResponder.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CBB74CBD13BE6E1900C85CB5 /* TUIResponder.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C6613BE6E1900C85CB5 /* TUIResponder.m */; };
-		CBB74CBE13BE6E1900C85CB5 /* TUIScrollKnob.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB74C6713BE6E1900C85CB5 /* TUIScrollKnob.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CBB74CBF13BE6E1900C85CB5 /* TUIScrollKnob.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C6813BE6E1900C85CB5 /* TUIScrollKnob.m */; };
+		CBB74CBE13BE6E1900C85CB5 /* TUIScroller.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB74C6713BE6E1900C85CB5 /* TUIScroller.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CBB74CBF13BE6E1900C85CB5 /* TUIScroller.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C6813BE6E1900C85CB5 /* TUIScroller.m */; };
 		CBB74CC013BE6E1900C85CB5 /* TUIScrollView.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB74C6913BE6E1900C85CB5 /* TUIScrollView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CBB74CC113BE6E1900C85CB5 /* TUIScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB74C6A13BE6E1900C85CB5 /* TUIScrollView.m */; };
 		CBB74CC213BE6E1900C85CB5 /* TUIStringDrawing.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB74C6B13BE6E1900C85CB5 /* TUIStringDrawing.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -502,8 +502,8 @@
 		CBB74C6413BE6E1900C85CB5 /* TUINSWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUINSWindow.m; sourceTree = "<group>"; };
 		CBB74C6513BE6E1900C85CB5 /* TUIResponder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIResponder.h; sourceTree = "<group>"; };
 		CBB74C6613BE6E1900C85CB5 /* TUIResponder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIResponder.m; sourceTree = "<group>"; };
-		CBB74C6713BE6E1900C85CB5 /* TUIScrollKnob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIScrollKnob.h; sourceTree = "<group>"; };
-		CBB74C6813BE6E1900C85CB5 /* TUIScrollKnob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIScrollKnob.m; sourceTree = "<group>"; };
+		CBB74C6713BE6E1900C85CB5 /* TUIScroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIScroller.h; sourceTree = "<group>"; };
+		CBB74C6813BE6E1900C85CB5 /* TUIScroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIScroller.m; sourceTree = "<group>"; };
 		CBB74C6913BE6E1900C85CB5 /* TUIScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIScrollView.h; sourceTree = "<group>"; };
 		CBB74C6A13BE6E1900C85CB5 /* TUIScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUIScrollView.m; sourceTree = "<group>"; };
 		CBB74C6B13BE6E1900C85CB5 /* TUIStringDrawing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUIStringDrawing.h; sourceTree = "<group>"; };
@@ -802,8 +802,8 @@
 				30D399C7156D8ADD006ECDAE /* TUIProgressBar.m */,
 				CBB74C6513BE6E1900C85CB5 /* TUIResponder.h */,
 				CBB74C6613BE6E1900C85CB5 /* TUIResponder.m */,
-				CBB74C6713BE6E1900C85CB5 /* TUIScrollKnob.h */,
-				CBB74C6813BE6E1900C85CB5 /* TUIScrollKnob.m */,
+				CBB74C6713BE6E1900C85CB5 /* TUIScroller.h */,
+				CBB74C6813BE6E1900C85CB5 /* TUIScroller.m */,
 				D0C7655015B6294400E7AC2C /* TUIScrollView+TUIBridgedScrollView.h */,
 				D0C7655115B6294400E7AC2C /* TUIScrollView+TUIBridgedScrollView.m */,
 				CBB74C6913BE6E1900C85CB5 /* TUIScrollView.h */,
@@ -947,7 +947,7 @@
 				CBB74CB813BE6E1900C85CB5 /* TUINSView.h in Headers */,
 				CBB74CBA13BE6E1900C85CB5 /* TUINSWindow.h in Headers */,
 				CBB74CBC13BE6E1900C85CB5 /* TUIResponder.h in Headers */,
-				CBB74CBE13BE6E1900C85CB5 /* TUIScrollKnob.h in Headers */,
+				CBB74CBE13BE6E1900C85CB5 /* TUIScroller.h in Headers */,
 				CBB74CC013BE6E1900C85CB5 /* TUIScrollView.h in Headers */,
 				CBB74CC213BE6E1900C85CB5 /* TUIStringDrawing.h in Headers */,
 				CBB74CC413BE6E1900C85CB5 /* TUITableView+Additions.h in Headers */,
@@ -1260,7 +1260,7 @@
 				5EE983D213BE7834005F430D /* TUINSView.m in Sources */,
 				5EE983D313BE7834005F430D /* TUINSWindow.m in Sources */,
 				5EE983D413BE7834005F430D /* TUIResponder.m in Sources */,
-				5EE983D513BE7834005F430D /* TUIScrollKnob.m in Sources */,
+				5EE983D513BE7834005F430D /* TUIScroller.m in Sources */,
 				5EE983D613BE7834005F430D /* TUIScrollView.m in Sources */,
 				5EE983D713BE7834005F430D /* TUIStringDrawing.m in Sources */,
 				5EE983D813BE7834005F430D /* TUITableView+Additions.m in Sources */,
@@ -1330,7 +1330,7 @@
 				CBB74CB913BE6E1900C85CB5 /* TUINSView.m in Sources */,
 				CBB74CBB13BE6E1900C85CB5 /* TUINSWindow.m in Sources */,
 				CBB74CBD13BE6E1900C85CB5 /* TUIResponder.m in Sources */,
-				CBB74CBF13BE6E1900C85CB5 /* TUIScrollKnob.m in Sources */,
+				CBB74CBF13BE6E1900C85CB5 /* TUIScroller.m in Sources */,
 				CBB74CC113BE6E1900C85CB5 /* TUIScrollView.m in Sources */,
 				CBB74CC313BE6E1900C85CB5 /* TUIStringDrawing.m in Sources */,
 				CBB74CC513BE6E1900C85CB5 /* TUITableView+Additions.m in Sources */,
@@ -1412,7 +1412,7 @@
 				CB5E324013BE70CA004B7899 /* TUINSView.m in Sources */,
 				CB5E324213BE70CA004B7899 /* TUINSWindow.m in Sources */,
 				CB5E324413BE70CA004B7899 /* TUIResponder.m in Sources */,
-				CB5E324613BE70CA004B7899 /* TUIScrollKnob.m in Sources */,
+				CB5E324613BE70CA004B7899 /* TUIScroller.m in Sources */,
 				CB5E324813BE70CA004B7899 /* TUIScrollView.m in Sources */,
 				CB5E324A13BE70CA004B7899 /* TUIStringDrawing.m in Sources */,
 				CB5E324C13BE70CA004B7899 /* TUITableView+Additions.m in Sources */,

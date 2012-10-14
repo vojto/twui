@@ -17,7 +17,7 @@
 #import <CoreServices/CoreServices.h>
 #import "TUIScrollView.h"
 #import "TUIKit.h"
-#import "TUIScrollKnob.h"
+#import "TUIScroller.h"
 
 #define KNOB_Z_POSITION 6000
 
@@ -42,8 +42,8 @@ enum {
 
 @interface TUIScrollView ()
 
-@property (nonatomic, strong, readwrite) TUIScrollKnob *verticalScrollKnob;
-@property (nonatomic, strong, readwrite) TUIScrollKnob *horizontalScrollKnob;
+@property (nonatomic, strong, readwrite) TUIScroller *verticalScrollKnob;
+@property (nonatomic, strong, readwrite) TUIScroller *horizontalScrollKnob;
 
 - (BOOL)_pulling;
 - (BOOL)_verticalScrollKnobNeededForContentSize:(CGSize)size;
@@ -97,14 +97,14 @@ static BOOL isAtleastLion = NO;
 		_scrollViewFlags.verticalScrollIndicatorVisibility = TUIScrollViewIndicatorVisibleDefault;
 		_scrollViewFlags.horizontalScrollIndicatorVisibility = TUIScrollViewIndicatorVisibleDefault;
 		
-		self.horizontalScrollKnob = [[TUIScrollKnob alloc] initWithFrame:CGRectZero];
+		self.horizontalScrollKnob = [[TUIScroller alloc] initWithFrame:CGRectZero];
 		self.horizontalScrollKnob.scrollView = self;
 		self.horizontalScrollKnob.layer.zPosition = KNOB_Z_POSITION;
 		self.horizontalScrollKnob.hidden = YES;
 		self.horizontalScrollKnob.opaque = NO;
 		[self addSubview:self.horizontalScrollKnob];
 		
-		self.verticalScrollKnob = [[TUIScrollKnob alloc] initWithFrame:CGRectZero];
+		self.verticalScrollKnob = [[TUIScroller alloc] initWithFrame:CGRectZero];
 		self.verticalScrollKnob.scrollView = self;
 		self.verticalScrollKnob.layer.zPosition = KNOB_Z_POSITION;
 		self.verticalScrollKnob.hidden = YES;
@@ -370,7 +370,8 @@ static BOOL isAtleastLion = NO;
   
 	CGPoint offset = _unroundedContentOffset;
 	CGRect bounds = self.bounds;
-	CGFloat knobSize = 12;
+	CGFloat verticalKnobSize = self.verticalScrollKnob.expanded ? 15 : 11;
+	CGFloat horizontalKnobSize = self.horizontalScrollKnob.expanded ? 15 : 11;
 	
 	BOOL vWasVisible = _scrollViewFlags.verticalScrollIndicatorShowing;
 	BOOL vVisible = [self _verticalScrollKnobNeededForContentSize:self.contentSize];
@@ -417,17 +418,17 @@ static BOOL isAtleastLion = NO;
 	float bounceY = pullY * 1.2;
 	
 	self.verticalScrollKnob.frame = CGRectMake(
-    round(-offset.x + bounds.size.width - knobSize - pullX), // x
-    round(-offset.y + (hVisible ? knobSize : 0) + resizeKnobSize.height + bounceY), // y
-    knobSize, // width
-    bounds.size.height - (hVisible ? knobSize : 0) - resizeKnobSize.height // height
+    round(-offset.x + bounds.size.width - verticalKnobSize - pullX), // x
+    round(-offset.y + (hVisible ? verticalKnobSize : 0) + resizeKnobSize.height + bounceY), // y
+    verticalKnobSize, // width
+    bounds.size.height - (hVisible ? verticalKnobSize : 0) - resizeKnobSize.height // height
   );
   
 	self.horizontalScrollKnob.frame = CGRectMake(
     round(-offset.x - bounceX), // x
     round(-offset.y + pullY), // y
-    bounds.size.width - (vVisible ? knobSize : 0) - resizeKnobSize.width, // width
-    knobSize // height
+    bounds.size.width - (vVisible ? horizontalKnobSize : 0) - resizeKnobSize.width, // width
+    horizontalKnobSize // height
   );
   
   // notify the delegate about changes in vertical scroll indiciator visibility

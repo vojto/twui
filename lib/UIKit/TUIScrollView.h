@@ -46,7 +46,7 @@ typedef enum {
 
 @protocol TUIScrollViewDelegate;
 
-@class TUIScrollKnob;
+@class TUIScroller;
 
 /**
  
@@ -163,8 +163,8 @@ typedef enum {
 @property (nonatomic, readonly) CGRect visibleRect;
 @property (nonatomic, readonly) TUIEdgeInsets scrollIndicatorInsets;
 
-@property (nonatomic, strong, readonly) TUIScrollKnob *verticalScrollKnob;
-@property (nonatomic, strong, readonly) TUIScrollKnob *horizontalScrollKnob;
+@property (nonatomic, strong, readonly) TUIScroller *verticalScrollKnob;
+@property (nonatomic, strong, readonly) TUIScroller *horizontalScrollKnob;
 
 @property (nonatomic, readonly) CGPoint pullOffset;
 @property (nonatomic, readonly) CGPoint bounceOffset;

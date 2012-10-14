@@ -154,18 +154,42 @@
 	// Dragging a title can drag the window too.
 	[view setMoveWindowByDragging:YES];
 	
-	TUIActivityIndicator *v = [[TUIActivityIndicator alloc] initWithActivityIndicatorStyle:TUIActivityIndicatorStyleGray];
-	v.frame = CGRectMake(0, 0, 16, 16);
-	[view addSubview:v];
-	
-	[v addLayoutConstraint:[TUILayoutConstraint constraintWithAttribute:TUILayoutConstraintAttributeMaxX
+	// Add an activity indicator to the header view with a 24x24 size.
+	// Since we know the height of the header won't change we can pre-
+	// pad it to 4. However, since the table view's width can change,
+	// we'll create a layout constraint to keep the activity indicator
+	// anchored 16px left of the right side of the header view.
+	TUIActivityIndicator *indicator = [[TUIActivityIndicator alloc] initWithFrame:CGRectMake(0, 4, 24, 24)
+														andActivityIndicatorStyle:TUIActivityIndicatorStyleWhite];
+	[indicator addLayoutConstraint:[TUILayoutConstraint constraintWithAttribute:TUILayoutConstraintAttributeMaxX
 															 relativeTo:@"superview"
 															  attribute:TUILayoutConstraintAttributeMaxX
-																 offset:-(v.bounds.size.width * 2.0f)]];
-	[v addLayoutConstraint:[TUILayoutConstraint constraintWithAttribute:TUILayoutConstraintAttributeMidY
-															 relativeTo:@"superview"
-															  attribute:TUILayoutConstraintAttributeMidY]];
-	[v startAnimating];
+																 offset:-16.0f]];
+	
+	// Add a simple embossing shadow to the white activity indicator.
+	// This way, we can see it better on a bright background. Using
+	// the standard layer property keeps the shadow stable through
+	// animations.
+	indicator.layer.shadowColor = [NSColor shadowColor].tui_CGColor;
+	indicator.layer.shadowOffset = CGSizeMake(0, -1);
+	indicator.layer.shadowOpacity = 1.0f;
+	indicator.layer.shadowRadius = 1.0f;
+	
+	// Set up a glow for the animated indicator using the layerProxy,
+	// which allows us to animate the indicator through animations that.
+	// pulses the glow.
+	indicator.layerProxy.shadowColor = [NSColor whiteColor].tui_CGColor;
+	
+	CAKeyframeAnimation *glow = [CAKeyframeAnimation animationWithKeyPath:@"shadowRadius"];
+	glow.values = @[@0.0, @(5.0), @0.0];
+	CAKeyframeAnimation *fade = [CAKeyframeAnimation animationWithKeyPath:@"shadowOpacity"];
+	fade.values = @[@0.0, @(1.0), @0.0];
+	
+	[indicator.animations addObjectsFromArray:@[glow, fade]];
+	
+	// We then add it as a subview and tell it to start animating.
+	[view addSubview:indicator];
+	[indicator startAnimating];
 	
 	return view;
 }

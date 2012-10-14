@@ -15,6 +15,7 @@
  */
 
 #import "TUIActivityIndicator.h"
+#import "TUILayoutConstraint.h"
 #import "TUICGAdditions.h"
 
 #define TUIActivityIndicatorDefaultFrame		CGRectMake(0, 0, 32, 32)
@@ -26,7 +27,6 @@
 
 @property (nonatomic, strong) TUIView *indicator;
 
-- (id)initWithFrame:(CGRect)frame andActivityIndicatorStyle:(TUIActivityIndicatorStyle)style;
 - (CAAnimationGroup *)packagedAnimations;
 
 @end
@@ -36,13 +36,15 @@
 - (id)initWithFrame:(CGRect)frame andActivityIndicatorStyle:(TUIActivityIndicatorStyle)style {
 	if((self = [super initWithFrame:frame])) {
 		self.indicator = [[TUIView alloc] initWithFrame:self.bounds];
+		self.indicator.autoresizingMask = TUIViewAutoresizingFlexibleSize;
 		self.indicator.backgroundColor = [NSColor clearColor];
 		self.indicator.userInteractionEnabled = NO;
 		self.indicator.hidden = YES;
 		[self addSubview:self.indicator];
 		
-		_activityIndicatorStyle = style;
-		_animationSpeed = 1.0f;
+		self.hidesWhenStopped = YES;
+		self.activityIndicatorStyle = style;
+		self.animationSpeed = 1.0f;
 		
 		if(style != TUIActivityIndicatorStyleCustom) {
 			NSColor *selectedColor = style == TUIActivityIndicatorStyleGray ? [NSColor grayColor] : [NSColor whiteColor];
@@ -82,7 +84,8 @@
 
 - (void)stopAnimating {
 	if(self.animating) {
-		self.indicator.hidden = YES;
+		if(self.hidesWhenStopped)
+			self.indicator.hidden = YES;
 		[self.indicator.layer removeAllAnimations];
 		_animating = NO;
 	}
@@ -111,14 +114,14 @@
 
 // The layer proxy is an effective way to forward the spinner's
 // to the reciever for property customization.
-- (CALayer *)indicatorLayerProxy {
+- (CALayer *)layerProxy {
 	return self.indicator.layer;
 }
 
-// Prevent custom animations if the style is not custom.
-- (void)setAnimations:(NSMutableArray *)animations {
-	if(self.activityIndicatorStyle == TUIActivityIndicatorStyleCustom)
-		_animations = animations;
+- (void)setHidesWhenStopped:(BOOL)hide {
+	_hidesWhenStopped = hide;
+	if(!self.animating && self.hidden)
+		self.hidden = NO;
 }
 
 // Pass the indicator frame through to the spinner view, which will

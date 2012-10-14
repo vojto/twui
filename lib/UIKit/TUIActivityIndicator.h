@@ -35,6 +35,12 @@ typedef enum {
 // The default value is TUIActivityIndicatorStyleWhite.
 @property (nonatomic, assign) TUIActivityIndicatorStyle activityIndicatorStyle;
 
+// The layerProxy allows you to modify layer properties on the indicator
+// as it rotates as well, while using the basic .layer property allows you
+// to modify stationary layer properties - those that are not affected by
+// the animations on the indicator.
+@property (nonatomic, readonly) CALayer *layerProxy;
+
 // Controls whether the receiver is hidden when the animation is stopped.
 // If the value of this property is YES (default), the indicator sets
 // the indicator layer's hidden property to YES when is not animating.
@@ -54,7 +60,6 @@ typedef enum {
 // mutable nature of the animations array, you may combine several
 // unrelated animations to achieve a single complex animation. Also note
 // that anything that is not a CAAnimation object will be discarded.
-// This only applies if activityIndicatorStyle is TUIActivityIndicatorStyleCustom.
 @property (nonatomic, strong) NSMutableArray *animations;
 
 // The indicator frame can be used to apply custom indicator drawing,
@@ -69,6 +74,9 @@ typedef enum {
 // for descriptions of the style constants. 
 - (id)initWithActivityIndicatorStyle:(TUIActivityIndicatorStyle)style;
 
+// Initializes the activity indicator with both style and frame.
+- (id)initWithFrame:(CGRect)frame andActivityIndicatorStyle:(TUIActivityIndicatorStyle)style;
+
 // Starts the animation of the indicator. It is animated to indicate
 // indeterminate progress. It is animated until stopAnimating is called.
 - (void)startAnimating;
@@ -81,10 +89,6 @@ typedef enum {
 // animation start or stop. This method is best used when drawing or
 // animation code is updated.
 - (void)refreshAnimations;
-
-// To apply layer effects to the indicator itself, you must apply them to
-// the layer proxy. Layer properties modified on the indicator will not display.
-- (CALayer *)indicatorLayerProxy;
 
 @end
 

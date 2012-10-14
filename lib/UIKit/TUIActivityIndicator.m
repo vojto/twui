@@ -24,7 +24,7 @@
 
 @interface TUIActivityIndicator ()
 
-@property (nonatomic, strong) TUIView *spinner;
+@property (nonatomic, strong) TUIView *indicator;
 
 - (id)initWithFrame:(CGRect)frame andActivityIndicatorStyle:(TUIActivityIndicatorStyle)style;
 - (CAAnimationGroup *)packagedAnimations;
@@ -35,22 +35,23 @@
 
 - (id)initWithFrame:(CGRect)frame andActivityIndicatorStyle:(TUIActivityIndicatorStyle)style {
 	if((self = [super initWithFrame:frame])) {
-		self.spinner = [[TUIView alloc] initWithFrame:self.bounds];
-		self.spinner.backgroundColor = [NSColor clearColor];
-		self.spinner.userInteractionEnabled = NO;
-		self.spinner.hidden = YES;
-		[self addSubview:self.spinner];
+		self.indicator = [[TUIView alloc] initWithFrame:self.bounds];
+		self.indicator.backgroundColor = [NSColor clearColor];
+		self.indicator.userInteractionEnabled = NO;
+		self.indicator.hidden = YES;
+		[self addSubview:self.indicator];
 		
-		self.activityIndicatorStyle = style;
-		self.animations = [TUIActivityIndicatorGearAnimations(TUIActivityIndicatorDefaultToothCount) mutableCopy];
-		self.animationSpeed = 1.0f;
+		_activityIndicatorStyle = style;
+		_animationSpeed = 1.0f;
 		
-		NSColor *selectedColor = [NSColor whiteColor];
-		if(style == TUIActivityIndicatorStyleGray)
-			selectedColor = [NSColor grayColor];
-		self.indicatorFrame = TUIActivityIndicatorGearFrame(TUIActivityIndicatorDefaultToothCount,
-															TUIActivityIndicatorDefaultToothWidth,
-															selectedColor);
+		if(style != TUIActivityIndicatorStyleCustom) {
+			NSColor *selectedColor = style == TUIActivityIndicatorStyleGray ? [NSColor grayColor] : [NSColor whiteColor];
+			
+			_animations = [TUIActivityIndicatorGearAnimations(TUIActivityIndicatorDefaultToothCount) mutableCopy];
+			self.indicator.drawRect = TUIActivityIndicatorGearFrame(TUIActivityIndicatorDefaultToothCount,
+																	TUIActivityIndicatorDefaultToothWidth,
+																	selectedColor);
+		}
 	}
 	return self;
 }
@@ -63,30 +64,34 @@
 	return [self initWithFrame:TUIActivityIndicatorDefaultFrame andActivityIndicatorStyle:style];
 }
 
+// Animates the indicator through its started and stopped phases.
 - (void)startAnimating {
 	if(!self.animating) {
-		self.spinner.hidden = NO;
-		[self.spinner.layer addAnimation:self.packagedAnimations forKey:nil];
+		self.indicator.hidden = NO;
+		[self.indicator.layer addAnimation:self.packagedAnimations forKey:nil];
 		_animating = YES;
 	}
 }
 
 - (void)refreshAnimations {
 	if(self.animating) {
-		[self.spinner.layer removeAllAnimations];
-		[self.spinner.layer addAnimation:self.packagedAnimations forKey:nil];
+		[self.indicator.layer removeAllAnimations];
+		[self.indicator.layer addAnimation:self.packagedAnimations forKey:nil];
 	}
 }
 
 - (void)stopAnimating {
 	if(self.animating) {
-		[self.spinner.layer removeAllAnimations];
-		
-		self.spinner.hidden = YES;
+		self.indicator.hidden = YES;
+		[self.indicator.layer removeAllAnimations];
 		_animating = NO;
 	}
 }
 
+// Apply fixes to animations in the animations array and then
+// package them in a group with a common duration, repeat count,
+// fill mode, and timing function. This will be applied to the
+// indicator layer for consistent animations.
 - (CAAnimationGroup *)packagedAnimations {
 	for(CAAnimation *animation in self.animations) {
 		animation.fillMode = kCAFillModeForwards;
@@ -104,14 +109,27 @@
 	return animationGroup;
 }
 
+// The layer proxy is an effective way to forward the spinner's
+// to the reciever for property customization.
+- (CALayer *)indicatorLayerProxy {
+	return self.indicator.layer;
+}
+
+// Prevent custom animations if the style is not custom.
+- (void)setAnimations:(NSMutableArray *)animations {
+	if(self.activityIndicatorStyle == TUIActivityIndicatorStyleCustom)
+		_animations = animations;
+}
+
 // Pass the indicator frame through to the spinner view, which will
 // actually use it to draw itself through the animations.
 - (void)setIndicatorFrame:(TUIViewDrawRect)indicatorFrame {
-	self.spinner.drawRect = indicatorFrame;
+	if(self.activityIndicatorStyle == TUIActivityIndicatorStyleCustom)
+		self.indicator.drawRect = indicatorFrame;
 }
 
 - (TUIViewDrawRect)indicatorFrame {
-	return self.spinner.drawRect;
+	return self.indicator.drawRect;
 }
 
 // Animation glitch fixes-- don't let the view lose its animations
@@ -131,6 +149,7 @@
 
 @end
 
+// Custom indicator frames.
 TUIViewDrawRect TUIActivityIndicatorCircleFrame() {
 	return [^(TUIActivityIndicator *indicator, CGRect rect) {
 		CGContextRef ctx = TUIGraphicsGetCurrentContext();
@@ -160,6 +179,7 @@ TUIViewDrawRect TUIActivityIndicatorGearFrame(CGFloat toothCount, CGFloat toothW
 	} copy];
 }
 
+// Custom indicator animations.
 NSArray * TUIActivityIndicatorPulseAnimations(CGFloat peakOpacity) {
 	CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
 	scale.fromValue = @0.1f;

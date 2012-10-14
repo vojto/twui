@@ -199,4 +199,8 @@
 	return nil;
 }
 
+- (void)setNeedsUpdateConstraints {
+	[[TUILayoutManager sharedLayoutManager] beginProcessingView:self];
+}
+
 @end

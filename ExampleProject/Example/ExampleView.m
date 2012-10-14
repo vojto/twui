@@ -154,8 +154,17 @@
 	// Dragging a title can drag the window too.
 	[view setMoveWindowByDragging:YES];
 	
-	TUIActivityIndicator *v = [[TUIActivityIndicator alloc] initWithFrame:CGRectMake(300, 0, 32, 32)];
+	TUIActivityIndicator *v = [[TUIActivityIndicator alloc] initWithActivityIndicatorStyle:TUIActivityIndicatorStyleGray];
+	v.frame = CGRectMake(0, 0, 16, 16);
 	[view addSubview:v];
+	
+	[v addLayoutConstraint:[TUILayoutConstraint constraintWithAttribute:TUILayoutConstraintAttributeMaxX
+															 relativeTo:@"superview"
+															  attribute:TUILayoutConstraintAttributeMaxX
+																 offset:-(v.bounds.size.width * 2.0f)]];
+	[v addLayoutConstraint:[TUILayoutConstraint constraintWithAttribute:TUILayoutConstraintAttributeMidY
+															 relativeTo:@"superview"
+															  attribute:TUILayoutConstraintAttributeMidY]];
 	[v startAnimating];
 	
 	return view;

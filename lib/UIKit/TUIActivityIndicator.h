@@ -24,9 +24,8 @@ typedef enum {
 	// The standard gray style of indicator.
 	TUIActivityIndicatorStyleGray,
 	
-	// A custom indicator style that allows you
-	// to set a custom drawing block and animation
-	// block to use as an indicator.
+	// A custom indicator style that allows you to set a custom drawing block
+	// and animation block to use as an indicator.
 	TUIActivityIndicatorStyleCustom,
 } TUIActivityIndicatorStyle;
 
@@ -55,8 +54,13 @@ typedef enum {
 // mutable nature of the animations array, you may combine several
 // unrelated animations to achieve a single complex animation. Also note
 // that anything that is not a CAAnimation object will be discarded.
+// This only applies if activityIndicatorStyle is TUIActivityIndicatorStyleCustom.
 @property (nonatomic, strong) NSMutableArray *animations;
 
+// The indicator frame can be used to apply custom indicator drawing,
+// and a combination of the indicatorFrame and the animations array,
+// a completely custom look can be applied. This will only apply if
+// the activityIndicatorStyle is set to TUIActivityIndicatorStyleCustom.
 @property (nonatomic, copy) TUIViewDrawRect indicatorFrame;
 
 // Initializes the activity indicator with the style of the indicator.
@@ -77,6 +81,10 @@ typedef enum {
 // animation start or stop. This method is best used when drawing or
 // animation code is updated.
 - (void)refreshAnimations;
+
+// To apply layer effects to the indicator itself, you must apply them to
+// the layer proxy. Layer properties modified on the indicator will not display.
+- (CALayer *)indicatorLayerProxy;
 
 @end
 

@@ -50,8 +50,8 @@
       NSRectFill(self.bounds);
     }
     
-    NSColor *start = [NSColor colorWithCalibratedRed:0.8 green:0.8 blue:0.8 alpha:0.9];
-    NSColor *end = [NSColor colorWithCalibratedRed:0.9 green:0.9 blue:0.9 alpha:0.9];
+    NSColor *start = [NSColor colorWithCalibratedRed:0.1 green:0.1 blue:0.1 alpha:1.0];
+    NSColor *end = [NSColor colorWithCalibratedRed:0.15 green:0.15 blue:0.15 alpha:1.0];
     NSGradient *gradient = nil;
     
     gradient = [[NSGradient alloc] initWithStartingColor:start endingColor:end];

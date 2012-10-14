@@ -417,19 +417,23 @@ static BOOL isAtleastLion = NO;
 	float bounceX = pullX * 1.2;
 	float bounceY = pullY * 1.2;
 	
-	self.verticalScrollKnob.frame = CGRectMake(
-    round(-offset.x + bounds.size.width - verticalKnobSize - pullX), // x
-    round(-offset.y + (hVisible ? verticalKnobSize : 0) + resizeKnobSize.height + bounceY), // y
-    verticalKnobSize, // width
-    bounds.size.height - (hVisible ? verticalKnobSize : 0) - resizeKnobSize.height // height
-  );
-  
-	self.horizontalScrollKnob.frame = CGRectMake(
-    round(-offset.x - bounceX), // x
-    round(-offset.y + pullY), // y
-    bounds.size.width - (vVisible ? horizontalKnobSize : 0) - resizeKnobSize.width, // width
-    horizontalKnobSize // height
-  );
+	[TUIView animateWithDuration:0.2 animations:^{
+		self.verticalScrollKnob.frame = CGRectMake(
+												   round(-offset.x + bounds.size.width - verticalKnobSize - pullX), // x
+												   round(-offset.y + (hVisible ? verticalKnobSize : 0) + resizeKnobSize.height + bounceY), // y
+												   verticalKnobSize, // width
+												   bounds.size.height //- (hVisible ? verticalKnobSize : 0) //- resizeKnobSize.height // height
+												   );
+		
+		self.horizontalScrollKnob.frame = CGRectMake(
+													 round(-offset.x - bounceX), // x
+													 round(-offset.y + pullY), // y
+													 bounds.size.width ,//- (vVisible ? horizontalKnobSize : 0) ,//- resizeKnobSize.width, // width
+													 horizontalKnobSize // height
+													 );
+	}];
+	
+	
   
   // notify the delegate about changes in vertical scroll indiciator visibility
   if(vWasVisible != vEffectiveVisible){

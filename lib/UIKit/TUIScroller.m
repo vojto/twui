@@ -16,6 +16,7 @@
 
 #import "TUIScroller.h"
 #import "TUICGAdditions.h"
+#import "NSColor+TUIExtensions.h"
 
 static CGFloat const TUIScrollerMinimumKnobSize = 25.0f;
 static CGFloat const TUIScrollerDefaultCornerRadius = 3.5f;
@@ -25,9 +26,9 @@ static CGFloat const TUIScrollerDefaultWidth = 11.0f;
 static CGFloat const TUIScrollerExpandedWidth = 15.0f;
 static NSTimeInterval const TUIScrollerDisplayPeriod = 1.0f;
 
+static CGFloat const TUIScrollerTrackVisibleAlpha = 1.0f;
 static CGFloat const TUIScrollerHiddenAlpha = 0.0f;
-static CGFloat const TUIScrollerHoverAlpha = 0.6f;
-static CGFloat const TUIScrollerIdleAlpha = 0.5f;
+static CGFloat const TUIScrollerHoverAlpha = 0.5f;
 
 static NSTimeInterval const TUIScrollerStateChangeSpeed = 0.2f;
 static NSTimeInterval const TUIScrollerStateRefreshSpeed = 0.01f;
@@ -63,9 +64,10 @@ static NSTimeInterval const TUIScrollerStateRefreshSpeed = 0.01f;
 - (id)initWithFrame:(CGRect)frame {
 	if((self = [super initWithFrame:frame])) {
 		_knob = [[TUIView alloc] initWithFrame:CGRectMake(0, 0, 12, 12)];
-		self.knob.layer.cornerRadius = TUIScrollerDefaultCornerRadius;
 		self.knob.userInteractionEnabled = NO;
-		self.knob.backgroundColor = [NSColor blackColor];
+		self.knob.layer.cornerRadius = TUIScrollerDefaultCornerRadius;
+		self.knob.layer.borderWidth = 1.0f;
+		self.scrollIndicatorStyle = TUIScrollViewIndicatorStyleLight;
 		
 		[self addSubview:self.knob];
 		[self _updateKnob];
@@ -182,11 +184,6 @@ if(isnan(knobLength)) \
 }
 
 - (void)_hideKnob {
-	if(self.expanded) {
-		[self _refreshKnobTimer];
-		return;
-	}
-	
 	self.hideKnobTimer = nil;
 	self.knobHidden = YES;
 	[self _updateKnobAlphaWithSpeed:TUIScrollerStateChangeSpeed];
@@ -200,10 +197,14 @@ if(isnan(knobLength)) \
 	if(!self.expanded)
 		return;
 	
-	[[[NSGradient alloc] initWithColors:@[[NSColor colorWithCalibratedWhite:0.90 alpha:0.80],
-										  [NSColor colorWithCalibratedWhite:0.95 alpha:0.80],
-										  [NSColor colorWithCalibratedWhite:0.90 alpha:0.80]]] drawInRect:rect angle:0];
-	[[NSColor colorWithCalibratedWhite:0.75 alpha:0.80] set];
+	NSArray *darkTrack = @[[NSColor colorWithCalibratedWhite:0.90 alpha:0.85],
+						   [NSColor colorWithCalibratedWhite:0.95 alpha:0.85]];
+	NSArray *lightTrack = @[[NSColor colorWithCalibratedWhite:0.15 alpha:0.85],
+							[NSColor colorWithCalibratedWhite:0.20 alpha:0.85]];
+	BOOL drawDark = self.scrollIndicatorStyle == TUIScrollViewIndicatorStyleDark;
+	
+	[[[NSGradient alloc] initWithColors:drawDark ? darkTrack : lightTrack] drawInRect:rect angle:0];
+	[[NSColor colorWithCalibratedWhite:drawDark ? 0.75 : 0.25 alpha:0.75] set];
 	NSRectFill(CGRectMake(0, 0, 1, rect.size.height));
 }
 
@@ -236,27 +237,34 @@ if(isnan(knobLength)) \
 	switch(style) {
 		case TUIScrollViewIndicatorStyleLight:
 			self.knob.backgroundColor = [NSColor whiteColor];
+			self.knob.layer.borderColor = [[NSColor blackColor] colorWithAlphaComponent:0.25].tui_CGColor;
 			break;
 		case TUIScrollViewIndicatorStyleDark:
 		default:
 			self.knob.backgroundColor = [NSColor blackColor];
+			self.knob.layer.borderColor = [[NSColor whiteColor] colorWithAlphaComponent:0.25].tui_CGColor;
 			break;
 	}
+	
+	[TUIView animateWithDuration:TUIScrollerDisplayPeriod animations:^{
+		[self redraw];
+	}];
 }
 
 - (void)_updateKnobAlphaWithSpeed:(CGFloat)duration {
 	[TUIView animateWithDuration:duration animations:^{
-		if(self.knobHidden)
+		if(self.knobHidden) {
 			self.knob.alpha = TUIScrollerHiddenAlpha;
-		else if(_scrollerFlags.hover)
+			self.alpha = TUIScrollerHiddenAlpha;
+		} else {
 			self.knob.alpha = TUIScrollerHoverAlpha;
-		else
-			self.knob.alpha = TUIScrollerIdleAlpha;
+			self.alpha = TUIScrollerTrackVisibleAlpha;
+		}
 	}];
 }
 
 - (BOOL)isExpanded {
-	return _scrollerFlags.hover || _scrollerFlags.active || _scrollerFlags.trackingInsideKnob;
+	return _scrollerFlags.hover || _scrollerFlags.active;
 }
 
 - (BOOL)isFlashing {

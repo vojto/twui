@@ -80,7 +80,7 @@ static NSAttributedString *killBuffer = nil;
 }
 
 - (void)_scrollToIndex:(CFIndex)index {
-	TUIScrollView <TUIBridgedScrollView> *scrollView = (TUIScrollView <TUIBridgedScrollView> *)self.view.ancestorScrollView;
+	id <TUIBridgedScrollView> scrollView = (id <TUIBridgedScrollView>)self.view.ancestorScrollView;
 	if(scrollView) {
 		
 		// Get the rect for the index passed within the text.
@@ -91,12 +91,11 @@ static NSAttributedString *killBuffer = nil;
 		
 		// If it exists, then scroll the the beginning of the rects.
 		if(nRects == 1)
-			[scrollView scrollRectToVisible:rects[0] animated:YES];
+			[scrollView scrollToIncludeRect:rects[0]];
 		
 		// Otherwise, scroll to the middle of the text rects.
 		else if(nRects == 0)
-			[scrollView scrollRectToVisible:CGRectMake(0, self.view.frame.size.height / 2, 0, 1)
-								   animated:YES];
+			[scrollView scrollToIncludeRect:CGRectMake(0, self.view.frame.size.height / 2, 0, 1)];
 	}
 }
 

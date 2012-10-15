@@ -46,13 +46,16 @@
 		self.activityIndicatorStyle = style;
 		self.animationSpeed = 1.0f;
 		
-		if(style != TUIActivityIndicatorStyleCustom) {
+		if(style != TUIActivityIndicatorStyleCustom && style != TUIActivityIndicatorStyleClassic) {
 			NSColor *selectedColor = style == TUIActivityIndicatorStyleGray ? [NSColor grayColor] : [NSColor whiteColor];
 			
-			_animations = [TUIActivityIndicatorGearAnimations(TUIActivityIndicatorDefaultToothCount) mutableCopy];
-			self.indicator.drawRect = TUIActivityIndicatorGearFrame(TUIActivityIndicatorDefaultToothCount,
-																	TUIActivityIndicatorDefaultToothWidth,
-																	selectedColor);
+			self.animations = [TUIActivityIndicatorGearAnimations(TUIActivityIndicatorDefaultToothCount) mutableCopy];
+			self.indicatorFrame = TUIActivityIndicatorGearFrame(TUIActivityIndicatorDefaultToothCount,
+																TUIActivityIndicatorDefaultToothWidth,
+																selectedColor);
+		} else if(style == TUIActivityIndicatorStyleClassic) {
+			self.animations = [TUIActivityIndicatorPulseAnimations(0.3f) mutableCopy];
+			self.indicatorFrame = TUIActivityIndicatorCircleFrame();
 		}
 	}
 	return self;

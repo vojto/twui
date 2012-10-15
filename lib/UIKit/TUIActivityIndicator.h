@@ -24,6 +24,9 @@ typedef enum {
 	// The standard gray style of indicator.
 	TUIActivityIndicatorStyleGray,
 	
+	// The classic pulsing style of indicator.
+	TUIActivityIndicatorStyleClassic,
+	
 	// A custom indicator style that allows you to set a custom drawing block
 	// and animation block to use as an indicator.
 	TUIActivityIndicatorStyleCustom,
@@ -34,12 +37,6 @@ typedef enum {
 // The basic appearance of the activity indicator.
 // The default value is TUIActivityIndicatorStyleWhite.
 @property (nonatomic, assign) TUIActivityIndicatorStyle activityIndicatorStyle;
-
-// The layerProxy allows you to modify layer properties on the indicator
-// as it rotates as well, while using the basic .layer property allows you
-// to modify stationary layer properties - those that are not affected by
-// the animations on the indicator.
-@property (nonatomic, readonly) CALayer *layerProxy;
 
 // Controls whether the receiver is hidden when the animation is stopped.
 // If the value of this property is YES (default), the indicator sets
@@ -53,20 +50,6 @@ typedef enum {
 
 // Changes the speed of the indicator animation. Defaults to 1.0 seconds.
 @property (nonatomic, assign) CGFloat animationSpeed;
-
-// Sets the animations that the indicator will perform while animating.
-// Any duration, timing, fill mode, or repeat count information will be
-// discarded to ensure consistent indicator animations. Due to the
-// mutable nature of the animations array, you may combine several
-// unrelated animations to achieve a single complex animation. Also note
-// that anything that is not a CAAnimation object will be discarded.
-@property (nonatomic, strong) NSMutableArray *animations;
-
-// The indicator frame can be used to apply custom indicator drawing,
-// and a combination of the indicatorFrame and the animations array,
-// a completely custom look can be applied. This will only apply if
-// the activityIndicatorStyle is set to TUIActivityIndicatorStyleCustom.
-@property (nonatomic, copy) TUIViewDrawRect indicatorFrame;
 
 // Initializes the activity indicator with the style of the indicator.
 // You can set and retrieve the style of a activity indicator through
@@ -89,6 +72,26 @@ typedef enum {
 // animation start or stop. This method is best used when drawing or
 // animation code is updated.
 - (void)refreshAnimations;
+
+// Sets the animations that the indicator will perform while animating.
+// Any duration, timing, fill mode, or repeat count information will be
+// discarded to ensure consistent indicator animations. Due to the
+// mutable nature of the animations array, you may combine several
+// unrelated animations to achieve a single complex animation. Also note
+// that anything that is not a CAAnimation object will be discarded.
+@property (nonatomic, strong) NSMutableArray *animations;
+
+// The indicator frame can be used to apply custom indicator drawing,
+// and a combination of the indicatorFrame and the animations array,
+// a completely custom look can be applied. This will only apply if
+// the activityIndicatorStyle is set to TUIActivityIndicatorStyleCustom.
+@property (nonatomic, copy) TUIViewDrawRect indicatorFrame;
+
+// The layerProxy allows you to modify layer properties on the indicator
+// as it rotates as well, while using the basic .layer property allows you
+// to modify stationary layer properties - those that are not affected by
+// the animations on the indicator.
+@property (nonatomic, readonly) CALayer *layerProxy;
 
 @end
 

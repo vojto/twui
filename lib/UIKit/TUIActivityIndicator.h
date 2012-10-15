@@ -54,6 +54,21 @@ typedef enum {
 // Returns the array of all acting animations on the indicator.
 @property (nonatomic, readonly) NSArray *animations;
 
+// The layerProxy allows you to modify layer properties on the indicator
+// as it rotates as well, while using the basic .layer property allows you
+// to modify stationary layer properties - those that are not affected by
+// the animations on the indicator. At its most basic, it is a link to
+// the actual indicator view that is handled by the TUIActivityIndicator.
+@property (nonatomic, readonly) CALayer *layerProxy;
+
+// The indicator frame can be used to apply custom indicator drawing,
+// and a combination of the indicatorFrame and the animations array,
+// a completely custom look can be applied. This will only apply if
+// the activityIndicatorStyle is set to TUIActivityIndicatorStyleCustom.
+// At its most basic, it is a link to the actual indicator view that
+// is handled by the TUIActivityIndicator.
+@property (nonatomic, copy) TUIViewDrawRect indicatorFrame;
+
 // Initializes the activity indicator with the style of the indicator.
 // You can set and retrieve the style of a activity indicator through
 // the activityIndicatorViewStyle property. See TUIActivityIndicatorStyle
@@ -75,21 +90,6 @@ typedef enum {
 // animation start or stop. This method is best used when drawing or
 // animation code is updated.
 - (void)refreshAnimations;
-
-// The layerProxy allows you to modify layer properties on the indicator
-// as it rotates as well, while using the basic .layer property allows you
-// to modify stationary layer properties - those that are not affected by
-// the animations on the indicator. At its most basic, it is a link to
-// the actual indicator view that is handled by the TUIActivityIndicator.
-@property (nonatomic, readonly) CALayer *layerProxy;
-
-// The indicator frame can be used to apply custom indicator drawing,
-// and a combination of the indicatorFrame and the animations array,
-// a completely custom look can be applied. This will only apply if
-// the activityIndicatorStyle is set to TUIActivityIndicatorStyleCustom.
-// At its most basic, it is a link to the actual indicator view that
-// is handled by the TUIActivityIndicator.
-@property (nonatomic, copy) TUIViewDrawRect indicatorFrame;
 
 // Sets the animations that the indicator will perform while animating.
 // Any duration, timing, fill mode, or repeat count information will be

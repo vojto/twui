@@ -26,7 +26,6 @@
 @interface TUIActivityIndicator ()
 
 @property (nonatomic, strong) TUIView *indicator;
-@property (nonatomic, strong) NSMutableArray *animationsList;
 
 - (CAAnimationGroup *)packagedAnimations;
 
@@ -43,7 +42,7 @@
 		self.indicator.hidden = YES;
 		[self addSubview:self.indicator];
 		
-		self.animationsList = [NSMutableArray array];
+		_animations = [NSMutableArray array];
 		self.activityIndicatorStyle = style;
 		self.animationSpeed = 1.0f;
 		self.hidesWhenStopped = YES;
@@ -72,12 +71,12 @@
 	if(style != TUIActivityIndicatorStyleCustom && style != TUIActivityIndicatorStyleClassic) {
 		NSColor *selectedColor = style == TUIActivityIndicatorStyleGray ? [NSColor grayColor] : [NSColor whiteColor];
 		
-		self.animationsList = [TUIActivityIndicatorGearAnimations(TUIActivityIndicatorDefaultToothCount) mutableCopy];
+		_animations = [TUIActivityIndicatorGearAnimations(TUIActivityIndicatorDefaultToothCount) mutableCopy];
 		self.indicator.drawRect = TUIActivityIndicatorGearFrame(TUIActivityIndicatorDefaultToothCount,
 																TUIActivityIndicatorDefaultToothWidth,
 																selectedColor);
 	} else if(style == TUIActivityIndicatorStyleClassic) {
-		self.animationsList = [TUIActivityIndicatorPulseAnimations(0.3f) mutableCopy];
+		_animations = [TUIActivityIndicatorPulseAnimations(0.3f) mutableCopy];
 		self.indicator.drawRect = TUIActivityIndicatorCircleFrame();
 	}
 	
@@ -113,7 +112,7 @@
 // fill mode, and timing function. This will be applied to the
 // indicator layer for consistent animations.
 - (CAAnimationGroup *)packagedAnimations {
-	for(CAAnimation *animation in self.animationsList) {
+	for(CAAnimation *animation in self.animations) {
 		animation.fillMode = kCAFillModeForwards;
 		animation.duration = self.animationSpeed;
 		animation.repeatCount = INT_MAX;
@@ -124,7 +123,7 @@
 	animationGroup.fillMode = kCAFillModeForwards;
 	animationGroup.duration = self.animationSpeed;
 	animationGroup.repeatCount = INT_MAX;
-	animationGroup.animations = self.animationsList;
+	animationGroup.animations = self.animations;
 	
 	return animationGroup;
 }
@@ -141,37 +140,6 @@
 
 - (TUIViewDrawRect)indicatorFrame {
 	return self.indicator.drawRect;
-}
-
-// Return a copy of all the animations in the animation list.
-- (NSArray *)animations {
-	return [self.animationsList copy];
-}
-
-// Allow adding or removing animations to the animation list.
-- (void)addAnimation:(CAAnimation *)animation {
-	if(animation)
-		[self.animationsList addObject:animation];
-	[self refreshAnimations];
-}
-
-- (void)removeAnimation:(CAAnimation *)animation {
-	if(animation)
-		[self.animationsList removeObject:animation];
-	[self refreshAnimations];
-}
-
-// Batched addition or removal of animations.
-- (void)addAnimations:(NSArray *)animations {
-	if(animations.count > 0)
-		[self.animationsList addObjectsFromArray:animations];
-	[self refreshAnimations];
-}
-
-- (void)removeAnimations:(NSArray *)animations {
-	if(animations.count > 0)
-		[self.animationsList removeObjectsInArray:animations];
-	[self refreshAnimations];
 }
 
 // Animation glitch fixes-- don't let the view lose its animations

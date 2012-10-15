@@ -427,6 +427,7 @@
 		48A10E8015B7769A007F9EE3 /* TUILayoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUILayoutManager.m; sourceTree = "<group>"; };
 		48A10E8715B778E8007F9EE3 /* TUIView+Layout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUIView+Layout.m"; sourceTree = "<group>"; };
 		48A10E8A15B77A46007F9EE3 /* TUIView+Layout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUIView+Layout.h"; sourceTree = "<group>"; };
+		48A6234F162C63E900DFA443 /* TUIScrollView+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TUIScrollView+Private.h"; sourceTree = "<group>"; };
 		5EE9839C13BE7650005F430D /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 		5EE983B713BE7809005F430D /* libtwui.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libtwui.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		8819794213E26E0200AA39EB /* TUIView+Accessibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUIView+Accessibility.h"; sourceTree = "<group>"; };
@@ -807,6 +808,7 @@
 				D0C7655015B6294400E7AC2C /* TUIScrollView+TUIBridgedScrollView.h */,
 				D0C7655115B6294400E7AC2C /* TUIScrollView+TUIBridgedScrollView.m */,
 				CBB74C6913BE6E1900C85CB5 /* TUIScrollView.h */,
+				48A6234F162C63E900DFA443 /* TUIScrollView+Private.h */,
 				CBB74C6A13BE6E1900C85CB5 /* TUIScrollView.m */,
 				D05DEE8A15BF645D005D8769 /* TUIStretchableImage.h */,
 				D05DEE8B15BF645D005D8769 /* TUIStretchableImage.m */,

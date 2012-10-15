@@ -15,7 +15,7 @@
  */
 
 #import <CoreServices/CoreServices.h>
-#import "TUIScrollView.h"
+#import "TUIScrollView+Private.h"
 #import "TUIKit.h"
 #import "TUIScroller.h"
 
@@ -55,14 +55,14 @@ enum {
 
 @end
 
-// Default to non-Lion and non-MountainLion behavior to prevent breakage.
-BOOL isAtleastLion = NO;
-BOOL isAtleastMountainLion = NO;
-
 @implementation TUIScrollView
 
 @synthesize decelerationRate;
 @synthesize resizeKnobSize;
+
+// Default to non-Lion and non-MountainLion behavior to prevent breakage.
+static BOOL isAtleastLion = NO;
+static BOOL isAtleastMountainLion = NO;
 
 // Apply Lion or Mountain Lion specific features.
 + (void)initialize {
@@ -79,6 +79,24 @@ BOOL isAtleastMountainLion = NO;
 	isAtleastMountainLion = ((major == 10 && minor >= 8) || major > 11);
 }
 
++ (BOOL)requiresLegacyScrollers {
+	// If it's not at least Lion, it's not at least ML by context.
+	return !isAtleastLion;
+}
+
++ (BOOL)requiresSlimScrollers {
+	return isAtleastLion;
+}
+
++ (BOOL)requiresExpandingScrollers {
+	return isAtleastMountainLion;
+}
+
++ (BOOL)requiresElasticSrolling {
+	return (FORCE_ENABLE_BOUNCE || isAtleastLion ||
+			[[NSUserDefaults standardUserDefaults] boolForKey:@"ForceEnableScrollBouncing"]);
+}
+
 + (Class)layerClass
 {
 	return [CAScrollLayer class];
@@ -92,7 +110,7 @@ BOOL isAtleastMountainLion = NO;
 
 		decelerationRate = 0.88;
 		
-		_scrollViewFlags.bounceEnabled = (FORCE_ENABLE_BOUNCE || isAtleastLion || [[NSUserDefaults standardUserDefaults] boolForKey:@"ForceEnableScrollBouncing"]);
+		_scrollViewFlags.bounceEnabled = [self.class requiresElasticSrolling];
 		_scrollViewFlags.alwaysBounceVertical = NO;
 		_scrollViewFlags.alwaysBounceHorizontal = NO;
 		
@@ -352,7 +370,7 @@ BOOL isAtleastMountainLion = NO;
 
 - (void)setResizeKnobSize:(CGSize)s
 {
-	if(!isAtleastLion)
+	if([self.class requiresLegacyScrollers])
 		resizeKnobSize = s;
 }
 
@@ -372,8 +390,8 @@ BOOL isAtleastMountainLion = NO;
 	CGPoint offset = _unroundedContentOffset;
 	CGRect bounds = self.bounds;
 	
-	CGFloat verticalScrollerSize = self.verticalScroller.expanded ? 15 : 11;
-	CGFloat horizontalScrollerSize = self.horizontalScroller.expanded ? 15 : 11;
+	CGFloat verticalScrollerSize = self.verticalScroller.updatedScrollerWidth;
+	CGFloat horizontalScrollerSize = self.horizontalScroller.updatedScrollerWidth;
 	
 	BOOL vWasVisible = _scrollViewFlags.verticalScrollIndicatorShowing;
 	BOOL vVisible = [self _verticalScrollerNeededForContentSize:self.contentSize];
@@ -429,8 +447,13 @@ BOOL isAtleastMountainLion = NO;
 	CGFloat verticalScrollerStart = bounds.size.width - verticalScrollerSize;
 	CGFloat horizontalScrollerStart = 0;
 	
-	CGFloat verticalScrollerOffset = isAtleastLion ? 0 : ((hVisible ? verticalScrollerSize : 0) + resizeKnobSize.height);
-	CGFloat horizontalScrollerOffset = isAtleastLion ? 0 : ((vVisible ? horizontalScrollerSize : 0) + resizeKnobSize.width);
+	CGFloat verticalScrollerOffset = ((hVisible ? verticalScrollerSize : 0) + resizeKnobSize.height);
+	CGFloat horizontalScrollerOffset = ((vVisible ? horizontalScrollerSize : 0) + resizeKnobSize.width);
+	
+	if(![self.class requiresLegacyScrollers]) {
+		verticalScrollerOffset = 0.0f;
+		horizontalScrollerOffset = 0.0f;
+	}
 	
 	CGRect newVScrollerRect = CGRectMake(roundf(-offset.x + verticalScrollerStart - pullX), roundf(-offset.y + pullY),
 										 verticalScrollerSize, bounds.size.height - verticalScrollerOffset);
@@ -443,19 +466,15 @@ BOOL isAtleastMountainLion = NO;
 		self.verticalScroller.frame = newVScrollerRect;
 		self.horizontalScroller.frame = newHScrollerRect;
 	};
-	if(!animated) {
-		[TUIView animateWithDuration:0.25 animations:^{
-			[self.verticalScroller redraw];
-			[self.horizontalScroller redraw];
-		}];
-		updateBlock();
-	} else {
-		[TUIView animateWithDuration:0.25 animations:^{
-			[self.verticalScroller redraw];
-			[self.horizontalScroller redraw];
+	[TUIView animateWithDuration:0.25 animations:^{
+		[self.verticalScroller redraw];
+		[self.horizontalScroller redraw];
+		
+		if(animated)
 			updateBlock();
-		}];
-	}
+	}];
+	if(!animated)
+		updateBlock();
 	
 	// Notify the delegate about changes in scroll indiciator visibility.
 	if(vWasVisible != vEffectiveVisible) {
@@ -1042,7 +1061,7 @@ static float clampBounce(float x) {
 		_scrollViewFlags.gestureBegan = 0;
 		[self _startThrow];
 		
-		if(isAtleastLion) {
+		if([self.class requiresElasticSrolling]) {
 			_scrollViewFlags.ignoreNextScrollPhaseNormal_10_7 = 1;
 		}
 	}
@@ -1059,7 +1078,7 @@ static float clampBounce(float x) {
 	{
 		int phase = ScrollPhaseNormal;
 		
-		if(isAtleastLion) {
+		if([self.class requiresElasticSrolling]) {
 			SEL s = @selector(momentumPhase);
 			if([event respondsToSelector:s]) {
 				NSInteger (*imp)(id,SEL) = (NSInteger(*)(id,SEL))[event methodForSelector:s];

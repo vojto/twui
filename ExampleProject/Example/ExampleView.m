@@ -175,20 +175,9 @@
 	indicator.layer.shadowOpacity = 1.0f;
 	indicator.layer.shadowRadius = 1.0f;
 	
-	// Set up a glow for the animated indicator using the layerProxy,
-	// which allows us to animate the indicator through animations that.
-	// pulses the glow.
-	indicator.layerProxy.shadowColor = [NSColor whiteColor].tui_CGColor;
-	
-	CAKeyframeAnimation *glow = [CAKeyframeAnimation animationWithKeyPath:@"shadowRadius"];
-	glow.values = @[@0.0, @(5.0), @0.0];
-	CAKeyframeAnimation *fade = [CAKeyframeAnimation animationWithKeyPath:@"shadowOpacity"];
-	fade.values = @[@0.0, @(1.0), @0.0];
-	
-	[indicator.animations addObjectsFromArray:@[glow, fade]];
-	
 	// We then add it as a subview and tell it to start animating.
 	[view addSubview:indicator];
+	indicator.animationSpeed = 0.75f;
 	[indicator startAnimating];
 	
 	return view;

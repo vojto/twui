@@ -26,6 +26,7 @@
 @interface TUIActivityIndicator ()
 
 @property (nonatomic, strong) TUIView *indicator;
+@property (nonatomic, strong) NSMutableArray *animationsList;
 
 - (CAAnimationGroup *)packagedAnimations;
 
@@ -42,21 +43,10 @@
 		self.indicator.hidden = YES;
 		[self addSubview:self.indicator];
 		
-		self.hidesWhenStopped = YES;
+		self.animationsList = [NSMutableArray array];
 		self.activityIndicatorStyle = style;
 		self.animationSpeed = 1.0f;
-		
-		if(style != TUIActivityIndicatorStyleCustom && style != TUIActivityIndicatorStyleClassic) {
-			NSColor *selectedColor = style == TUIActivityIndicatorStyleGray ? [NSColor grayColor] : [NSColor whiteColor];
-			
-			self.animations = [TUIActivityIndicatorGearAnimations(TUIActivityIndicatorDefaultToothCount) mutableCopy];
-			self.indicatorFrame = TUIActivityIndicatorGearFrame(TUIActivityIndicatorDefaultToothCount,
-																TUIActivityIndicatorDefaultToothWidth,
-																selectedColor);
-		} else if(style == TUIActivityIndicatorStyleClassic) {
-			self.animations = [TUIActivityIndicatorPulseAnimations(0.3f) mutableCopy];
-			self.indicatorFrame = TUIActivityIndicatorCircleFrame();
-		}
+		self.hidesWhenStopped = YES;
 	}
 	return self;
 }
@@ -69,7 +59,31 @@
 	return [self initWithFrame:TUIActivityIndicatorDefaultFrame andActivityIndicatorStyle:style];
 }
 
-// Animates the indicator through its started and stopped phases.
+- (void)setHidesWhenStopped:(BOOL)hide {
+	_hidesWhenStopped = hide;
+	if(!self.animating && !hide && self.indicator.hidden)
+		self.indicator.hidden = NO;
+	else
+		self.indicator.hidden = YES;
+}
+
+- (void)setActivityIndicatorStyle:(TUIActivityIndicatorStyle)style {
+	_activityIndicatorStyle = style;
+	if(style != TUIActivityIndicatorStyleCustom && style != TUIActivityIndicatorStyleClassic) {
+		NSColor *selectedColor = style == TUIActivityIndicatorStyleGray ? [NSColor grayColor] : [NSColor whiteColor];
+		
+		self.animationsList = [TUIActivityIndicatorGearAnimations(TUIActivityIndicatorDefaultToothCount) mutableCopy];
+		self.indicator.drawRect = TUIActivityIndicatorGearFrame(TUIActivityIndicatorDefaultToothCount,
+																TUIActivityIndicatorDefaultToothWidth,
+																selectedColor);
+	} else if(style == TUIActivityIndicatorStyleClassic) {
+		self.animationsList = [TUIActivityIndicatorPulseAnimations(0.3f) mutableCopy];
+		self.indicator.drawRect = TUIActivityIndicatorCircleFrame();
+	}
+	
+	[self refreshAnimations];
+}
+
 - (void)startAnimating {
 	if(!self.animating) {
 		self.indicator.hidden = NO;
@@ -99,7 +113,7 @@
 // fill mode, and timing function. This will be applied to the
 // indicator layer for consistent animations.
 - (CAAnimationGroup *)packagedAnimations {
-	for(CAAnimation *animation in self.animations) {
+	for(CAAnimation *animation in self.animationsList) {
 		animation.fillMode = kCAFillModeForwards;
 		animation.duration = self.animationSpeed;
 		animation.repeatCount = INT_MAX;
@@ -110,25 +124,16 @@
 	animationGroup.fillMode = kCAFillModeForwards;
 	animationGroup.duration = self.animationSpeed;
 	animationGroup.repeatCount = INT_MAX;
-	animationGroup.animations = self.animations;
+	animationGroup.animations = self.animationsList;
 	
 	return animationGroup;
 }
 
-// The layer proxy is an effective way to forward the spinner's
-// to the reciever for property customization.
+// Add ways to access the CALayer and drawRect of the actual indicator.
 - (CALayer *)layerProxy {
 	return self.indicator.layer;
 }
 
-- (void)setHidesWhenStopped:(BOOL)hide {
-	_hidesWhenStopped = hide;
-	if(!self.animating && self.hidden)
-		self.hidden = NO;
-}
-
-// Pass the indicator frame through to the spinner view, which will
-// actually use it to draw itself through the animations.
 - (void)setIndicatorFrame:(TUIViewDrawRect)indicatorFrame {
 	if(self.activityIndicatorStyle == TUIActivityIndicatorStyleCustom)
 		self.indicator.drawRect = indicatorFrame;
@@ -136,6 +141,37 @@
 
 - (TUIViewDrawRect)indicatorFrame {
 	return self.indicator.drawRect;
+}
+
+// Return a copy of all the animations in the animation list.
+- (NSArray *)animations {
+	return [self.animationsList copy];
+}
+
+// Allow adding or removing animations to the animation list.
+- (void)addAnimation:(CAAnimation *)animation {
+	if(animation)
+		[self.animationsList addObject:animation];
+	[self refreshAnimations];
+}
+
+- (void)removeAnimation:(CAAnimation *)animation {
+	if(animation)
+		[self.animationsList removeObject:animation];
+	[self refreshAnimations];
+}
+
+// Batched addition or removal of animations.
+- (void)addAnimations:(NSArray *)animations {
+	if(animations.count > 0)
+		[self.animationsList addObjectsFromArray:animations];
+	[self refreshAnimations];
+}
+
+- (void)removeAnimations:(NSArray *)animations {
+	if(animations.count > 0)
+		[self.animationsList removeObjectsInArray:animations];
+	[self refreshAnimations];
 }
 
 // Animation glitch fixes-- don't let the view lose its animations

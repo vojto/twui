@@ -196,14 +196,16 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 		self.knob.layer.borderWidth = 0.0f;
 	}
 	
-	BOOL drawLight = self.scrollIndicatorStyle == TUIScrollViewIndicatorStyleLight;
+	// TUIScrollViewIndicatorStyleLight draws a dark track underneath,
+	// but the other indicator styles draw a light track.
+	BOOL lightScroller = self.scrollIndicatorStyle == TUIScrollViewIndicatorStyleLight;
 	NSArray *lightTrack = @[[NSColor colorWithCalibratedWhite:0.90 alpha:0.85],
 							[NSColor colorWithCalibratedWhite:0.95 alpha:0.85]];
 	NSArray *darkTrack = @[[NSColor colorWithCalibratedWhite:0.15 alpha:0.85],
 						   [NSColor colorWithCalibratedWhite:0.20 alpha:0.85]];
 	
-	[[[NSGradient alloc] initWithColors:drawLight ? darkTrack : lightTrack] drawInRect:rect angle:0];
-	[[NSColor colorWithCalibratedWhite:drawLight ? 0.25 : 0.75 alpha:0.75] set];
+	[[[NSGradient alloc] initWithColors:lightScroller ? darkTrack : lightTrack] drawInRect:rect angle:0];
+	[[NSColor colorWithCalibratedWhite:lightScroller ? 0.25 : 0.75 alpha:0.75] set];
 	NSRectFill(CGRectMake(0, 0, 1, rect.size.height));
 }
 

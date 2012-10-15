@@ -160,7 +160,7 @@
 	// we'll create a layout constraint to keep the activity indicator
 	// anchored 16px left of the right side of the header view.
 	TUIActivityIndicator *indicator = [[TUIActivityIndicator alloc] initWithFrame:CGRectMake(0, 4, 24, 24)
-														andActivityIndicatorStyle:TUIActivityIndicatorStyleWhite];
+														andActivityIndicatorStyle:TUIActivityIndicatorStyleGray];
 	[indicator addLayoutConstraint:[TUILayoutConstraint constraintWithAttribute:TUILayoutConstraintAttributeMaxX
 															 relativeTo:@"superview"
 															  attribute:TUILayoutConstraintAttributeMaxX
@@ -170,7 +170,7 @@
 	// This way, we can see it better on a bright background. Using
 	// the standard layer property keeps the shadow stable through
 	// animations.
-	indicator.layer.shadowColor = [NSColor shadowColor].tui_CGColor;
+	indicator.layer.shadowColor = [NSColor whiteColor].tui_CGColor;
 	indicator.layer.shadowOffset = CGSizeMake(0, -1);
 	indicator.layer.shadowOpacity = 1.0f;
 	indicator.layer.shadowRadius = 1.0f;

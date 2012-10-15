@@ -23,7 +23,6 @@
 #import "TUINSWindow.h"
 #import "TUITextRenderer.h"
 #import "TUIViewController.h"
-#import "TUIScrollView.h"
 
 /*
  * Enable this to debug blending.

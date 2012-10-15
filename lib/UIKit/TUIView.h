@@ -276,8 +276,6 @@ extern CGRect(^TUIViewCenteredLayout)(TUIView*);
 
 @end
 
-@class TUIScrollView;
-
 @interface TUIView (TUIViewHierarchy)
 
 @property (nonatomic, readonly) TUIView *superview;

@@ -382,8 +382,30 @@ static inline void tui_viewAnimateRedrawConditionally(TUIView *view, BOOL condit
 @end
 
 TUIViewDrawRect gradientBackgroundWithAngledPattern(TUITableViewCellGradientPattern pattern,
-													TUITableViewCellColorStyle style,
+													TUITableViewCellState state,
 													CGFloat styleAngle) {
+	
+	NSColor* (^colorForState)(TUITableViewCell *, TUITableViewCellState);
+	colorForState = ^(TUITableViewCell *cell, TUITableViewCellState state) {
+		if(state == TUITableViewCellStateBackground)
+			return cell.backgroundColor;
+		else if(state == TUITableViewCellStateHighlighted)
+			return cell.highlightColor;
+		else if(state == TUITableViewCellStateSelected)
+			return cell.selectionColor;
+		else return (NSColor *)nil;
+	};
+	
+	NSColor* (^alternateColorForState)(TUITableViewCell *, TUITableViewCellState);
+	alternateColorForState = ^(TUITableViewCell *cell, TUITableViewCellState state) {
+		if(state == TUITableViewCellStateBackground)
+			return cell.alternateBackgroundColor;
+		else if(state == TUITableViewCellStateHighlighted)
+			return cell.alternateHighlightColor;
+		else if(state == TUITableViewCellStateSelected)
+			return cell.alternateSelectionColor;
+		else return (NSColor *)nil;
+	};
 	
 	NSColor* (^topColorForStyle)(TUITableViewCellColorStyle) = ^(TUITableViewCellColorStyle style) {
 		if(style == TUITableViewCellColorStyleBlue)
@@ -428,21 +450,32 @@ TUIViewDrawRect gradientBackgroundWithAngledPattern(TUITableViewCellGradientPatt
 	};
 	
 	return [^(TUITableViewCell *cell, CGRect rect) {
+		
 		CGFloat angle = (styleAngle > 360.0f ? 360 : (styleAngle < -360.0f ? - 360.0f : styleAngle));
+		TUITableViewCellColorStyle style = TUITableViewCellColorStyleNone;
+		if(state == TUITableViewCellStateBackground)
+			style = cell.backgroundStyle;
+		else if(state == TUITableViewCellStateHighlighted)
+			style = cell.highlightStyle;
+		else if(state == TUITableViewCellStateSelected)
+			style = cell.selectionStyle;
 		
 		if(pattern == TUITableViewCellGradientPatternDefault && style != TUITableViewCellColorStyleNone) {
 			[[[NSGradient alloc] initWithColors:@[topColorForStyle(style), bottomColorForStyle(style)]]
 								 drawInRect:rect angle:angle];
+		} else if(pattern == TUITableViewCellGradientPatternNormalToAlternate && alternateColorForState(cell, state)) {
+			[[[NSGradient alloc] initWithColors:@[colorForState(cell, state), alternateColorForState(cell, state)]]
+								 drawInRect:rect angle:angle];
 		} else if(pattern != TUITableViewCellGradientPatternDefault) {
 			[[[NSGradient alloc] initWithColors:@[topColorForPattern(cell, pattern), bottomColorForPattern(cell, pattern)]]
 								 drawInRect:rect angle:angle];
-		//} else if(style == TUITableViewCellColorStyleCoalescedWithAlternates && alternateColor) {
-		//	
-		//	[[[NSGradient alloc] initWithColors:@[color, alternateColor]] drawInRect:rect angle:angle];
-		//} else {
-		//	BOOL alternated = (alternateColor && (self.indexPath.row % 2));
-		//	[alternated ? alternateColor : color set];
-		//	CGContextFillRect(TUIGraphicsGetCurrentContext(), rect);
+		} else {
+			NSColor *color = colorForState(cell, state) ? colorForState(cell, state) : cell.backgroundColor;
+			NSColor *alternateColor = alternateColorForState(cell, state);
+			BOOL alternated = (alternateColor && (cell.indexPath.row % 2));
+			
+			[alternated ? alternateColor : color set];
+			CGContextFillRect(TUIGraphicsGetCurrentContext(), rect);
 		}
 	} copy];
 }

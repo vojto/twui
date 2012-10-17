@@ -22,6 +22,13 @@ typedef enum {
 	TUITableViewCellStyleDefault,
 } TUITableViewCellStyle;
 
+// Identifiers representing a cell's current state.
+typedef enum {
+	TUITableViewCellStateBackground,
+	TUITableViewCellStateHighlighted,
+	TUITableViewCellStateSelected
+} TUITableViewCellState;
+
 typedef enum {
 	
 	// The cell has no distinct separator style.
@@ -216,7 +223,9 @@ typedef enum {
 
 // Returns a drawRect block for TUITableViewCell drawing the state
 // background in a gradient using both its gradient pattern and the
-// passed color style to determine its look. You may also pass an
+// passed drawing state to determine its look. You may also pass an
 // angle to draw the gradient in, which must be within [-360, 360].
+// If a gradient cannot be drawn because a state color or alternate
+// color is missing, it defaults to the standard flat drawing.
 extern TUIViewDrawRect gradientBackgroundWithAngledPattern(TUITableViewCellGradientPattern,
-														   TUITableViewCellColorStyle, CGFloat);
+														   TUITableViewCellState, CGFloat);

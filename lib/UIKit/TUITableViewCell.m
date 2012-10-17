@@ -138,7 +138,7 @@ static inline void tui_viewAnimateRedrawConditionally(TUIView *view, BOOL condit
 		[[self colorForStyle:self.selectionStyle] set];
 		CGContextFillRect(TUIGraphicsGetCurrentContext(), rect);
 	} else {
-		NSColor *color = self.highlightColor ? self.highlightColor : self.backgroundColor;
+		NSColor *color = self.selectionColor ? self.selectionColor : self.backgroundColor;
 		BOOL alternated = (self.alternateSelectionColor && (self.indexPath.row % 2));
 		
 		[alternated ? self.alternateSelectionColor : color set];

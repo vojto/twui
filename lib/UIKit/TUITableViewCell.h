@@ -193,17 +193,12 @@ typedef enum {
 
 @end
 
-// Convenience CGFloat undefined value mapping to INFINITY.
-#define CGFLOAT_UNDEFINED INFINITY
-
 typedef enum {
 	
 	// This gradients the first state's color to the next state's
 	// color forming a gradient. Although the definition is from
 	// one state to the next, you may adjust the gradient angle
 	// to reverse it as well, from the second state to the first.
-	// If the gradient angle for the style is CGFLOAT_UNDEFINED,
-	// these styles act identically to TUITableViewCellColorStyleNone.
 	TUITableViewCellGradientPatternBackgroundToHighlight,
 	TUITableViewCellGradientPatternHighlightToSelection,
 	TUITableViewCellGradientPatternSelectionToBackground,
@@ -211,17 +206,17 @@ typedef enum {
 	// If alternate colors are set for each or any of the styles,
 	// a coalesced gradient can be formed between the base color and
 	// the alternating color as well. If the alternating color for the
-	// style is nil, or the angle for the style is CGFLOAT_UNDEFINED,
-	// it reverts to TUITableViewCellColorStyleNone.
+	// style is nil, it reverts to TUITableViewCellColorStyleNone.
 	TUITableViewCellGradientPatternNormalToAlternate,
 	
-	// If the style is TUITableViewCellColorStyleCoalescedWithAlternates,
-	// the alternating color is coalesced with the standard color in a gradient.
-	// If the color style draws coalesced, the angle of coalescence can be
-	// adjusted per state. The value may not exceed the bounds 360.0f or -360.0f.
-	// If set to CGFLOAT_UNDEFINED, coalescence is disabled.
+	// If the color style is not TUITableViewCellColorStyleNone,
+	// the preset color styles are drawn as gradients at an angle.
 	TUITableViewCellGradientPatternDefault,
 } TUITableViewCellGradientPattern;
 
+// Returns a drawRect block for TUITableViewCell drawing the state
+// background in a gradient using both its gradient pattern and the
+// passed color style to determine its look. You may also pass an
+// angle to draw the gradient in, which must be within [-360, 360].
 extern TUIViewDrawRect gradientBackgroundWithAngledPattern(TUITableViewCellGradientPattern,
 														   TUITableViewCellColorStyle, CGFloat);

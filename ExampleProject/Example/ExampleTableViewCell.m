@@ -29,6 +29,12 @@
 		self.alternateBackgroundColor = [NSColor colorWithCalibratedWhite:0.92 alpha:1.0f];
 		self.alternateHighlightColor = [NSColor colorWithCalibratedWhite:0.82 alpha:1.0f];
 		
+		// By replacing the drawSelectedBackground block, when our state is
+		// changed to selected, we draw an bottom-up gradient from the
+		// highlight color to the background color with the selection style.
+		self.drawSelectedBackground = gradientBackgroundWithAngledPattern(TUITableViewCellGradientPatternBackgroundToHighlight,
+																		  self.selectionStyle, 90.0f);
+		
 		// Instead of using a TUILabel or TUITextField, let's take a little
 		// course in the art of using a TUITextRenderer. It acts as a simple
 		// text -> layer rendering mechanism class with tie-ins to TUIView,

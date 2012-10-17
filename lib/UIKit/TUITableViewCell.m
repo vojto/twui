@@ -28,7 +28,6 @@
 #define TUITableViewCellGrayTopColor		[NSColor colorWithCalibratedWhite:0.60 alpha:1.00]
 #define TUITableViewCellGrayBottomColor		[NSColor colorWithCalibratedWhite:0.45 alpha:1.00]
 
-#define TUI_CELL_REFRESH_DRAWING			tui_viewAnimateRedrawConditionally(self, self.animatesAppearanceChanges)
 static inline void tui_viewAnimateRedrawConditionally(TUIView *view, BOOL condition) {
 	if(condition) {
 		[TUIView animateWithDuration:0.25 animations:^{
@@ -336,47 +335,47 @@ static inline void tui_viewAnimateRedrawConditionally(TUIView *view, BOOL condit
 
 - (void)setSeparatorStyle:(TUITableViewCellSeparatorStyle)separatorStyle {
 	_separatorStyle = separatorStyle;
-	TUI_CELL_REFRESH_DRAWING;
+	tui_viewAnimateRedrawConditionally(self, self.animatesAppearanceChanges);
 }
 
 - (void)setBackgroundStyle:(TUITableViewCellColorStyle)style {
 	_backgroundStyle = style;
-	TUI_CELL_REFRESH_DRAWING;
+	tui_viewAnimateRedrawConditionally(self, self.animatesAppearanceChanges);
 }
 
 - (void)setHighlightStyle:(TUITableViewCellColorStyle)style {
 	_highlightStyle = style;
-	TUI_CELL_REFRESH_DRAWING;
+	tui_viewAnimateRedrawConditionally(self, self.animatesAppearanceChanges);
 }
 
 - (void)setSelectionStyle:(TUITableViewCellColorStyle)style {
 	_selectionStyle = style;
-	TUI_CELL_REFRESH_DRAWING;
+	tui_viewAnimateRedrawConditionally(self, self.animatesAppearanceChanges);
 }
 
 - (void)setHighlightColor:(NSColor *)highlightColor {
 	_highlightColor = highlightColor;
-	TUI_CELL_REFRESH_DRAWING;
+	tui_viewAnimateRedrawConditionally(self, self.animatesAppearanceChanges);
 }
 
 - (void)setSelectionColor:(NSColor *)selectionColor {
 	_selectionColor = selectionColor;
-	TUI_CELL_REFRESH_DRAWING;
+	tui_viewAnimateRedrawConditionally(self, self.animatesAppearanceChanges);
 }
 
 - (void)setAlternateBackgroundColor:(NSColor *)alternateColor {
 	_alternateBackgroundColor = alternateColor;
-	TUI_CELL_REFRESH_DRAWING;
+	tui_viewAnimateRedrawConditionally(self, self.animatesAppearanceChanges);
 }
 
 - (void)setAlternateHighlightColor:(NSColor *)alternateColor {
 	_alternateHighlightColor = alternateColor;
-	TUI_CELL_REFRESH_DRAWING;
+	tui_viewAnimateRedrawConditionally(self, self.animatesAppearanceChanges);
 }
 
 - (void)setAlternateSelectionColor:(NSColor *)alternateColor {
 	_alternateSelectionColor = alternateColor;
-	TUI_CELL_REFRESH_DRAWING;
+	tui_viewAnimateRedrawConditionally(self, self.animatesAppearanceChanges);
 }
 
 @end

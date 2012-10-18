@@ -124,10 +124,11 @@ static inline void tui_viewAnimateRedrawConditionally(TUIView *view, BOOL condit
 		[[self colorForStyle:self.highlightStyle] set];
 		CGContextFillRect(TUIGraphicsGetCurrentContext(), rect);
 	} else {
-		NSColor *color = self.highlightColor ? self.highlightColor : self.backgroundColor;
-		BOOL alternated = (self.alternateHighlightColor && (self.indexPath.row % 2));
+		NSColor *color = self.highlightColor ?: self.backgroundColor;
+		NSColor *alternateColor = self.alternateHighlightColor ?: self.alternateBackgroundColor;
+		BOOL alternated = (alternateColor && (self.indexPath.row % 2));
 		
-		[alternated ? self.alternateHighlightColor : color set];
+		[alternated ? alternateColor : color set];
 		CGContextFillRect(TUIGraphicsGetCurrentContext(), rect);
 	}
 }
@@ -137,10 +138,11 @@ static inline void tui_viewAnimateRedrawConditionally(TUIView *view, BOOL condit
 		[[self colorForStyle:self.selectionStyle] set];
 		CGContextFillRect(TUIGraphicsGetCurrentContext(), rect);
 	} else {
-		NSColor *color = self.selectionColor ? self.selectionColor : self.backgroundColor;
-		BOOL alternated = (self.alternateSelectionColor && (self.indexPath.row % 2));
+		NSColor *color = self.selectionColor ?: self.backgroundColor;
+		NSColor *alternateColor = self.alternateSelectionColor ?: self.alternateBackgroundColor;
+		BOOL alternated = (alternateColor && (self.indexPath.row % 2));
 		
-		[alternated ? self.alternateSelectionColor : color set];
+		[alternated ? alternateColor : color set];
 		CGContextFillRect(TUIGraphicsGetCurrentContext(), rect);
 	}
 }

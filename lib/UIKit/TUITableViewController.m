@@ -30,7 +30,7 @@
 }
 
 - (id)initWithStyle:(TUITableViewStyle)style {
-    if((self = [super initWithNibName:nil bundle:nil])) {
+    if((self = [super init])) {
         _style = style;
     }
 	

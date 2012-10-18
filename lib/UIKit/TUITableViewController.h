@@ -53,4 +53,9 @@
 // table view in the plain style is created.
 - (id)initWithStyle:(TUITableViewStyle)style;
 
+// Optionally initialize a table view controller to manage a table view
+// of a given style with a cached frame. This frame is used when -loadView
+// is invoked, and does not require the table view frame be set later.
+- (id)initWithFrame:(CGRect)frame style:(TUITableViewStyle)style;
+
 @end

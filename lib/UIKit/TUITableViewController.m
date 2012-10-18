@@ -19,6 +19,7 @@
 @interface TUITableViewController ()
 
 @property (nonatomic, assign) TUITableViewStyle style;
+@property (nonatomic, assign) CGRect frame;
 @property (nonatomic, assign) BOOL firstReload;
 
 @end
@@ -32,13 +33,23 @@
 - (id)initWithStyle:(TUITableViewStyle)style {
     if((self = [super init])) {
         _style = style;
+		_frame = CGRectZero;
     }
 	
     return self;
 }
 
+- (id)initWithFrame:(CGRect)frame style:(TUITableViewStyle)style {
+	if((self = [super init])) {
+        _style = style;
+		_frame = frame;
+    }
+	
+	return self;
+}
+
 - (void)loadView {
-    self.tableView = [[TUITableView alloc] initWithFrame:CGRectZero style:self.style];
+    self.tableView = [[TUITableView alloc] initWithFrame:self.frame style:self.style];
 	self.tableView.autoresizingMask = TUIViewAutoresizingFlexibleSize;
 	
     self.tableView.delegate = self;

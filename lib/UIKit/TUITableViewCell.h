@@ -199,33 +199,3 @@ typedef enum {
 @property (nonatomic, copy) TUIViewDrawRect drawSeparators;
 
 @end
-
-typedef enum {
-	
-	// This gradients the first state's color to the next state's
-	// color forming a gradient. Although the definition is from
-	// one state to the next, you may adjust the gradient angle
-	// to reverse it as well, from the second state to the first.
-	TUITableViewCellGradientPatternBackgroundToHighlight,
-	TUITableViewCellGradientPatternHighlightToSelection,
-	TUITableViewCellGradientPatternSelectionToBackground,
-	
-	// If alternate colors are set for each or any of the styles,
-	// a coalesced gradient can be formed between the base color and
-	// the alternating color as well. If the alternating color for the
-	// style is nil, it reverts to TUITableViewCellColorStyleNone.
-	TUITableViewCellGradientPatternNormalToAlternate,
-	
-	// If the color style is not TUITableViewCellColorStyleNone,
-	// the preset color styles are drawn as gradients at an angle.
-	TUITableViewCellGradientPatternDefault,
-} TUITableViewCellGradientPattern;
-
-// Returns a drawRect block for TUITableViewCell drawing the state
-// background in a gradient using both its gradient pattern and the
-// passed drawing state to determine its look. You may also pass an
-// angle to draw the gradient in, which must be within [-360, 360].
-// If a gradient cannot be drawn because a state color or alternate
-// color is missing, it defaults to the standard flat drawing.
-extern TUIViewDrawRect gradientBackgroundWithAngledPattern(TUITableViewCellGradientPattern,
-														   TUITableViewCellState, CGFloat);

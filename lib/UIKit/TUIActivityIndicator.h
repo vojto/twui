@@ -24,7 +24,7 @@ typedef enum {
 	// The standard gray style of indicator.
 	TUIActivityIndicatorStyleGray,
 	
-	// The classic pulsing style of indicator.
+	// The classic pulsing style of indicator without gears.
 	TUIActivityIndicatorStyleClassic,
 	
 	// A custom indicator style that allows you to set a custom drawing block
@@ -61,20 +61,14 @@ typedef enum {
 // indicator is animating.
 @property (nonatomic, readonly) NSMutableArray *animations;
 
-// The layerProxy allows you to modify layer properties on the indicator
+// The proxyIndicator allows you to modify properties on the indicator
 // as it rotates as well, while using the basic .layer property allows you
 // to modify stationary layer properties - those that are not affected by
-// the animations on the indicator. At its most basic, it is a link to
-// the actual indicator view that is handled by the TUIActivityIndicator.
-@property (nonatomic, readonly) CALayer *layerProxy;
-
-// The indicator frame can be used to apply custom indicator drawing,
-// and a combination of the indicatorFrame and the animations array,
-// a completely custom look can be applied. This will only apply if
-// the activityIndicatorStyle is set to TUIActivityIndicatorStyleCustom.
-// At its most basic, it is a link to the actual indicator view that
-// is handled by the TUIActivityIndicator.
-@property (nonatomic, copy) TUIViewDrawRect indicatorFrame;
+// the animations on the indicator. Its drawRect can be used to apply
+// drawing, and a combination of this and the animations array,
+// a completely custom look can be applied. At its most basic, it is a
+// link to the actual indicator view that is handled by the TUIActivityIndicator.
+@property (nonatomic, strong) TUIView *proxyIndicator;
 
 // Initializes the activity indicator with the style of the indicator.
 // You can set and retrieve the style of a activity indicator through

@@ -23,24 +23,16 @@
 #define TUIActivityIndicatorDefaultToothCount	12.0f
 #define TUIActivityIndicatorDefaultToothWidth	2.0f
 
-@interface TUIActivityIndicator ()
-
-@property (nonatomic, strong) TUIView *indicator;
-
-- (CAAnimationGroup *)packagedAnimations;
-
-@end
-
 @implementation TUIActivityIndicator
 
 - (id)initWithFrame:(CGRect)frame andActivityIndicatorStyle:(TUIActivityIndicatorStyle)style {
 	if((self = [super initWithFrame:frame])) {
-		self.indicator = [[TUIView alloc] initWithFrame:self.bounds];
-		self.indicator.autoresizingMask = TUIViewAutoresizingFlexibleSize;
-		self.indicator.backgroundColor = [NSColor clearColor];
-		self.indicator.userInteractionEnabled = NO;
-		self.indicator.hidden = YES;
-		[self addSubview:self.indicator];
+		self.proxyIndicator = [[TUIView alloc] initWithFrame:self.bounds];
+		self.proxyIndicator.autoresizingMask = TUIViewAutoresizingFlexibleSize;
+		self.proxyIndicator.backgroundColor = [NSColor clearColor];
+		self.proxyIndicator.userInteractionEnabled = NO;
+		self.proxyIndicator.hidden = YES;
+		[self addSubview:self.proxyIndicator];
 		
 		_animations = [NSMutableArray array];
 		self.activityIndicatorStyle = style;
@@ -60,10 +52,10 @@
 
 - (void)setHidesWhenStopped:(BOOL)hide {
 	_hidesWhenStopped = hide;
-	if(!self.animating && !hide && self.indicator.hidden)
-		self.indicator.hidden = NO;
+	if(!self.animating && !hide && self.proxyIndicator.hidden)
+		self.proxyIndicator.hidden = NO;
 	else
-		self.indicator.hidden = YES;
+		self.proxyIndicator.hidden = YES;
 }
 
 - (void)setActivityIndicatorStyle:(TUIActivityIndicatorStyle)style {
@@ -72,12 +64,12 @@
 		NSColor *selectedColor = style == TUIActivityIndicatorStyleGray ? [NSColor grayColor] : [NSColor whiteColor];
 		
 		_animations = [TUIActivityIndicatorGearAnimations(TUIActivityIndicatorDefaultToothCount) mutableCopy];
-		self.indicator.drawRect = TUIActivityIndicatorGearFrame(TUIActivityIndicatorDefaultToothCount,
+		self.proxyIndicator.drawRect = TUIActivityIndicatorGearFrame(TUIActivityIndicatorDefaultToothCount,
 																TUIActivityIndicatorDefaultToothWidth,
 																selectedColor);
 	} else if(style == TUIActivityIndicatorStyleClassic) {
 		_animations = [TUIActivityIndicatorPulseAnimations(0.3f) mutableCopy];
-		self.indicator.drawRect = TUIActivityIndicatorCircleFrame();
+		self.proxyIndicator.drawRect = TUIActivityIndicatorCircleFrame();
 	}
 	
 	[self refreshAnimations];
@@ -85,24 +77,24 @@
 
 - (void)startAnimating {
 	if(!self.animating) {
-		self.indicator.hidden = NO;
-		[self.indicator.layer addAnimation:self.packagedAnimations forKey:nil];
+		self.proxyIndicator.hidden = NO;
+		[self.proxyIndicator.layer addAnimation:self.packagedAnimations forKey:nil];
 		_animating = YES;
 	}
 }
 
 - (void)refreshAnimations {
 	if(self.animating) {
-		[self.indicator.layer removeAllAnimations];
-		[self.indicator.layer addAnimation:self.packagedAnimations forKey:nil];
+		[self.proxyIndicator.layer removeAllAnimations];
+		[self.proxyIndicator.layer addAnimation:self.packagedAnimations forKey:nil];
 	}
 }
 
 - (void)stopAnimating {
 	if(self.animating) {
 		if(self.hidesWhenStopped)
-			self.indicator.hidden = YES;
-		[self.indicator.layer removeAllAnimations];
+			self.proxyIndicator.hidden = YES;
+		[self.proxyIndicator.layer removeAllAnimations];
 		_animating = NO;
 	}
 }
@@ -126,20 +118,6 @@
 	animationGroup.animations = self.animations;
 	
 	return animationGroup;
-}
-
-// Add ways to access the CALayer and drawRect of the actual indicator.
-- (CALayer *)layerProxy {
-	return self.indicator.layer;
-}
-
-- (void)setIndicatorFrame:(TUIViewDrawRect)indicatorFrame {
-	if(self.activityIndicatorStyle == TUIActivityIndicatorStyleCustom)
-		self.indicator.drawRect = indicatorFrame;
-}
-
-- (TUIViewDrawRect)indicatorFrame {
-	return self.indicator.drawRect;
 }
 
 // Animation glitch fixes-- don't let the view lose its animations

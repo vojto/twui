@@ -22,13 +22,6 @@ typedef enum {
 	TUITableViewCellStyleDefault,
 } TUITableViewCellStyle;
 
-// Identifiers representing a cell's current state.
-typedef enum {
-	TUITableViewCellStateBackground,
-	TUITableViewCellStateHighlighted,
-	TUITableViewCellStateSelected
-} TUITableViewCellState;
-
 typedef enum {
 	
 	// The cell has no distinct separator style.

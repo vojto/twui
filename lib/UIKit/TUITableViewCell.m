@@ -318,6 +318,9 @@ static inline void tui_viewAnimateRedrawConditionally(TUIView *view, BOOL condit
 }
 
 - (void)setHighlighted:(BOOL)h animated:(BOOL)animated {
+	if(_tableViewCellFlags.highlighted == h)
+		return;
+	
 	_tableViewCellFlags.highlighted = h;
 	tui_viewAnimateRedrawConditionally(self, animated);
 }
@@ -331,51 +334,81 @@ static inline void tui_viewAnimateRedrawConditionally(TUIView *view, BOOL condit
 }
 
 - (void)setSelected:(BOOL)s animated:(BOOL)animated {
+	if(_tableViewCellFlags.selected == s)
+		return;
+	
 	_tableViewCellFlags.selected = s;
 	tui_viewAnimateRedrawConditionally(self, animated);
 }
 
 - (void)setSeparatorStyle:(TUITableViewCellSeparatorStyle)separatorStyle {
+	if(_separatorStyle == separatorStyle)
+		return;
+	
 	_separatorStyle = separatorStyle;
 	tui_viewAnimateRedrawConditionally(self, self.animatesAppearanceChanges);
 }
 
 - (void)setBackgroundStyle:(TUITableViewCellColorStyle)style {
+	if(_backgroundStyle == style)
+		return;
+	
 	_backgroundStyle = style;
 	tui_viewAnimateRedrawConditionally(self, self.animatesAppearanceChanges);
 }
 
 - (void)setHighlightStyle:(TUITableViewCellColorStyle)style {
+	if(_highlightStyle == style)
+		return;
+	
 	_highlightStyle = style;
 	tui_viewAnimateRedrawConditionally(self, self.animatesAppearanceChanges);
 }
 
 - (void)setSelectionStyle:(TUITableViewCellColorStyle)style {
+	if(_selectionStyle == style)
+		return;
+	
 	_selectionStyle = style;
 	tui_viewAnimateRedrawConditionally(self, self.animatesAppearanceChanges);
 }
 
 - (void)setHighlightColor:(NSColor *)highlightColor {
+	if(_highlightColor == highlightColor)
+		return;
+	
 	_highlightColor = highlightColor;
 	tui_viewAnimateRedrawConditionally(self, self.animatesAppearanceChanges);
 }
 
 - (void)setSelectionColor:(NSColor *)selectionColor {
+	if(_selectionColor == selectionColor)
+		return;
+	
 	_selectionColor = selectionColor;
 	tui_viewAnimateRedrawConditionally(self, self.animatesAppearanceChanges);
 }
 
 - (void)setAlternateBackgroundColor:(NSColor *)alternateColor {
+	if(_alternateBackgroundColor == alternateColor)
+		return;
+	
 	_alternateBackgroundColor = alternateColor;
 	tui_viewAnimateRedrawConditionally(self, self.animatesAppearanceChanges);
 }
 
 - (void)setAlternateHighlightColor:(NSColor *)alternateColor {
+	if(_alternateHighlightColor == alternateColor)
+		return;
+	
 	_alternateHighlightColor = alternateColor;
 	tui_viewAnimateRedrawConditionally(self, self.animatesAppearanceChanges);
 }
 
 - (void)setAlternateSelectionColor:(NSColor *)alternateColor {
+	if(_alternateSelectionColor == alternateColor)
+		return;
+	
 	_alternateSelectionColor = alternateColor;
 	tui_viewAnimateRedrawConditionally(self, self.animatesAppearanceChanges);
 }

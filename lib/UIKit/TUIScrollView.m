@@ -269,11 +269,12 @@ static BOOL isAtleastLion = NO;
 	return TUIEdgeInsetsMake(0, 0, (_scrollViewFlags.horizontalScrollIndicatorShowing) ? self.horizontalScrollKnob.frame.size.height : 0, (_scrollViewFlags.verticalScrollIndicatorShowing) ? self.verticalScrollKnob.frame.size.width : 0);
 }
 
-static CVReturn scrollCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* now, const CVTimeStamp* outputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext)
+static CVReturn scrollCallback(CVDisplayLinkRef displayLink, const CVTimeStamp *now, const CVTimeStamp *outputTime, CVOptionFlags flagsIn, CVOptionFlags *flagsOut, void *displayLinkContext)
 {
 	@autoreleasepool {
 		// perform drawing on the main thread
-		[(__bridge id)(displayLinkContext) performSelectorOnMainThread:@selector(tick:) withObject:nil waitUntilDone:NO];
+		TUITableView *tableView = (__bridge id)displayLinkContext;
+		[tableView performSelectorOnMainThread:@selector(tick:) withObject:nil waitUntilDone:NO];
 	}
 	return kCVReturnSuccess;
 }
@@ -286,7 +287,7 @@ static CVReturn scrollCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* 
 	
 	if (!displayLink) {
 		CVDisplayLinkCreateWithActiveCGDisplays(&displayLink);
-		CVDisplayLinkSetOutputCallback(displayLink, &scrollCallback, (__bridge void *)(self));
+		CVDisplayLinkSetOutputCallback(displayLink, &scrollCallback, (__bridge void *)self);
 		CVDisplayLinkSetCurrentCGDisplay(displayLink, kCGDirectMainDisplay);
 	}
 	CVDisplayLinkStart(displayLink);
@@ -430,20 +431,17 @@ static CVReturn scrollCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* 
 	float bounceX = pullX * 1.2;
 	float bounceY = pullY * 1.2;
 	
-	self.verticalScrollKnob.frame = CGRectMake(
-											   round(-offset.x + bounds.size.width - knobSize - pullX), // x
-											   round(-offset.y + (hVisible ? knobSize : 0) + resizeKnobSize.height + bounceY), // y
-											   knobSize, // width
-											   bounds.size.height - (hVisible ? knobSize : 0) - resizeKnobSize.height // height
-											   );
-	
-	self.horizontalScrollKnob.frame = CGRectMake(
-												 round(-offset.x - bounceX), // x
-												 round(-offset.y + pullY), // y
-												 bounds.size.width - (vVisible ? knobSize : 0) - resizeKnobSize.width, // width
-												 knobSize // height
-												 );
-	
+	CGRect verticalKnobFrame = CGRectZero;
+	verticalKnobFrame.size = CGSizeMake(knobSize, bounds.size.height - (hVisible ? knobSize : 0) - resizeKnobSize.height);
+	verticalKnobFrame.origin = CGPointMake(round(-offset.x + bounds.size.width - knobSize - pullX),
+										   round(-offset.y + (hVisible ? knobSize : 0) + resizeKnobSize.height + bounceY));
+	self.verticalScrollKnob.frame = verticalKnobFrame;
+		
+	CGRect horizontalKnobFrame = CGRectZero;
+	horizontalKnobFrame.size = CGSizeMake(bounds.size.width - (vVisible ? knobSize : 0) - resizeKnobSize.width, knobSize);
+	horizontalKnobFrame.origin = CGPointMake(round(-offset.x - bounceX), round(-offset.y + pullY));
+	self.horizontalScrollKnob.frame = horizontalKnobFrame;
+		
 	// notify the delegate about changes in vertical scroll indiciator visibility
 	if(vWasVisible != vEffectiveVisible){
 		if(vEffectiveVisible && _scrollViewFlags.delegateScrollViewWillShowScrollIndicator){

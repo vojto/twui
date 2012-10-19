@@ -159,8 +159,8 @@
 	// pad it to 4. However, since the table view's width can change,
 	// we'll create a layout constraint to keep the activity indicator
 	// anchored 16px left of the right side of the header view.
-	TUIActivityIndicator *indicator = [[TUIActivityIndicator alloc] initWithFrame:CGRectMake(0, 4, 24, 24)
-														andActivityIndicatorStyle:TUIActivityIndicatorStyleGray];
+	TUIActivityIndicatorView *indicator = [[TUIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 4, 24, 24)
+																   activityIndicatorStyle:TUIActivityIndicatorStyleGray];
 	[indicator addLayoutConstraint:[TUILayoutConstraint constraintWithAttribute:TUILayoutConstraintAttributeMaxX
 															 relativeTo:@"superview"
 															  attribute:TUILayoutConstraintAttributeMaxX
@@ -177,7 +177,6 @@
 	
 	// We then add it as a subview and tell it to start animating.
 	[view addSubview:indicator];
-	indicator.animationSpeed = 0.75f;
 	[indicator startAnimating];
 	
 	return view;

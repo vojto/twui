@@ -134,6 +134,8 @@ typedef enum {
 		unsigned int horizontalScrollIndicatorVisibility:2;
 		unsigned int verticalScrollIndicatorShowing:1;
 		unsigned int horizontalScrollIndicatorShowing:1;
+		unsigned int verticalScrollIndicatorExpanded:1;
+		unsigned int horizontalScrollIndicatorExpanded:1;
 		unsigned int delegateScrollViewDidScroll:1;
 		unsigned int delegateScrollViewWillBeginDragging:1;
 		unsigned int delegateScrollViewDidEndDragging:1;

@@ -40,11 +40,12 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 
 @interface TUIScroller () {
 	struct {
-		unsigned int hover:1;
-		unsigned int active:1;
-		unsigned int trackingInsideKnob:1;
-		unsigned int scrollIndicatorStyle:2;
-		unsigned int flashing:1;
+		unsigned hover:1;
+		unsigned active:1;
+		unsigned trackingInsideKnob:1;
+		unsigned scrollIndicatorStyle:2;
+		unsigned flashing:1;
+		unsigned forcedDisableExpand:1;
 	} _scrollerFlags;
 }
 
@@ -158,7 +159,7 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 }
 
 - (BOOL)isExpanded {
-	if(![TUIScrollView requiresExpandingScrollers])
+	if(![TUIScrollView requiresExpandingScrollers] || _scrollerFlags.forcedDisableExpand)
 		return NO;
 	else return (_scrollerFlags.hover || (_scrollerFlags.active && self.knobHidden) || self.trackShown);
 }
@@ -173,6 +174,10 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 
 - (CGFloat)updatedScrollerCornerRadius {
 	return self.expanded ? TUIScrollerExpandedCornerRadius : TUIScrollerDefaultCornerRadius;
+}
+
+- (void)forceDisableExpandedScroller:(BOOL)disable {
+	_scrollerFlags.forcedDisableExpand = disable;
 }
 
 - (void)layoutSubviews {
@@ -198,7 +203,7 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 }
 
 - (void)drawRect:(CGRect)rect {
-	if(!self.expanded || ![TUIScrollView requiresExpandingScrollers])
+	if(!self.expanded)
 		return;
 	else self.trackShown = YES;
 	

@@ -390,9 +390,34 @@ static BOOL isAtleastMountainLion = NO;
 	CGPoint offset = _unroundedContentOffset;
 	CGRect bounds = self.bounds;
 	
+	// If one scroller was expanded, and the other one is now ALSO
+	// expanded, force unexpand the previous one. Cache the previous
+	// and current expansion values for scrollers.
+	BOOL verticalScrollerWasExpanded = _scrollViewFlags.verticalScrollIndicatorExpanded;
+	BOOL horizontalScrollerWasExpanded = _scrollViewFlags.horizontalScrollIndicatorExpanded;
+	BOOL verticalScrollerIsExpanded = self.verticalScroller.expanded;
+	BOOL horizontalScrollerIsExpanded = self.horizontalScroller.expanded;
+	
+	// Reset the forced values, so they don't bias the future values.
+	[self.verticalScroller forceDisableExpandedScroller:NO];
+	[self.horizontalScroller forceDisableExpandedScroller:NO];
+	
+	// Conditionally un-expand one scroller (if both are expanded).
+	if(verticalScrollerWasExpanded && horizontalScrollerIsExpanded) {
+		[self.verticalScroller forceDisableExpandedScroller:YES];
+	} else if(horizontalScrollerWasExpanded && verticalScrollerIsExpanded) {
+		[self.horizontalScroller forceDisableExpandedScroller:YES];
+	}
+	
+	// Cache the new values for the next time.
+	_scrollViewFlags.verticalScrollIndicatorExpanded = verticalScrollerIsExpanded;
+	_scrollViewFlags.horizontalScrollIndicatorExpanded = horizontalScrollerIsExpanded;
+	
+	// Get the updated scroller widths.
 	CGFloat verticalScrollerSize = self.verticalScroller.updatedScrollerWidth;
 	CGFloat horizontalScrollerSize = self.horizontalScroller.updatedScrollerWidth;
 	
+	// Cache the previous, current, and possible visibility for the scrollers.
 	BOOL vWasVisible = _scrollViewFlags.verticalScrollIndicatorShowing;
 	BOOL vVisible = [self _verticalScrollerNeededForContentSize:self.contentSize];
 	BOOL vEffectiveVisible = vVisible;
@@ -401,6 +426,7 @@ static BOOL isAtleastMountainLion = NO;
 	BOOL hVisible = [self _horizontalScrollerNeededForContentSize:self.contentSize];
 	BOOL hEffectiveVisible = hVisible;
 	
+	// Determine the visibility of the vertical scroller.
 	switch(self.verticalScrollIndicatorVisibility) {
 		case TUIScrollViewIndicatorVisibleNever:
 			vEffectiveVisible = self.verticalScroller.flashing;
@@ -420,7 +446,8 @@ static BOOL isAtleastMountainLion = NO;
 			// Don't alter visibility.
 			break;
 	}
-		
+	
+	// Determine the visibility of the horizontal scroller.
 	switch(self.horizontalScrollIndicatorVisibility) {
 		case TUIScrollViewIndicatorVisibleNever:
 			hEffectiveVisible = NO;
@@ -441,27 +468,31 @@ static BOOL isAtleastMountainLion = NO;
 			break;
 	}
 	
+	// Determine the scroll view pull value as an offset.
 	CGFloat pullX = +(self.bounceOffset.x + self.pullOffset.x);
 	CGFloat pullY = -(self.bounceOffset.y + self.pullOffset.y);
 	
+	// Determine the frame origin and scroll view offset for the scrollers.
+	// If 10.7+, there should be no scroller offset- they're overlayed.
 	CGFloat verticalScrollerStart = bounds.size.width - verticalScrollerSize;
 	CGFloat horizontalScrollerStart = 0;
-	
 	CGFloat verticalScrollerOffset = ((hVisible ? verticalScrollerSize : 0) + resizeKnobSize.height);
 	CGFloat horizontalScrollerOffset = ((vVisible ? horizontalScrollerSize : 0) + resizeKnobSize.width);
-	
 	if(![self.class requiresLegacyScrollers]) {
 		verticalScrollerOffset = 0.0f;
 		horizontalScrollerOffset = 0.0f;
 	}
 	
+	// Determine the final scroller rects for both vertical and
+	// horizontal scrollers.
 	CGRect newVScrollerRect = CGRectMake(roundf(-offset.x + verticalScrollerStart - pullX), roundf(-offset.y + pullY),
 										 verticalScrollerSize, bounds.size.height - verticalScrollerOffset);
 	CGRect newHScrollerRect = CGRectMake(roundf(-offset.x - pullX), roundf(-offset.y + horizontalScrollerStart + pullY),
 										 bounds.size.width - horizontalScrollerOffset, horizontalScrollerSize);
 	
-	// Optionally animate the scroller frame. Always trigger
-	// a cross-fade, to display the scroller track expansion.
+	// Optionally animate the scroller frame. Always trigger a cross-fade,
+	// to display the scroller track expansion. If animated is YES, then
+	// the scroller will also "scroll" to the frame.
 	void (^updateBlock)(void) = ^{
 		self.verticalScroller.frame = newVScrollerRect;
 		self.horizontalScroller.frame = newHScrollerRect;
@@ -480,25 +511,23 @@ static BOOL isAtleastMountainLion = NO;
 	if(vWasVisible != vEffectiveVisible) {
 		if(vEffectiveVisible && _scrollViewFlags.delegateScrollViewWillShowScrollIndicator) {
 			[self.delegate scrollView:self willShowScrollIndicator:TUIScrollViewIndicatorVertical];
-		}else if(!vEffectiveVisible && _scrollViewFlags.delegateScrollViewWillHideScrollIndicator) {
+		} else if(!vEffectiveVisible && _scrollViewFlags.delegateScrollViewWillHideScrollIndicator) {
 			[self.delegate scrollView:self willHideScrollIndicator:TUIScrollViewIndicatorVertical];
 		}
 	}
 	if(hWasVisible != hEffectiveVisible) {
 		if(hEffectiveVisible && _scrollViewFlags.delegateScrollViewWillShowScrollIndicator) {
 			[self.delegate scrollView:self willShowScrollIndicator:TUIScrollViewIndicatorHorizontal];
-		}else if(!hEffectiveVisible && _scrollViewFlags.delegateScrollViewWillHideScrollIndicator) {
+		} else if(!hEffectiveVisible && _scrollViewFlags.delegateScrollViewWillHideScrollIndicator) {
 			[self.delegate scrollView:self willHideScrollIndicator:TUIScrollViewIndicatorHorizontal];
 		}
 	}
 	
-	// Update the scrollers.
+	// Update the scroller visibility.
 	self.verticalScroller.alpha = 1.0;
 	self.verticalScroller.hidden = !vEffectiveVisible;
-	
 	self.horizontalScroller.alpha = 1.0;
 	self.horizontalScroller.hidden = !hEffectiveVisible;
-	
 	_scrollViewFlags.verticalScrollIndicatorShowing = vEffectiveVisible;
 	_scrollViewFlags.horizontalScrollIndicatorShowing = hEffectiveVisible;
   
@@ -519,7 +548,7 @@ static BOOL isAtleastMountainLion = NO;
 		}
 	}
 	
-	// Update the scrollers.
+	// Update the scroller internal knobs.
 	if(vEffectiveVisible)
 		[self.verticalScroller setNeedsLayout];
 	if(hEffectiveVisible)

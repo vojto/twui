@@ -274,7 +274,7 @@ static CVReturn scrollCallback(CVDisplayLinkRef displayLink, const CVTimeStamp *
 	@autoreleasepool {
 		// perform drawing on the main thread
 		TUITableView *tableView = (__bridge id)displayLinkContext;
-		[tableView performSelectorOnMainThread:@selector(tick:) withObject:nil waitUntilDone:NO];
+		[tableView performSelectorOnMainThread:@selector(tick) withObject:nil waitUntilDone:NO];
 	}
 	return kCVReturnSuccess;
 }
@@ -793,7 +793,7 @@ static float clampBounce(float x) {
 	}
 }
 
-- (void)tick:(NSTimer *)timer
+- (void)tick
 {
 	[self _updateBounce]; // can't do after _startBounce otherwise dt will be crazy
 	

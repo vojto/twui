@@ -54,6 +54,7 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 @property (nonatomic, assign) CGPoint mouseDown;
 @property (nonatomic, assign) CGRect knobStartFrame;
 
+@property (nonatomic, assign, getter = isTrackShown) BOOL trackShown;
 @property (nonatomic, readonly, getter = isVertical) BOOL vertical;
 
 - (void)_hideKnob;
@@ -148,6 +149,7 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 	
 	self.hideKnobTimer = nil;
 	self.knobHidden = YES;
+	self.trackShown = NO;
 	[self _updateKnobAlphaWithSpeed:TUIScrollerStateChangeSpeed];
 }
 
@@ -156,7 +158,9 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 }
 
 - (BOOL)isExpanded {
-	return (_scrollerFlags.hover || _scrollerFlags.active) && [TUIScrollView requiresExpandingScrollers];
+	if(![TUIScrollView requiresExpandingScrollers])
+		return NO;
+	else return (_scrollerFlags.hover || (_scrollerFlags.active && self.knobHidden) || self.trackShown);
 }
 
 - (BOOL)isFlashing {
@@ -165,6 +169,10 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 
 - (CGFloat)updatedScrollerWidth {
 	return self.expanded ? TUIScrollerExpandedWidth : TUIScrollerDefaultWidth;
+}
+
+- (CGFloat)updatedScrollerCornerRadius {
+	return self.expanded ? TUIScrollerExpandedCornerRadius : TUIScrollerDefaultCornerRadius;
 }
 
 - (void)layoutSubviews {
@@ -184,20 +192,15 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 		frame = CGRectIntegral(CGRectInset(frame, 4, 2));
 	}
 	
-	[TUIView setAnimationsEnabled:NO block:^{
-		[self _refreshKnobTimer];
-		self.knob.frame = frame;
-	}];
-	
-	[TUIView animateWithDuration:TUIScrollerStateChangeSpeed animations:^{
-		self.knob.layer.cornerRadius = self.expanded ? TUIScrollerExpandedCornerRadius : TUIScrollerDefaultCornerRadius;
-	}];
+	[self _refreshKnobTimer];
+	self.knob.frame = frame;
+	self.knob.layer.cornerRadius = self.updatedScrollerCornerRadius;
 }
 
 - (void)drawRect:(CGRect)rect {
-	if(!self.expanded || ![TUIScrollView requiresExpandingScrollers]) {
+	if(!self.expanded || ![TUIScrollView requiresExpandingScrollers])
 		return;
-	}
+	else self.trackShown = YES;
 	
 	// TUIScrollViewIndicatorStyleLight draws a dark track underneath,
 	// but the other indicator styles draw a light track.
@@ -267,6 +270,7 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 - (void)mouseEntered:(NSEvent *)event {
 	_scrollerFlags.hover = 1;
 	[self _updateKnobAlphaWithSpeed:TUIScrollerRefreshSpeed];
+	[self.scrollView _updateScrollersAnimated:YES];
 	
 	// Propogate mouse events.
 	[super mouseEntered:event];
@@ -275,6 +279,7 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 - (void)mouseExited:(NSEvent *)event {
 	_scrollerFlags.hover = 0;
 	[self _updateKnobAlphaWithSpeed:TUIScrollerStateChangeSpeed];
+	[self.scrollView _updateScrollersAnimated:YES];
 	
 	// Propogate mouse events.
 	[super mouseExited:event];

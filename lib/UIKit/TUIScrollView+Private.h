@@ -9,10 +9,14 @@
 
 + (BOOL)requiresElasticSrolling;
 
+- (void)_updateScrollers;
+- (void)_updateScrollersAnimated:(BOOL)animated;
+
 @end
 
 @interface TUIScroller ()
 
 - (CGFloat)updatedScrollerWidth;
+- (CGFloat)updatedScrollerCornerRadius;
 
 @end

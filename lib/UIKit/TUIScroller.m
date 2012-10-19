@@ -69,10 +69,16 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 	if((self = [super initWithFrame:frame])) {
 		_knob = [[TUIView alloc] initWithFrame:CGRectZero];
 		self.knob.userInteractionEnabled = NO;
-		self.knob.layer.borderWidth = 1.0f;
-		self.scrollIndicatorStyle = TUIScrollViewIndicatorStyleDefault;
+		self.knob.clipsToBounds = NO;
 		
+		self.knob.layer.shadowColor = [NSColor whiteColor].tui_CGColor;
+		self.knob.layer.shadowOffset = CGSizeMake(0, 0);
+		self.knob.layer.shadowOpacity = 1.0;
+		self.knob.layer.shadowRadius = 1.0;
+		
+		self.scrollIndicatorStyle = TUIScrollViewIndicatorStyleDefault;
 		[self addSubview:self.knob];
+		
 		[self _updateKnob];
 		[self _updateKnobAlphaWithSpeed:0.0];
 		
@@ -172,10 +178,10 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 	CGRect frame = CGRectZero;
 	if(self.vertical) {
 		frame = CGRectMake(0.0, knobOffset, self.updatedScrollerWidth, knobLength);
-		frame = ABRectRoundOrigin(CGRectInset(frame, 2, 4));
+		frame = CGRectIntegral(CGRectInset(frame, 2, 4));
 	} else {
 		frame = CGRectMake(knobOffset, 0.0, knobLength, self.updatedScrollerWidth);
-		frame = ABRectRoundOrigin(CGRectInset(frame, 4, 2));
+		frame = CGRectIntegral(CGRectInset(frame, 4, 2));
 	}
 	
 	[TUIView setAnimationsEnabled:NO block:^{
@@ -189,11 +195,8 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 }
 
 - (void)drawRect:(CGRect)rect {
-	if(!self.expanded) {
-		self.knob.layer.borderWidth = 1.0f;
+	if(!self.expanded || ![TUIScrollView requiresExpandingScrollers]) {
 		return;
-	} else if([TUIScrollView requiresExpandingScrollers]) {
-		self.knob.layer.borderWidth = 0.0f;
 	}
 	
 	// TUIScrollViewIndicatorStyleLight draws a dark track underneath,
@@ -244,15 +247,15 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 	switch(style) {
 		case TUIScrollViewIndicatorStyleLight:
 			self.knob.backgroundColor = [NSColor colorWithCalibratedWhite:1.0 alpha:1.0];
-			self.knob.layer.borderColor = [NSColor colorWithCalibratedWhite:0.15 alpha:0.25].tui_CGColor;
+			self.knob.layer.shadowColor = [NSColor colorWithCalibratedWhite:0.5 alpha:1.0].tui_CGColor;
 			break;
 		case TUIScrollViewIndicatorStyleDark:
 			self.knob.backgroundColor = [NSColor colorWithCalibratedWhite:0.0 alpha:1.0];
-			self.knob.layer.borderColor = [NSColor colorWithCalibratedWhite:0.90 alpha:0.25].tui_CGColor;
+			self.knob.layer.shadowColor = [NSColor colorWithCalibratedWhite:0.5 alpha:1.0].tui_CGColor;
 			break;
 		default:
 			self.knob.backgroundColor = [NSColor colorWithCalibratedWhite:0.0 alpha:1.0];
-			self.knob.layer.borderColor = [NSColor colorWithCalibratedWhite:0.5 alpha:1.0].tui_CGColor;
+			self.knob.layer.shadowColor = [NSColor colorWithCalibratedWhite:1.0 alpha:1.0].tui_CGColor;
 			break;
 	}
 	

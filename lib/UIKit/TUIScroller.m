@@ -30,7 +30,7 @@ static CGFloat const TUIScrollerExpandedCornerRadius = 5.5f;
 
 static CGFloat const TUIScrollerTrackVisibleAlpha = 1.0f;
 static CGFloat const TUIScrollerHiddenAlpha = 0.0f;
-static CGFloat const TUIScrollerHoverAlpha = 0.6f;
+static CGFloat const TUIScrollerHoverAlpha = 0.5f;
 
 static NSTimeInterval const TUIScrollerStateChangeSpeed = 0.20f;
 static NSTimeInterval const TUIScrollerFadeSpeed = 0.25f;
@@ -186,10 +186,10 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 	CGRect frame = CGRectZero;
 	if(self.vertical) {
 		frame = CGRectMake(0.0, knobOffset, self.updatedScrollerWidth, knobLength);
-		frame = CGRectIntegral(CGRectInset(frame, 2, 4));
+		frame = ABRectRoundOrigin(CGRectInset(frame, 2, 4));
 	} else {
 		frame = CGRectMake(knobOffset, 0.0, knobLength, self.updatedScrollerWidth);
-		frame = CGRectIntegral(CGRectInset(frame, 4, 2));
+		frame = ABRectRoundOrigin(CGRectInset(frame, 4, 2));
 	}
 	
 	[self _refreshKnobTimer];

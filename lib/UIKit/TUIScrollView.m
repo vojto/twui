@@ -116,7 +116,9 @@ static BOOL isAtleastLion = NO;
 
 - (void)dealloc
 {
-	[scrollTimer invalidate];
+	if (displayLink) {
+		CVDisplayLinkRelease(displayLink);
+	}
 }
 
 - (id<TUIScrollViewDelegate>)delegate
@@ -267,22 +269,33 @@ static BOOL isAtleastLion = NO;
   return TUIEdgeInsetsMake(0, 0, (_scrollViewFlags.horizontalScrollIndicatorShowing) ? self.horizontalScrollKnob.frame.size.height : 0, (_scrollViewFlags.verticalScrollIndicatorShowing) ? self.verticalScrollKnob.frame.size.width : 0);
 }
 
+static CVReturn scrollCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* now, const CVTimeStamp* outputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext)
+{
+	@autoreleasepool {
+		// perform drawing on the main thread
+		[(__bridge id)(displayLinkContext) performSelectorOnMainThread:@selector(tick:) withObject:nil waitUntilDone:NO];
+	}
+    return kCVReturnSuccess;
+}
+
 - (void)_startTimer:(int)scrollMode
 {
 	_scrollViewFlags.animationMode = scrollMode;
 	_throw.t = CFAbsoluteTimeGetCurrent();
 	_bounce.bouncing = NO;
 	
-	if(!scrollTimer) {
-		scrollTimer = [NSTimer scheduledTimerWithTimeInterval:1/60. target:self selector:@selector(tick:) userInfo:nil repeats:YES];
+	if (!displayLink) {
+		CVDisplayLinkCreateWithActiveCGDisplays(&displayLink);
+		CVDisplayLinkSetOutputCallback(displayLink, &scrollCallback, (__bridge void *)(self));
+		CVDisplayLinkSetCurrentCGDisplay(displayLink, kCGDirectMainDisplay);
 	}
+	CVDisplayLinkStart(displayLink);
 }
 
 - (void)_stopTimer
 {
-	if(scrollTimer) {
-		[scrollTimer invalidate];
-		scrollTimer = nil;
+	if (displayLink) {
+		CVDisplayLinkStop(displayLink);
 	}
 	_scrollViewFlags.animationMode = AnimationModeNone;
 	_bounce.bouncing = 0;
@@ -667,7 +680,7 @@ static CGPoint PointLerp(CGPoint a, CGPoint b, CGFloat t)
 
 - (BOOL)isScrollingToTop
 {
-	if(scrollTimer) {
+	if(displayLink) {
 		if(_scrollViewFlags.animationMode == AnimationModeScrollTo) {
 			if(roundf(destinationOffset.y) == roundf([self topDestinationOffset]))
 				return YES;
@@ -838,28 +851,28 @@ static float clampBounce(float x) {
 			
 			break;
 		}
-    case AnimationModeScrollContinuous: {
-      CGFloat direction;
-      CGFloat distance;
-      
-      if(_dragScrollLocation.y <= TUIScrollViewContinuousScrollDragBoundary){
-        distance = MAX(0, MIN(TUIScrollViewContinuousScrollDragBoundary, _dragScrollLocation.y));
-        direction = 1;
-      }else if(_dragScrollLocation.y >= (self.bounds.size.height - TUIScrollViewContinuousScrollDragBoundary)){
-        distance = MAX(0, MIN(TUIScrollViewContinuousScrollDragBoundary, self.bounds.size.height - _dragScrollLocation.y));
-        direction = -1;
-      }else{
-        return; // no scrolling; outside drag boundary
-      }
-      
+		case AnimationModeScrollContinuous: {
+			CGFloat direction;
+			CGFloat distance;
+			
+			if(_dragScrollLocation.y <= TUIScrollViewContinuousScrollDragBoundary){
+				distance = MAX(0, MIN(TUIScrollViewContinuousScrollDragBoundary, _dragScrollLocation.y));
+				direction = 1;
+			}else if(_dragScrollLocation.y >= (self.bounds.size.height - TUIScrollViewContinuousScrollDragBoundary)){
+				distance = MAX(0, MIN(TUIScrollViewContinuousScrollDragBoundary, self.bounds.size.height - _dragScrollLocation.y));
+				direction = -1;
+			}else{
+				return; // no scrolling; outside drag boundary
+			}
+			
 			CGPoint offset = _unroundedContentOffset;
-      CGFloat step = (1.0 - (distance / TUIScrollViewContinuousScrollDragBoundary)) * TUIScrollViewContinuousScrollRate;
+			CGFloat step = (1.0 - (distance / TUIScrollViewContinuousScrollDragBoundary)) * TUIScrollViewContinuousScrollRate;
 			CGPoint dest = CGPointMake(offset.x, offset.y + (step * direction));
-      
+			
 			[self setContentOffset:dest];
 			
-      break;
-    }
+			break;
+		}
 	}
 }
 

@@ -1244,7 +1244,6 @@ static float clampBounce(float x) {
   [super mouseEntered:event onSubview:subview];
   if(!_scrollViewFlags.mouseInside){
     _scrollViewFlags.mouseInside = YES;
-    [self _updateScrollersAnimated:YES];
   }
 }
 
@@ -1254,7 +1253,6 @@ static float clampBounce(float x) {
   CGRect visible = [self visibleRect];
   if(_scrollViewFlags.mouseInside && ![self pointInside:CGPointMake(location.x, location.y + visible.origin.y) withEvent:event]){
     _scrollViewFlags.mouseInside = NO;
-    [self _updateScrollersAnimated:YES];
   }
 }
 

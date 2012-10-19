@@ -51,7 +51,7 @@ enum {
 - (void)_updateScrollKnobs;
 - (void)_updateScrollKnobsAnimated:(BOOL)animated;
 - (void)_updateBounce;
-- (void)_startTimer:(int)scrollMode;
+- (void)_startDisplayLink:(int)scrollMode;
 
 @end
 
@@ -273,13 +273,13 @@ static CVReturn scrollCallback(CVDisplayLinkRef displayLink, const CVTimeStamp *
 {
 	@autoreleasepool {
 		// perform drawing on the main thread
-		TUITableView *tableView = (__bridge id)displayLinkContext;
-		[tableView performSelectorOnMainThread:@selector(tick) withObject:nil waitUntilDone:NO];
+		TUIScrollView *scrollView = (__bridge id)displayLinkContext;
+		[scrollView performSelectorOnMainThread:@selector(tick) withObject:nil waitUntilDone:NO];
 	}
 	return kCVReturnSuccess;
 }
 
-- (void)_startTimer:(int)scrollMode
+- (void)_startDisplayLink:(int)scrollMode
 {
 	_scrollViewFlags.animationMode = scrollMode;
 	_throw.t = CFAbsoluteTimeGetCurrent();
@@ -293,7 +293,7 @@ static CVReturn scrollCallback(CVDisplayLinkRef displayLink, const CVTimeStamp *
 	CVDisplayLinkStart(displayLink);
 }
 
-- (void)_stopTimer
+- (void)_stopDisplayLink
 {
 	if (displayLink) {
 		CVDisplayLinkStop(displayLink);
@@ -309,7 +309,7 @@ static CVReturn scrollCallback(CVDisplayLinkRef displayLink, const CVTimeStamp *
 	[super willMoveToWindow:newWindow];
 	if(!newWindow) {
 		x = YES;
-		[self _stopTimer];
+		[self _stopDisplayLink];
 	}
 }
 
@@ -600,9 +600,9 @@ static CGPoint PointLerp(CGPoint a, CGPoint b, CGFloat t)
 
 - (void)stopThrowing {
 	if(_scrollViewFlags.animationMode == AnimationModeThrow) {
-		// ignore - let the bounce finish (_updateBounce will kill the timer when it's ready)
+		// ignore - let the bounce finish (_updateBounce will kill the display link when it's ready)
 		if(!_bounce.bouncing)
-			[self _stopTimer];
+			[self _stopDisplayLink];
 	}
 }
 
@@ -691,7 +691,7 @@ static CGPoint PointLerp(CGPoint a, CGPoint b, CGFloat t)
 {
 	if(animated) {
 		destinationOffset = contentOffset;
-		[self _startTimer:AnimationModeScrollTo];
+		[self _startDisplayLink:AnimationModeScrollTo];
 	} else {
 		destinationOffset = contentOffset;
 		[self setContentOffset:contentOffset];
@@ -713,7 +713,7 @@ static CGPoint PointLerp(CGPoint a, CGPoint b, CGFloat t)
 		// note the drag offset
 		_dragScrollLocation = dragLocation;
 		// begin a continuous scroll
-		[self _startTimer:AnimationModeScrollContinuous];
+		[self _startDisplayLink:AnimationModeScrollContinuous];
 	}else{
 		[self endContinuousScrollAnimated:animated];
 	}
@@ -728,7 +728,7 @@ static CGPoint PointLerp(CGPoint a, CGPoint b, CGFloat t)
  */
 - (void)endContinuousScrollAnimated:(BOOL)animated {
 	if(_scrollViewFlags.animationMode == AnimationModeScrollContinuous){
-		[self _stopTimer];
+		[self _stopDisplayLink];
 	}
 }
 
@@ -783,7 +783,7 @@ static float clampBounce(float x) {
 		_bounce.t = t;
 		
 		if(fabsf(_bounce.vy) < 1.0 && fabsf(_bounce.y) < 1.0 && fabsf(_bounce.vx) < 1.0 && fabsf(_bounce.x) < 1.0) {
-			[self _stopTimer];
+			[self _stopDisplayLink];
 			if (_scrollViewFlags.delegateScrollViewDidEndDecelerating) {
 				[_delegate scrollViewDidEndDecelerating:self];
 			}
@@ -799,7 +799,7 @@ static float clampBounce(float x) {
 	
 	if(self.nsWindow == nil) {
 		NSLog(@"Warning: no window %d (should be 1)", x);
-		[self _stopTimer];
+		[self _stopDisplayLink];
 		return;
 	}
 	
@@ -824,10 +824,10 @@ static float clampBounce(float x) {
 			_throw.t = t;
 			
 			if(_throw.throwing && !self._pulling && !_bounce.bouncing) {
-				// may happen in the case where our we scrolled, then stopped, then lifted finger (didn't do a system-started throw, but timer started anyway to do something else)
+				// may happen in the case where our we scrolled, then stopped, then lifted finger (didn't do a system-started throw, but display link started anyway to do something else)
 				// todo - handle this before it happens, but keep this sanity check
 				if(MAX(fabsf(_throw.vx), fabsf(_throw.vy)) < 0.1) {
-					[self _stopTimer];
+					[self _stopDisplayLink];
 				}
 			}
 			
@@ -843,7 +843,7 @@ static float clampBounce(float x) {
 			[self _setContentOffset:o];
 			
 			if((fabsf(o.x - lastOffset.x) < 0.1) && (fabsf(o.y - lastOffset.y) < 0.1)) {
-				[self _stopTimer];
+				[self _stopDisplayLink];
 				[self setContentOffset:destinationOffset];
 			}
 			
@@ -993,7 +993,7 @@ static float clampBounce(float x) {
 		_throw.vy = _lastScroll.dy / dt;
 		_throw.t = t;
 		
-		[self _startTimer:AnimationModeThrow];
+		[self _startDisplayLink:AnimationModeThrow];
 		
 		BOOL pulling = self._pulling; // prefetch the pulling state before resetting it
 		
@@ -1088,7 +1088,7 @@ static float clampBounce(float x) {
 				_throw.throwing = 0;
 				_scrollViewFlags.didChangeContentInset = 0;
 				
-				[self _stopTimer];
+				[self _stopDisplayLink];
 				CGEventRef cgEvent = [event CGEvent];
 				const int64_t isContinuous = CGEventGetIntegerValueField(cgEvent, kCGScrollWheelEventIsContinuous);
 				
@@ -1182,9 +1182,9 @@ static float clampBounce(float x) {
 			case ScrollPhaseThrowingEnded: {
 				if(_scrollViewFlags.animationMode == AnimationModeThrow) { // otherwise we may have started a scrollToTop:animated:, don't want to stop that)
 					if(_bounce.bouncing) {
-						// ignore - let the bounce finish (_updateBounce will kill the timer when it's ready)
+						// ignore - let the bounce finish (_updateBounce will kill the display link when it's ready)
 					} else {
-						[self _stopTimer];
+						[self _stopDisplayLink];
 						if (_scrollViewFlags.delegateScrollViewDidEndDecelerating) {
 							[_delegate scrollViewDidEndDecelerating:self];
 						}

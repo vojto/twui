@@ -180,6 +180,14 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 	_scrollerFlags.forcedDisableExpand = disable;
 }
 
+- (void)anchorScroller {
+	
+	// Adjust the anchor points so if the scroll knob expands, it
+	// expands outwards left/up. Set our anchor point to match this.
+	self.layer.anchorPoint = self.vertical ? CGPointMake(1.0, 0.5) : CGPointMake(0.5, 1.0);
+	self.knob.layer.anchorPoint = self.vertical ? CGPointMake(1.0, 0.5) : CGPointMake(0.5, 0.0);
+}
+
 - (void)layoutSubviews {
 	[self _updateKnob];
 }
@@ -188,18 +196,26 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 	CGFloat knobLength = MIN(2000, [self adjustedKnobWidth]);
 	CGFloat knobOffset = [self adjustedKnobOffsetForWidth:knobLength];
 	
+	// Get the new scroller frame and set the scroller position, so
+	// if we are expanding the scroller, it doesn't jump, but expands.
 	CGRect frame = CGRectZero;
 	if(self.vertical) {
 		frame = CGRectMake(0.0, knobOffset, self.updatedScrollerWidth, knobLength);
 		frame = ABRectRoundOrigin(CGRectInset(frame, 2, 4));
+		
+		self.knob.layer.position = CGPointMake(CGRectGetMaxX(frame), CGRectGetMidY(frame));
 	} else {
 		frame = CGRectMake(knobOffset, 0.0, knobLength, self.updatedScrollerWidth);
 		frame = ABRectRoundOrigin(CGRectInset(frame, 4, 2));
+		
+		self.knob.layer.position = CGPointMake(CGRectGetMaxX(frame), CGRectGetMidY(frame));
 	}
 	
 	[self _refreshKnobTimer];
-	self.knob.frame = frame;
-	self.knob.layer.cornerRadius = self.updatedScrollerCornerRadius;
+	[TUIView animateWithDuration:0.25 animations:^{
+		self.knob.frame = frame;
+		self.knob.layer.cornerRadius = self.updatedScrollerCornerRadius;
+	}];
 }
 
 - (void)drawRect:(CGRect)rect {
@@ -275,7 +291,7 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 - (void)mouseEntered:(NSEvent *)event {
 	_scrollerFlags.hover = 1;
 	[self _updateKnobAlphaWithSpeed:TUIScrollerRefreshSpeed];
-	[self.scrollView _updateScrollersAnimated:YES];
+	[self.scrollView _updateScrollersAnimated:NO];
 	
 	// Propogate mouse events.
 	[super mouseEntered:event];
@@ -284,7 +300,7 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 - (void)mouseExited:(NSEvent *)event {
 	_scrollerFlags.hover = 0;
 	[self _updateKnobAlphaWithSpeed:TUIScrollerStateChangeSpeed];
-	[self.scrollView _updateScrollersAnimated:YES];
+	[self.scrollView _updateScrollersAnimated:NO];
 	
 	// Propogate mouse events.
 	[super mouseExited:event];
@@ -378,6 +394,10 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 	
 	if(isnan(knobOffset))
 		knobOffset = 0.0;
+	else if(knobOffset + knobLength > trackBounds.size.height)
+		knobOffset = trackBounds.size.height - knobLength;
+	else if(knobOffset < trackBounds.origin.y)
+		knobOffset = trackBounds.origin.y;
 	
 	return knobOffset;
 }

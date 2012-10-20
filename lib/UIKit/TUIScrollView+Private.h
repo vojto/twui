@@ -19,6 +19,7 @@
 - (CGFloat)updatedScrollerWidth;
 - (CGFloat)updatedScrollerCornerRadius;
 
+- (void)anchorScroller;
 - (void)forceDisableExpandedScroller:(BOOL)expand;
 
 @end

@@ -498,6 +498,10 @@ static CVReturn scrollCallback(CVDisplayLinkRef displayLink, const CVTimeStamp *
 		horizontalScrollerOffset = 0.0f;
 	}
 	
+	// Anchor the scrollers to the side.
+	[self.verticalScroller anchorScroller];
+	[self.horizontalScroller anchorScroller];
+	
 	// Determine the final scroller rects for both vertical and
 	// horizontal scrollers.
 	CGRect newVScrollerRect = CGRectMake(roundf(-offset.x + verticalScrollerStart - pullX), roundf(-offset.y + pullY),
@@ -513,11 +517,11 @@ static CVReturn scrollCallback(CVDisplayLinkRef displayLink, const CVTimeStamp *
 		self.horizontalScroller.frame = newHScrollerRect;
 	};
 	[TUIView animateWithDuration:0.25 animations:^{
-		[self.verticalScroller redraw];
-		[self.horizontalScroller redraw];
-		
 		if(animated)
 			updateBlock();
+		
+		[self.verticalScroller redraw];
+		[self.horizontalScroller redraw];
 	}];
 	if(!animated)
 		updateBlock();

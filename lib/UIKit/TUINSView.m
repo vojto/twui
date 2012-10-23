@@ -100,6 +100,7 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
  */
 - (void)setUp;
 
+- (void)windowWillClose:(NSNotification *)notification;
 - (void)windowDidResignKey:(NSNotification *)notification;
 - (void)windowDidBecomeKey:(NSNotification *)notification;
 - (void)screenProfileOrBackingPropertiesDidChange:(NSNotification *)notification;
@@ -651,11 +652,18 @@ static NSComparisonResult compareNSViewOrdering (NSView *viewA, NSView *viewB, v
 	// set up masking on the AppKit host view, and make ourselves the layout
 	// manager, so that we'll know when new sublayers are added
 	self.appKitHostView.layer.layoutManager = self;
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name:NSWindowWillCloseNotification object:self.window];
 
 	#if ENABLE_NSVIEW_CLIPPING
 	self.appKitHostView.layer.mask = self.maskLayer;
 	[self recalculateNSViewClipping];
 	#endif
+}
+
+- (void)windowWillClose:(NSNotification *)notification {
+	// since the layer retains the layoutManger, we need to set it to nil to
+	// make sure TUINSView will be deallocated
+	self.appKitHostView.layer.layoutManager = nil;
 }
 
 - (void)didAddSubview:(NSView *)view {

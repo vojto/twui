@@ -89,7 +89,7 @@ static NSAttributedString *killBuffer = nil;
 		AB_CTFrameGetRectsForRange([self ctFrame], r, rects, &nRects);
 		
 		if (nRects == 1) {
-			// If it exists, then scroll the the beginning of the rects.
+			// If it exists, then scroll to the beginning of the rects.
 			CGRect rect = [scrollView convertFromWindowRect:[self.view convertToWindowRect:rects[0]]];
 			[scrollView scrollToIncludeRect:rect];
 		} else if (nRects == 0) {

@@ -25,6 +25,4 @@
 
 - (TUIView *)relativeViewForName:(NSString *)name;
 
-- (void)setNeedsUpdateConstraints;
-
 @end

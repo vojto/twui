@@ -18,23 +18,28 @@
 #import "TUILayoutConstraint.h"
 #import "TUICGAdditions.h"
 
-static CGRect const TUIActivityIndicatorDefaultFrame = (CGRect){0, 0, 32, 32};
-static TUIActivityIndicatorStyle TUIActivityIndicatorDefaultStyle = TUIActivityIndicatorStyleWhite;
+static TUIActivityIndicatorViewStyle const TUIActivityIndicatorDefaultStyle = TUIActivityIndicatorViewStyleGray;
+static CGRect const TUIActivityIndicatorDefaultFrame = {
+	.size.width = 32,
+	.size.height = 32
+};
 
 static CGFloat const TUIActivityIndicatorDefaultToothCount = 12.0f;
 static CGFloat const TUIActivityIndicatorDefaultToothWidth = 2.0f;
 
 @interface TUIActivityIndicatorView ()
 
-@property (nonatomic, strong) TUIView *proxyIndicator;
+@property (nonatomic, readonly) TUIView *proxyIndicator;
+
+@property (nonatomic, readwrite, getter = isAnimating) BOOL animating;
 
 @end
 
 @implementation TUIActivityIndicatorView
 
-- (id)initWithFrame:(CGRect)frame activityIndicatorStyle:(TUIActivityIndicatorStyle)style {
+- (id)initWithFrame:(CGRect)frame activityIndicatorStyle:(TUIActivityIndicatorViewStyle)style {
 	if((self = [super initWithFrame:frame])) {
-		self.proxyIndicator = [[TUIView alloc] initWithFrame:self.bounds];
+		_proxyIndicator = [[TUIView alloc] initWithFrame:self.bounds];
 		self.proxyIndicator.autoresizingMask = TUIViewAutoresizingFlexibleSize;
 		self.proxyIndicator.backgroundColor = [NSColor clearColor];
 		self.proxyIndicator.userInteractionEnabled = NO;
@@ -43,6 +48,31 @@ static CGFloat const TUIActivityIndicatorDefaultToothWidth = 2.0f;
 		
 		self.activityIndicatorStyle = style;
 		self.hidesWhenStopped = YES;
+		
+		__unsafe_unretained TUIActivityIndicatorView *weakSelf = self;
+		self.proxyIndicator.drawRect = ^(TUIView *indicator, CGRect rect) {
+			CGFloat radius = rect.size.width / 2.0f;
+			NSColor *toothColor = [NSColor whiteColor];
+			
+			if(weakSelf.activityIndicatorStyle == TUIActivityIndicatorViewStyleGray)
+				toothColor = [NSColor grayColor];
+			else if(weakSelf.activityIndicatorStyle == TUIActivityIndicatorViewStyleBlack)
+				toothColor = [NSColor blackColor];
+			
+			CGContextRef ctx = TUIGraphicsGetCurrentContext();
+			CGContextTranslateCTM(ctx, radius, radius);
+			CGContextScaleCTM(ctx, 1, -1);
+			
+			for(int toothNumber = 0; toothNumber < TUIActivityIndicatorDefaultToothCount; toothNumber++) {
+				CGFloat alpha = 0.3 + ((toothNumber / TUIActivityIndicatorDefaultToothCount) * 0.7);
+				[[toothColor colorWithAlphaComponent:alpha] setFill];
+				
+				CGContextRotateCTM(ctx, 1 / TUIActivityIndicatorDefaultToothCount * (M_PI * 2.0f));
+				CGRect toothRect = CGRectMake(-TUIActivityIndicatorDefaultToothWidth / 2.0f, -radius,
+											  TUIActivityIndicatorDefaultToothWidth, ceilf(radius * 0.54f));
+				CGContextFillRoundRect(ctx, toothRect, TUIActivityIndicatorDefaultToothWidth / 2.0f);
+			}
+		};
 	}
 	return self;
 }
@@ -51,52 +81,27 @@ static CGFloat const TUIActivityIndicatorDefaultToothWidth = 2.0f;
 	return [self initWithFrame:frame activityIndicatorStyle:TUIActivityIndicatorDefaultStyle];
 }
 
-- (id)initWithActivityIndicatorStyle:(TUIActivityIndicatorStyle)style {
+- (id)initWithActivityIndicatorStyle:(TUIActivityIndicatorViewStyle)style {
 	return [self initWithFrame:TUIActivityIndicatorDefaultFrame activityIndicatorStyle:style];
 }
 
 - (void)setHidesWhenStopped:(BOOL)hide {
 	_hidesWhenStopped = hide;
-	if(!self.animating && !hide && self.proxyIndicator.hidden)
+	if(!self.animating && !hide)
 		self.proxyIndicator.hidden = NO;
 	else
 		self.proxyIndicator.hidden = YES;
 }
 
-- (void)setActivityIndicatorStyle:(TUIActivityIndicatorStyle)style {
+- (void)setActivityIndicatorStyle:(TUIActivityIndicatorViewStyle)style {
 	_activityIndicatorStyle = style;
-	
-	self.proxyIndicator.drawRect = ^(TUIView *indicator, CGRect rect) {
-		CGFloat radius = rect.size.width / 2.0f;
-		NSColor *toothColor = [NSColor whiteColor];
-		
-		if(style == TUIActivityIndicatorStyleGray)
-			toothColor = [NSColor grayColor];
-		else if(style == TUIActivityIndicatorStyleBlack)
-			toothColor = [NSColor blackColor];
-		
-		CGContextRef ctx = TUIGraphicsGetCurrentContext();
-		CGContextTranslateCTM(ctx, radius, radius);
-		CGContextClearRect(ctx, rect);
-		
-		for(int toothNumber = 0; toothNumber < TUIActivityIndicatorDefaultToothCount; toothNumber++) {
-			CGFloat alpha = 0.3 + ((toothNumber / TUIActivityIndicatorDefaultToothCount) * 0.7);
-			[[toothColor colorWithAlphaComponent:alpha] setFill];
-			
-			CGContextRotateCTM(ctx, 1 / TUIActivityIndicatorDefaultToothCount * (M_PI * 2.0f));
-			CGRect toothRect = CGRectMake(-TUIActivityIndicatorDefaultToothWidth / 2.0f, -radius,
-										  TUIActivityIndicatorDefaultToothWidth, ceilf(radius * 0.54f));
-			CGContextFillRoundRect(ctx, toothRect, TUIActivityIndicatorDefaultToothWidth / 2.0f);
-		}
-	};
-	
 	[self refreshAnimations];
 }
 
 - (void)startAnimating {
 	if(!self.animating) {
 		self.proxyIndicator.hidden = NO;
-		_animating = YES;
+		self.animating = YES;
 		
 		[self refreshAnimations];
 	}
@@ -107,20 +112,19 @@ static CGFloat const TUIActivityIndicatorDefaultToothWidth = 2.0f;
 		[self.proxyIndicator.layer removeAllAnimations];
 		
 		NSMutableArray *values = [NSMutableArray array];
-		for(int i = 0; i < TUIActivityIndicatorDefaultToothCount + 1; i++) {
-			[values addObject:@(2.0 * (i / TUIActivityIndicatorDefaultToothCount) * M_PI)];
-		}
-		
 		NSMutableArray *times = [NSMutableArray array];
-		for(int i = 0; i < TUIActivityIndicatorDefaultToothCount + 1; i++) {
+		
+		for(int i = 0; i < TUIActivityIndicatorDefaultToothCount + 1; i++)
+			[values addObject:@(2.0 * (-i / TUIActivityIndicatorDefaultToothCount) * M_PI)];
+		
+		for(int i = 0; i < TUIActivityIndicatorDefaultToothCount + 1; i++)
 			[times addObject:@(1.0 * (i / TUIActivityIndicatorDefaultToothCount))];
-		}
 		
 		CAKeyframeAnimation *rotate = [CAKeyframeAnimation animationWithKeyPath:@"transform.rotation.z"];
 		rotate.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
 		rotate.calculationMode = kCAAnimationDiscrete;
-		rotate.repeatCount = INT_MAX;
-		rotate.duration = 0.75f;
+		rotate.repeatCount = HUGE_VALF;
+		rotate.duration = 1.0f;
 		rotate.values = values;
 		rotate.keyTimes = times;
 		rotate.cumulative = YES;
@@ -135,7 +139,7 @@ static CGFloat const TUIActivityIndicatorDefaultToothWidth = 2.0f;
 			self.proxyIndicator.hidden = YES;
 		
 		[self.proxyIndicator.layer removeAllAnimations];
-		_animating = NO;
+		self.animating = NO;
 	}
 }
 

@@ -19,20 +19,20 @@
 typedef enum {
 	
 	// The standard white style of indicator.
-	TUIActivityIndicatorStyleWhite,
+	TUIActivityIndicatorViewStyleWhite,
 	
 	// The standard gray style of indicator.
-	TUIActivityIndicatorStyleGray,
+	TUIActivityIndicatorViewStyleGray,
 	
-	// The standard gray style of indicator.
-	TUIActivityIndicatorStyleBlack
-} TUIActivityIndicatorStyle;
+	// The standard black style of indicator.
+	TUIActivityIndicatorViewStyleBlack
+} TUIActivityIndicatorViewStyle;
 
 @interface TUIActivityIndicatorView : TUIView
 
 // The basic appearance of the activity indicator.
-// The default value is TUIActivityIndicatorStyleWhite.
-@property (nonatomic, assign) TUIActivityIndicatorStyle activityIndicatorStyle;
+// The default value is TUIActivityIndicatorViewStyleGray.
+@property (nonatomic, assign) TUIActivityIndicatorViewStyle activityIndicatorStyle;
 
 // Controls whether the receiver is hidden when the animation is stopped.
 // If the value of this property is YES (default), the indicator sets
@@ -46,12 +46,12 @@ typedef enum {
 
 // Initializes the activity indicator with the style of the indicator.
 // You can set and retrieve the style of a activity indicator through
-// the activityIndicatorViewStyle property. See TUIActivityIndicatorStyle
+// the activityIndicatorViewStyle property. See TUIActivityIndicatorViewStyle
 // for descriptions of the style constants. 
-- (id)initWithActivityIndicatorStyle:(TUIActivityIndicatorStyle)style;
+- (id)initWithActivityIndicatorStyle:(TUIActivityIndicatorViewStyle)style;
 
 // Initializes the activity indicator with both style and frame.
-- (id)initWithFrame:(CGRect)frame activityIndicatorStyle:(TUIActivityIndicatorStyle)style;
+- (id)initWithFrame:(CGRect)frame activityIndicatorStyle:(TUIActivityIndicatorViewStyle)style;
 
 // Starts the animation of the indicator. It is animated to indicate
 // indeterminate progress. It is animated until stopAnimating is called.

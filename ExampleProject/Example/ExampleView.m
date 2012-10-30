@@ -160,7 +160,7 @@
 	// we'll create a layout constraint to keep the activity indicator
 	// anchored 16px left of the right side of the header view.
 	TUIActivityIndicatorView *indicator = [[TUIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 4, 24, 24)
-																   activityIndicatorStyle:TUIActivityIndicatorStyleGray];
+																   activityIndicatorStyle:TUIActivityIndicatorViewStyleGray];
 	[indicator addLayoutConstraint:[TUILayoutConstraint constraintWithAttribute:TUILayoutConstraintAttributeMaxX
 															 relativeTo:@"superview"
 															  attribute:TUILayoutConstraintAttributeMaxX

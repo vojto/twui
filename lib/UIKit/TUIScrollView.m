@@ -418,11 +418,10 @@ static CVReturn scrollCallback(CVDisplayLinkRef displayLink, const CVTimeStamp *
 	[self.horizontalScroller forceDisableExpandedScroller:NO];
 	
 	// Conditionally un-expand one scroller (if both are expanded).
-	if(verticalScrollerWasExpanded && horizontalScrollerIsExpanded) {
+	if(verticalScrollerWasExpanded && horizontalScrollerIsExpanded)
 		[self.verticalScroller forceDisableExpandedScroller:YES];
-	} else if(horizontalScrollerWasExpanded && verticalScrollerIsExpanded) {
+	else if(horizontalScrollerWasExpanded && verticalScrollerIsExpanded)
 		[self.horizontalScroller forceDisableExpandedScroller:YES];
-	}
 	
 	// Cache the new values for the next time.
 	_scrollViewFlags.verticalScrollIndicatorExpanded = verticalScrollerIsExpanded;

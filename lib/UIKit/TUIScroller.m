@@ -59,7 +59,6 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 @property (nonatomic, readonly, getter = isVertical) BOOL vertical;
 
 - (void)_hideKnob;
-- (void)_updateKnob;
 - (void)_refreshKnobTimer;
 - (void)_updateKnobAlphaWithSpeed:(CGFloat)speed;
 
@@ -80,8 +79,6 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 		
 		self.scrollIndicatorStyle = TUIScrollViewIndicatorStyleDefault;
 		[self addSubview:self.knob];
-		
-		[self _updateKnob];
 		[self _updateKnobAlphaWithSpeed:0.0];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self
@@ -184,15 +181,12 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 	
 	// Adjust the anchor points so if the scroll knob expands, it
 	// expands outwards left/up. Set our anchor point to match this.
-	self.layer.anchorPoint = self.vertical ? CGPointMake(1.0, 0.5) : CGPointMake(0.5, 1.0);
+	self.layer.anchorPoint = self.vertical ? CGPointMake(1.0, 0.5) : CGPointMake(0.5, 0.0);
 	self.knob.layer.anchorPoint = self.vertical ? CGPointMake(1.0, 0.5) : CGPointMake(0.5, 0.0);
 }
 
 - (void)layoutSubviews {
-	[self _updateKnob];
-}
-
-- (void)_updateKnob {
+	CGFloat oldKnobWidth;
 	CGFloat knobLength = MIN(2000, [self adjustedKnobWidth]);
 	CGFloat knobOffset = [self adjustedKnobOffsetForWidth:knobLength];
 	
@@ -200,28 +194,37 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 	// if we are expanding the scroller, it doesn't jump, but expands.
 	CGRect frame = CGRectZero;
 	if(self.vertical) {
+		oldKnobWidth = self.knob.frame.size.width;
 		frame = CGRectMake(0.0, knobOffset, self.updatedScrollerWidth, knobLength);
 		frame = ABRectRoundOrigin(CGRectInset(frame, 2, 4));
 		
 		self.knob.layer.position = CGPointMake(CGRectGetMaxX(frame), CGRectGetMidY(frame));
 	} else {
+		oldKnobWidth = self.knob.frame.size.height;
 		frame = CGRectMake(knobOffset, 0.0, knobLength, self.updatedScrollerWidth);
 		frame = ABRectRoundOrigin(CGRectInset(frame, 4, 2));
 		
-		self.knob.layer.position = CGPointMake(CGRectGetMaxX(frame), CGRectGetMidY(frame));
+		self.knob.layer.position = CGPointMake(CGRectGetMidX(frame), CGRectGetMinY(frame));
 	}
 	
 	[self _refreshKnobTimer];
-	[TUIView animateWithDuration:0.25 animations:^{
+	
+	// If the knob width has changed, don't animate it-- it may be a resize.
+	CGFloat newKnobWidth = (self.vertical ? frame.size.width : frame.size.height);
+	if(oldKnobWidth == newKnobWidth)
 		self.knob.frame = frame;
+	
+	[TUIView animateWithDuration:0.25 animations:^{
+		if(oldKnobWidth != newKnobWidth)
+			self.knob.frame = frame;
 		self.knob.layer.cornerRadius = self.updatedScrollerCornerRadius;
 	}];
 }
 
 - (void)drawRect:(CGRect)rect {
+	self.trackShown = self.expanded;
 	if(!self.expanded)
 		return;
-	else self.trackShown = YES;
 	
 	// TUIScrollViewIndicatorStyleLight draws a dark track underneath,
 	// but the other indicator styles draw a light track.
@@ -393,11 +396,18 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 	CGFloat knobOffset = offsetProportion * rangeOfMotion;
 	
 	if(isnan(knobOffset))
-		knobOffset = 0.0;
-	else if(knobOffset + knobLength > trackBounds.size.height)
-		knobOffset = trackBounds.size.height - knobLength;
-	else if(knobOffset < trackBounds.origin.y)
-		knobOffset = trackBounds.origin.y;
+		knobOffset = 0.0f;
+	else if(self.vertical) {
+		if(knobOffset + knobLength > trackBounds.size.height)
+			knobOffset = trackBounds.size.height - knobLength;
+		else if(knobOffset < trackBounds.origin.y)
+			knobOffset = trackBounds.origin.y;
+	} else {
+		if(knobOffset + knobLength > trackBounds.size.width)
+			knobOffset = trackBounds.size.width - knobLength;
+		else if(knobOffset < trackBounds.origin.x)
+			knobOffset = trackBounds.origin.x;
+	}
 	
 	return knobOffset;
 }

@@ -22,6 +22,7 @@
 #import "CAAnimation+TUIExtensions.h"
 
 static CGFloat const TUIScrollerMinimumKnobSize = 25.0f;
+static CGFloat const TUIScrollerKnobInset = 1.0f;
 
 static CGFloat const TUIScrollerDefaultWidth = 11.0f;
 static CGFloat const TUIScrollerExpandedWidth = 15.0f;
@@ -156,9 +157,11 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 }
 
 - (BOOL)isExpanded {
-	if(![TUIScrollView requiresExpandingScrollers] || _scrollerFlags.forcedDisableExpand)
+	if(![TUIScrollView requiresExpandingScrollers] || _scrollerFlags.forcedDisableExpand) {
 		return NO;
-	else return (_scrollerFlags.hover || (_scrollerFlags.active && self.knobHidden) || self.trackShown);
+	} else if([(NSWindow *)self.nsWindow isKeyWindow]) {
+		return (_scrollerFlags.hover || (_scrollerFlags.active && self.knobHidden) || self.trackShown);
+	} else return NO;
 }
 
 - (BOOL)isFlashing {
@@ -166,11 +169,11 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 }
 
 - (CGFloat)updatedScrollerWidth {
-	return self.expanded ? TUIScrollerExpandedWidth : TUIScrollerDefaultWidth;
+	return (self.expanded ? TUIScrollerExpandedWidth : TUIScrollerDefaultWidth) + TUIScrollerKnobInset;
 }
 
 - (CGFloat)updatedScrollerCornerRadius {
-	return self.expanded ? TUIScrollerExpandedCornerRadius : TUIScrollerDefaultCornerRadius;
+	return (self.expanded ? TUIScrollerExpandedCornerRadius : TUIScrollerDefaultCornerRadius);
 }
 
 - (void)forceDisableExpandedScroller:(BOOL)disable {
@@ -195,13 +198,13 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 	CGRect frame = CGRectZero;
 	if(self.vertical) {
 		oldKnobWidth = self.knob.frame.size.width;
-		frame = CGRectMake(0.0, knobOffset, self.updatedScrollerWidth, knobLength);
+		frame = CGRectMake(TUIScrollerKnobInset, knobOffset, self.updatedScrollerWidth - TUIScrollerKnobInset, knobLength);
 		frame = ABRectRoundOrigin(CGRectInset(frame, 2, 4));
 		
 		self.knob.layer.position = CGPointMake(CGRectGetMaxX(frame), CGRectGetMidY(frame));
 	} else {
 		oldKnobWidth = self.knob.frame.size.height;
-		frame = CGRectMake(knobOffset, 0.0, knobLength, self.updatedScrollerWidth);
+		frame = CGRectMake(knobOffset, TUIScrollerKnobInset, knobLength, self.updatedScrollerWidth - TUIScrollerKnobInset);
 		frame = ABRectRoundOrigin(CGRectInset(frame, 4, 2));
 		
 		self.knob.layer.position = CGPointMake(CGRectGetMidX(frame), CGRectGetMinY(frame));

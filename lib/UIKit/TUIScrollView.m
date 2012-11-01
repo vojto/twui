@@ -515,7 +515,7 @@ static CVReturn scrollCallback(CVDisplayLinkRef displayLink, const CVTimeStamp *
 		self.verticalScroller.frame = newVScrollerRect;
 		self.horizontalScroller.frame = newHScrollerRect;
 	};
-	[TUIView animateWithDuration:0.25 animations:^{
+	[TUIView animateWithDuration:TUIScrollerFadeSpeed animations:^{
 		if(animated)
 			updateBlock();
 		

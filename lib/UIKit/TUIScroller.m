@@ -34,10 +34,10 @@ static CGFloat const TUIScrollerHiddenAlpha = 0.0f;
 static CGFloat const TUIScrollerHoverAlpha = 0.5f;
 
 static NSTimeInterval const TUIScrollerStateChangeSpeed = 0.20f;
-static NSTimeInterval const TUIScrollerFadeSpeed = 0.25f;
 static NSTimeInterval const TUIScrollerRefreshSpeed = 0.08f;
 static NSTimeInterval const TUIScrollerFlashSpeed = 0.60f;
-static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
+
+static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 
 @interface TUIScroller () {
 	struct {
@@ -126,7 +126,7 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 	
 	if(visibility != TUIScrollViewIndicatorVisibleNever) {
 		self.hideKnobTimer = nil;
-		self.hideKnobTimer = [NSTimer scheduledTimerWithTimeInterval:TUIScrollerDisplaySpeed
+		self.hideKnobTimer = [NSTimer scheduledTimerWithTimeInterval:TUIScrollerDisplayDuration
 															  target:self
 															selector:@selector(_hideKnob)
 															userInfo:nil
@@ -217,7 +217,7 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 	if(oldKnobWidth == newKnobWidth)
 		self.knob.frame = frame;
 	
-	[TUIView animateWithDuration:0.25 animations:^{
+	[TUIView animateWithDuration:TUIScrollerFadeSpeed animations:^{
 		if(oldKnobWidth != newKnobWidth)
 			self.knob.frame = frame;
 		self.knob.layer.cornerRadius = self.updatedScrollerCornerRadius;
@@ -289,7 +289,7 @@ static NSTimeInterval const TUIScrollerDisplaySpeed = 1.0f;
 			break;
 	}
 	
-	[TUIView animateWithDuration:TUIScrollerDisplaySpeed animations:^{
+	[TUIView animateWithDuration:TUIScrollerDisplayDuration animations:^{
 		[self redraw];
 	}];
 }

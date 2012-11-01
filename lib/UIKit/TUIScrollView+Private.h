@@ -1,6 +1,9 @@
 #import "TUIScrollView.h"
 #import "TUIScroller.h"
 
+// Required by both TUIScroller and TUIScrollView.
+static NSTimeInterval const TUIScrollerFadeSpeed = 0.25f;
+
 @interface TUIScrollView ()
 
 + (BOOL)requiresLegacyScrollers;

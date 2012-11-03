@@ -304,6 +304,7 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 	self.animationView = [[TUIView alloc] initWithFrame:animationViewFrame];
 	self.animationView.opaque = NO;
 	self.animationView.backgroundColor = [NSColor clearColor];
+	__block __unsafe_unretained TUIProgressBar *weakSelf = self;
 	self.animationView.drawRect = ^ (TUIView *view, CGRect dirtyRect) {
 		CGRect patternBounds = CGRectMake(0.0, 0.0, GHUIProgressBarBarberPolePatternWidth, NSHeight(view.bounds));
 		
@@ -316,7 +317,7 @@ void GHUIProgressPatternDrawCallback(void *info, CGContextRef context);
 		
 		const struct TUIProgressBarPatternInfoStruct info = {.bounds = patternBounds, .contentsScale = view.layer.contentsScale};
 		const struct CGPatternCallbacks callbacks = {0, &GHUIProgressPatternDrawCallback, NULL};
-		CGPatternRef pattern = CGPatternCreate((void *)&info, patternBounds, CGAffineTransformIdentity, (GHUIProgressBarBarberPolePatternWidth * self.layer.contentsScale), (NSHeight(view.bounds) * self.layer.contentsScale), kCGPatternTilingConstantSpacing, true, &callbacks);
+		CGPatternRef pattern = CGPatternCreate((void *)&info, patternBounds, CGAffineTransformIdentity, (GHUIProgressBarBarberPolePatternWidth * weakSelf.layer.contentsScale), (NSHeight(view.bounds) * weakSelf.layer.contentsScale), kCGPatternTilingConstantSpacing, true, &callbacks);
 		CGFloat components = 1.0; //It's a coloured pattern so just alpha is fine
 		CGContextSetFillPattern(currentContext, pattern, &components);
 		CGContextFillRect(currentContext, view.bounds);

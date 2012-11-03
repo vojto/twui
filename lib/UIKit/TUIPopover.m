@@ -482,17 +482,16 @@ CGFloat const TUIPopoverBackgroundViewArrowWidth = 35.0;
 	_strokeColor = [NSColor blackColor];
 	_fillColor = [NSColor whiteColor];
 	
-	__block __unsafe_unretained TUIPopoverBackgroundView *weakSelf = self;
     self.drawRect = ^ (TUIView *view, CGRect rect) 
     {
-		TUIPopoverBackgroundView *strongSelf = weakSelf;
+		TUIPopoverBackgroundView *strongSelf = (TUIPopoverBackgroundView*)view;
         CGContextRef context = TUIGraphicsGetCurrentContext();
-        CGPathRef outerBorder = [strongSelf newPopoverPathForEdge:weakSelf.popoverEdge inFrame:weakSelf.bounds];
-        CGContextSetStrokeColorWithColor(context, weakSelf.strokeColor.tui_CGColor);
+        CGPathRef outerBorder = [strongSelf newPopoverPathForEdge:strongSelf.popoverEdge inFrame:strongSelf.bounds];
+        CGContextSetStrokeColorWithColor(context, strongSelf.strokeColor.tui_CGColor);
         CGContextAddPath(context, outerBorder);
         CGContextStrokePath(context);
         
-        CGContextSetFillColorWithColor(context, weakSelf.fillColor.tui_CGColor);
+        CGContextSetFillColorWithColor(context, strongSelf.fillColor.tui_CGColor);
         CGContextAddPath(context, outerBorder);
         CGContextFillPath(context);
 		

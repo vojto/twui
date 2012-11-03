@@ -515,15 +515,20 @@ static CVReturn scrollCallback(CVDisplayLinkRef displayLink, const CVTimeStamp *
 		self.verticalScroller.frame = newVScrollerRect;
 		self.horizontalScroller.frame = newHScrollerRect;
 	};
+	if(!animated)
+		updateBlock();
+	
 	[TUIView animateWithDuration:TUIScrollerFadeSpeed animations:^{
 		if(animated)
 			updateBlock();
 		
-		[self.verticalScroller redraw];
-		[self.horizontalScroller redraw];
+		// If the scrollers aren't expanded, there's no need to draw them.
+		// Each animated redraw operation is just more toll, less scroll.
+		if(self.verticalScroller.expanded)
+			[self.verticalScroller redraw];
+		if(self.horizontalScroller.expanded)
+			[self.horizontalScroller redraw];
 	}];
-	if(!animated)
-		updateBlock();
 	
 	// Notify the delegate about changes in scroll indiciator visibility.
 	if(vWasVisible != vEffectiveVisible) {
@@ -537,7 +542,6 @@ static CVReturn scrollCallback(CVDisplayLinkRef displayLink, const CVTimeStamp *
 		if(hEffectiveVisible && _scrollViewFlags.delegateScrollViewWillShowScrollIndicator) {
 			[self.delegate scrollView:self willShowScrollIndicator:TUIScrollViewIndicatorHorizontal];
 		} else if(!hEffectiveVisible && _scrollViewFlags.delegateScrollViewWillHideScrollIndicator) {
-
 			[self.delegate scrollView:self willHideScrollIndicator:TUIScrollViewIndicatorHorizontal];
 		}
 	}

@@ -149,6 +149,7 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 	self.hideKnobTimer = nil;
 	self.knobHidden = YES;
 	self.trackShown = NO;
+	
 	[self _updateKnobAlphaWithSpeed:TUIScrollerStateChangeSpeed];
 }
 
@@ -213,13 +214,16 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 	[self _refreshKnobTimer];
 	
 	// If the knob width has changed, don't animate it-- it may be a resize.
+	// If we just un-expanded, don't animate the knob shrinking.
 	CGFloat newKnobWidth = (self.vertical ? frame.size.width : frame.size.height);
-	if(oldKnobWidth == newKnobWidth)
-		self.knob.frame = frame;
+	BOOL knobShrinked = !_scrollerFlags.forcedDisableExpand;
+	if(self.vertical)
+		knobShrinked &= self.knob.frame.size.width > frame.size.width;
+	else knobShrinked &= self.knob.frame.size.height > frame.size.height;
 	
-	[TUIView animateWithDuration:TUIScrollerFadeSpeed animations:^{
-		if(oldKnobWidth != newKnobWidth)
-			self.knob.frame = frame;
+	BOOL animateKnobChanges = (oldKnobWidth != newKnobWidth && !knobShrinked);
+	[TUIView animateWithDuration:animateKnobChanges ? TUIScrollerFadeSpeed : 0.0f animations:^{
+		self.knob.frame = frame;
 		self.knob.layer.cornerRadius = self.updatedScrollerCornerRadius;
 	}];
 }
@@ -378,7 +382,6 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 	[super mouseDragged:event];
 }
 
-
 - (CGFloat)adjustedKnobOffsetForWidth:(CGFloat)knobLength {
 	CGRect trackBounds = self.bounds;
 	CGRect visible = self.scrollView.visibleRect;
@@ -398,9 +401,9 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 	CGFloat offsetProportion = 1.0 - (maxOffset - currentOffset) / maxOffset;
 	CGFloat knobOffset = offsetProportion * rangeOfMotion;
 	
-	if(isnan(knobOffset))
+	if(isnan(knobOffset)) {
 		knobOffset = 0.0f;
-	else if(self.vertical) {
+	} else if(self.vertical) {
 		if(knobOffset + knobLength > trackBounds.size.height)
 			knobOffset = trackBounds.size.height - knobLength;
 		else if(knobOffset < trackBounds.origin.y)

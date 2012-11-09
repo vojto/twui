@@ -194,16 +194,28 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 	CGFloat knobLength = MIN(2000, [self adjustedKnobWidth]);
 	CGFloat knobOffset = [self adjustedKnobOffsetForWidth:knobLength];
 	
+	// Allow the scroll indicator to "rubber band" squish if we overscroll.
+	CGFloat modifier = self.vertical ? self.bounds.size.height : self.bounds.size.width;
+	CGFloat pullFactor = 1.3f * (1.0f - ((modifier - knobLength) / modifier));
+	
 	// Get the new scroller frame and set the scroller position, so
 	// if we are expanding the scroller, it doesn't jump, but expands.
 	CGRect frame = CGRectZero;
 	if(self.vertical) {
+		CGFloat bounceY = (self.scrollView.bounceOffset.y + self.scrollView.pullOffset.y) * pullFactor;
+		knobLength -= fabs(bounceY);
+		knobOffset += fabs(bounceY);
+		
 		oldKnobWidth = self.knob.frame.size.width;
 		frame = CGRectMake(TUIScrollerKnobInset, knobOffset, self.updatedScrollerWidth - TUIScrollerKnobInset, knobLength);
 		frame = ABRectRoundOrigin(CGRectInset(frame, 2, 4));
 		
 		self.knob.layer.position = CGPointMake(CGRectGetMaxX(frame), CGRectGetMidY(frame));
 	} else {
+		CGFloat bounceX = (self.scrollView.bounceOffset.x + self.scrollView.pullOffset.x) * pullFactor;
+		knobLength -= fabs(bounceX);
+		knobOffset += fabs(bounceX);
+		
 		oldKnobWidth = self.knob.frame.size.height;
 		frame = CGRectMake(knobOffset, TUIScrollerKnobInset, knobLength, self.updatedScrollerWidth - TUIScrollerKnobInset);
 		frame = ABRectRoundOrigin(CGRectInset(frame, 4, 2));

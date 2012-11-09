@@ -288,7 +288,7 @@ typedef struct {
 		[sections addObject:section];
 	}
 	
-	_contentHeight = offset - self.contentInset.bottom;
+	_contentHeight = (offset - self.contentInset.bottom) + _footerView.bounds.size.height;
 	_sectionInfo = sections;
 	
 }
@@ -648,6 +648,14 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 	_headerView.hidden = YES;
 }
 
+- (void)setFooterView:(TUIView *)footerView {
+	[_footerView removeFromSuperview];
+	_footerView = footerView;
+	
+	[self addSubview:_footerView];
+	_footerView.hidden = YES;
+}
+
 - (BOOL)_preLayoutCells
 {
 	CGRect bounds = self.bounds;
@@ -904,6 +912,23 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 		} else {
 			if(!_pullDownView.hidden) {
 				_pullDownView.hidden = YES;
+			}
+		}
+	}
+	
+	if (_footerView) {
+		CGRect footerViewRect = CGRectMake(0, 0, visible.size.width, _footerView.frame.size.height);
+		if(CGRectIntersectsRect(footerViewRect, visible)) {
+			_footerView.frame = footerViewRect;
+			[_footerView setNeedsLayout];
+			
+			if(_footerView.hidden) {
+				// show
+				_footerView.hidden = NO;
+			}
+		} else {
+			if(!_footerView.hidden) {
+				_footerView.hidden = YES;
 			}
 		}
 	}

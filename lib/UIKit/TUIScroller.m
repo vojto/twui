@@ -194,31 +194,35 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 	CGFloat knobLength = MIN(2000, [self adjustedKnobWidth]);
 	CGFloat knobOffset = [self adjustedKnobOffsetForWidth:knobLength];
 	
+	// Calculate the proper overscroll and squish the knob by that much.
+	CGFloat bounce;
+	if(self.vertical)
+		bounce = (self.scrollView.bounceOffset.y + self.scrollView.pullOffset.y);
+	else
+		bounce = (self.scrollView.bounceOffset.x + self.scrollView.pullOffset.x);
+	
 	// Allow the scroll indicator to "rubber band" squish if we overscroll.
 	CGFloat modifier = self.vertical ? self.bounds.size.height : self.bounds.size.width;
-	CGFloat pullFactor = 1.3f * (1.0f - ((modifier - knobLength) / modifier));
+	CGFloat pullFactor = 1.25f * (1.0f - ((modifier - knobLength) / modifier));
+	
+	// If we're at the base of the scroller track, don't offset the knob.
+	bounce *= pullFactor;
+	knobLength -= fabs(bounce);
+	knobOffset += fabs(bounce) * (knobOffset == 0 ? 0 : 1);
 	
 	// Get the new scroller frame and set the scroller position, so
 	// if we are expanding the scroller, it doesn't jump, but expands.
 	CGRect frame = CGRectZero;
 	if(self.vertical) {
-		CGFloat bounceY = (self.scrollView.bounceOffset.y + self.scrollView.pullOffset.y) * pullFactor;
-		knobLength -= fabs(bounceY);
-		knobOffset += fabs(bounceY);
-		
 		oldKnobWidth = self.knob.frame.size.width;
 		frame = CGRectMake(TUIScrollerKnobInset, knobOffset, self.updatedScrollerWidth - TUIScrollerKnobInset, knobLength);
-		frame = ABRectRoundOrigin(CGRectInset(frame, 2, 4));
+		frame = CGRectInset(frame, 2, 4);
 		
 		self.knob.layer.position = CGPointMake(CGRectGetMaxX(frame), CGRectGetMidY(frame));
 	} else {
-		CGFloat bounceX = (self.scrollView.bounceOffset.x + self.scrollView.pullOffset.x) * pullFactor;
-		knobLength -= fabs(bounceX);
-		knobOffset += fabs(bounceX);
-		
 		oldKnobWidth = self.knob.frame.size.height;
 		frame = CGRectMake(knobOffset, TUIScrollerKnobInset, knobLength, self.updatedScrollerWidth - TUIScrollerKnobInset);
-		frame = ABRectRoundOrigin(CGRectInset(frame, 4, 2));
+		frame = CGRectInset(frame, 4, 2);
 		
 		self.knob.layer.position = CGPointMake(CGRectGetMidX(frame), CGRectGetMinY(frame));
 	}

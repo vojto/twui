@@ -150,7 +150,6 @@ typedef struct {
 @implementation TUITableView
 
 @synthesize pullDownView=_pullDownView;
-@synthesize headerView=_headerView;
 
 - (id)initWithFrame:(CGRect)frame style:(TUITableViewStyle)style
 {
@@ -279,7 +278,7 @@ typedef struct {
 	
 	NSMutableArray *sections = [[NSMutableArray alloc] initWithCapacity:numberOfSections];
 	
-	CGFloat offset = [_headerView bounds].size.height - self.contentInset.top*2;
+	CGFloat offset = [self.headerView bounds].size.height - self.contentInset.top*2;
 	for(int s = 0; s < numberOfSections; ++s) {
 		TUITableViewSection *section = [[TUITableViewSection alloc] initWithNumberOfRows:[_dataSource tableView:self numberOfRowsInSection:s] sectionIndex:s tableView:self];
 		[section _setupRowHeights];
@@ -640,12 +639,12 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 
 - (void)setHeaderView:(TUIView *)h
 {
-	[_headerView removeFromSuperview];
+	[self.headerView removeFromSuperview];
 	
 	_headerView = h;
 	
-	[self addSubview:_headerView];
-	_headerView.hidden = YES;
+	[self addSubview:self.headerView];
+	self.headerView.hidden = YES;
 }
 
 - (void)setFooterView:(TUIView *)footerView {
@@ -882,21 +881,15 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
     [[_dragToReorderCell superview] bringSubviewToFront:_dragToReorderCell];
   }
   
-	if(_headerView) {
+	if(self.headerView) {
 		CGSize s = self.contentSize;
-		CGRect headerViewRect = CGRectMake(0, s.height - _headerView.frame.size.height, visible.size.width, _headerView.frame.size.height);
+		CGRect headerViewRect = CGRectMake(0, s.height - self.headerView.frame.size.height, visible.size.width, self.headerView.frame.size.height);
 		if(CGRectIntersectsRect(headerViewRect, visible)) {
-			_headerView.frame = headerViewRect;			
-			[_headerView setNeedsLayout];
-			
-			if(_headerView.hidden) {
-				// show
-				_headerView.hidden = NO;
-			}
+			self.headerView.frame = headerViewRect;
+			[self.headerView setNeedsLayout];
+			self.headerView.hidden = NO;
 		} else {
-			if(!_headerView.hidden) {
-				_headerView.hidden = YES;
-			}
+			self.headerView.hidden = YES;
 		}
 	}
 	

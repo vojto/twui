@@ -418,9 +418,9 @@ static CVReturn scrollCallback(CVDisplayLinkRef displayLink, const CVTimeStamp *
 	[self.horizontalScroller forceDisableExpandedScroller:NO];
 	
 	// Conditionally un-expand one scroller (if both are expanded).
-	if(verticalScrollerWasExpanded && horizontalScrollerIsExpanded)
+	if (verticalScrollerWasExpanded && horizontalScrollerIsExpanded)
 		[self.verticalScroller forceDisableExpandedScroller:YES];
-	else if(horizontalScrollerWasExpanded && verticalScrollerIsExpanded)
+	else if (horizontalScrollerWasExpanded && verticalScrollerIsExpanded)
 		[self.horizontalScroller forceDisableExpandedScroller:YES];
 	
 	// Cache the new values for the next time.
@@ -441,7 +441,7 @@ static CVReturn scrollCallback(CVDisplayLinkRef displayLink, const CVTimeStamp *
 	BOOL hEffectiveVisible = hVisible;
 	
 	// Determine the visibility of the vertical scroller.
-	switch(self.verticalScrollIndicatorVisibility) {
+	switch (self.verticalScrollIndicatorVisibility) {
 		case TUIScrollViewIndicatorVisibleNever:
 			vEffectiveVisible = self.verticalScroller.flashing;
 			break;
@@ -462,7 +462,7 @@ static CVReturn scrollCallback(CVDisplayLinkRef displayLink, const CVTimeStamp *
 	}
 	
 	// Determine the visibility of the horizontal scroller.
-	switch(self.horizontalScrollIndicatorVisibility) {
+	switch (self.horizontalScrollIndicatorVisibility) {
 		case TUIScrollViewIndicatorVisibleNever:
 			hEffectiveVisible = NO;
 			break;
@@ -492,7 +492,7 @@ static CVReturn scrollCallback(CVDisplayLinkRef displayLink, const CVTimeStamp *
 	CGFloat horizontalScrollerStart = 0;
 	CGFloat verticalScrollerOffset = ((hVisible ? verticalScrollerSize : 0) + resizeKnobSize.height);
 	CGFloat horizontalScrollerOffset = ((vVisible ? horizontalScrollerSize : 0) + resizeKnobSize.width);
-	if(![self.class requiresLegacyScrollers]) {
+	if (![self.class requiresLegacyScrollers]) {
 		verticalScrollerOffset = 0.0f;
 		horizontalScrollerOffset = 0.0f;
 	}
@@ -515,33 +515,33 @@ static CVReturn scrollCallback(CVDisplayLinkRef displayLink, const CVTimeStamp *
 		self.verticalScroller.frame = newVScrollerRect;
 		self.horizontalScroller.frame = newHScrollerRect;
 	};
-	if(!animated)
+	if (!animated)
 		updateBlock();
 	
 	[TUIView animateWithDuration:TUIScrollerFadeSpeed animations:^{
-		if(animated)
+		if (animated)
 			updateBlock();
 		
 		// If the scrollers aren't expanded, there's no need to draw them.
 		// Each animated redraw operation is just more toll, less scroll.
-		if(self.verticalScroller.expanded)
+		if (self.verticalScroller.expanded)
 			[self.verticalScroller redraw];
-		if(self.horizontalScroller.expanded)
+		if (self.horizontalScroller.expanded)
 			[self.horizontalScroller redraw];
 	}];
 	
 	// Notify the delegate about changes in scroll indiciator visibility.
-	if(vWasVisible != vEffectiveVisible) {
-		if(vEffectiveVisible && _scrollViewFlags.delegateScrollViewWillShowScrollIndicator) {
+	if (vWasVisible != vEffectiveVisible) {
+		if (vEffectiveVisible && _scrollViewFlags.delegateScrollViewWillShowScrollIndicator) {
 			[self.delegate scrollView:self willShowScrollIndicator:TUIScrollViewIndicatorVertical];
-		} else if(!vEffectiveVisible && _scrollViewFlags.delegateScrollViewWillHideScrollIndicator) {
+		} else if (!vEffectiveVisible && _scrollViewFlags.delegateScrollViewWillHideScrollIndicator) {
 			[self.delegate scrollView:self willHideScrollIndicator:TUIScrollViewIndicatorVertical];
 		}
 	}
-	if(hWasVisible != hEffectiveVisible) {
-		if(hEffectiveVisible && _scrollViewFlags.delegateScrollViewWillShowScrollIndicator) {
+	if (hWasVisible != hEffectiveVisible) {
+		if (hEffectiveVisible && _scrollViewFlags.delegateScrollViewWillShowScrollIndicator) {
 			[self.delegate scrollView:self willShowScrollIndicator:TUIScrollViewIndicatorHorizontal];
-		} else if(!hEffectiveVisible && _scrollViewFlags.delegateScrollViewWillHideScrollIndicator) {
+		} else if (!hEffectiveVisible && _scrollViewFlags.delegateScrollViewWillHideScrollIndicator) {
 			[self.delegate scrollView:self willHideScrollIndicator:TUIScrollViewIndicatorHorizontal];
 		}
 	}
@@ -555,26 +555,26 @@ static CVReturn scrollCallback(CVDisplayLinkRef displayLink, const CVTimeStamp *
 	_scrollViewFlags.horizontalScrollIndicatorShowing = hEffectiveVisible;
   
 	// Notify the delegate about changes in scroller visibility.
-	if(vWasVisible != vEffectiveVisible) {
-	  if(vEffectiveVisible && _scrollViewFlags.delegateScrollViewDidShowScrollIndicator) {
+	if (vWasVisible != vEffectiveVisible) {
+	  if (vEffectiveVisible && _scrollViewFlags.delegateScrollViewDidShowScrollIndicator) {
 		  [self.delegate scrollView:self didShowScrollIndicator:TUIScrollViewIndicatorVertical];
-		} else if(!vEffectiveVisible && _scrollViewFlags.delegateScrollViewDidHideScrollIndicator) {
+		} else if (!vEffectiveVisible && _scrollViewFlags.delegateScrollViewDidHideScrollIndicator) {
 			[self.delegate scrollView:self didHideScrollIndicator:TUIScrollViewIndicatorVertical];
 		}
 	}
 	
-	if(hWasVisible != hEffectiveVisible) {
-		if(hEffectiveVisible && _scrollViewFlags.delegateScrollViewDidShowScrollIndicator) {
+	if (hWasVisible != hEffectiveVisible) {
+		if (hEffectiveVisible && _scrollViewFlags.delegateScrollViewDidShowScrollIndicator) {
 			[self.delegate scrollView:self didShowScrollIndicator:TUIScrollViewIndicatorHorizontal];
-		} else if(!hEffectiveVisible && _scrollViewFlags.delegateScrollViewDidHideScrollIndicator) {
+		} else if (!hEffectiveVisible && _scrollViewFlags.delegateScrollViewDidHideScrollIndicator) {
 			[self.delegate scrollView:self didHideScrollIndicator:TUIScrollViewIndicatorHorizontal];
 		}
 	}
 	
 	// Update the scroller internal knobs.
-	if(vEffectiveVisible)
+	if (vEffectiveVisible)
 		[self.verticalScroller setNeedsLayout];
-	if(hEffectiveVisible)
+	if (hEffectiveVisible)
 		[self.horizontalScroller setNeedsLayout];
 }
 

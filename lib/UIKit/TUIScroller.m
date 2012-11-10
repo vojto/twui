@@ -68,7 +68,7 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 @implementation TUIScroller
 
 - (id)initWithFrame:(CGRect)frame {
-	if((self = [super initWithFrame:frame])) {
+	if ((self = [super initWithFrame:frame])) {
 		_knob = [[TUIView alloc] initWithFrame:CGRectZero];
 		self.knob.userInteractionEnabled = NO;
 		self.knob.clipsToBounds = NO;
@@ -95,7 +95,7 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 }
 
 - (void)setHideKnobTimer:(NSTimer *)hideKnobTimer {
-	if(!hideKnobTimer && _hideKnobTimer) {
+	if (!hideKnobTimer && _hideKnobTimer) {
 		[_hideKnobTimer invalidate];
 		_hideKnobTimer = nil;
 	} else {
@@ -106,7 +106,7 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 - (void)preferredScrollerStyleChanged:(NSNotification *)notification {
 	self.hideKnobTimer = nil;
 	
-	if([NSScroller preferredScrollerStyle] == NSScrollerStyleOverlay) {
+	if ([NSScroller preferredScrollerStyle] == NSScrollerStyleOverlay) {
 		[self _hideKnob];
 	} else {
 		self.knobHidden = NO;
@@ -115,16 +115,16 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 }
 
 - (void)_refreshKnobTimer {
-	if([NSScroller preferredScrollerStyle] != NSScrollerStyleOverlay)
+	if ([NSScroller preferredScrollerStyle] != NSScrollerStyleOverlay)
 		return;
 	
 	TUIScrollViewIndicatorVisibility visibility;
-	if(self.vertical)
+	if (self.vertical)
 		visibility = self.scrollView.verticalScrollIndicatorVisibility;
 	else
 		visibility = self.scrollView.horizontalScrollIndicatorVisibility;
 	
-	if(visibility != TUIScrollViewIndicatorVisibleNever) {
+	if (visibility != TUIScrollViewIndicatorVisibleNever) {
 		self.hideKnobTimer = nil;
 		self.hideKnobTimer = [NSTimer scheduledTimerWithTimeInterval:TUIScrollerDisplayDuration
 															  target:self
@@ -141,7 +141,7 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 }
 
 - (void)_hideKnob {
-	if(_scrollerFlags.hover || _scrollerFlags.active || self.scrollView.dragging || self.scrollView.decelerating) {
+	if (_scrollerFlags.hover || _scrollerFlags.active || self.scrollView.dragging || self.scrollView.decelerating) {
 		[self _refreshKnobTimer];
 		return;
 	}
@@ -158,9 +158,9 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 }
 
 - (BOOL)isExpanded {
-	if(![TUIScrollView requiresExpandingScrollers] || _scrollerFlags.forcedDisableExpand) {
+	if (![TUIScrollView requiresExpandingScrollers] || _scrollerFlags.forcedDisableExpand) {
 		return NO;
-	} else if([(NSWindow *)self.nsWindow isKeyWindow]) {
+	} else if ([(NSWindow *)self.nsWindow isKeyWindow]) {
 		return (_scrollerFlags.hover || (_scrollerFlags.active && self.knobHidden) || self.trackShown);
 	} else return NO;
 }
@@ -196,7 +196,7 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 	
 	// Calculate the proper overscroll and squish the knob by that much.
 	CGFloat bounce;
-	if(self.vertical)
+	if (self.vertical)
 		bounce = (self.scrollView.bounceOffset.y + self.scrollView.pullOffset.y);
 	else
 		bounce = (self.scrollView.bounceOffset.x + self.scrollView.pullOffset.x);
@@ -213,7 +213,7 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 	// Get the new scroller frame and set the scroller position, so
 	// if we are expanding the scroller, it doesn't jump, but expands.
 	CGRect frame = CGRectZero;
-	if(self.vertical) {
+	if (self.vertical) {
 		oldKnobWidth = self.knob.frame.size.width;
 		frame = CGRectMake(TUIScrollerKnobInset, knobOffset, self.updatedScrollerWidth - TUIScrollerKnobInset, knobLength);
 		frame = CGRectInset(frame, 2, 3);
@@ -233,7 +233,7 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 	// If we just un-expanded, don't animate the knob shrinking.
 	CGFloat newKnobWidth = (self.vertical ? frame.size.width : frame.size.height);
 	BOOL knobShrinked = !_scrollerFlags.forcedDisableExpand;
-	if(self.vertical)
+	if (self.vertical)
 		knobShrinked &= self.knob.frame.size.width > frame.size.width;
 	else knobShrinked &= self.knob.frame.size.height > frame.size.height;
 	
@@ -246,7 +246,7 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 
 - (void)drawRect:(CGRect)rect {
 	self.trackShown = self.expanded;
-	if(!self.expanded)
+	if (!self.expanded)
 		return;
 	
 	// TUIScrollViewIndicatorStyleLight draws a dark track underneath,
@@ -277,7 +277,7 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 
 - (void)_updateKnobAlphaWithSpeed:(CGFloat)duration {
 	[TUIView animateWithDuration:duration animations:^{
-		if(self.knobHidden) {
+		if (self.knobHidden) {
 			self.knob.alpha = TUIScrollerHiddenAlpha;
 			self.alpha = TUIScrollerHiddenAlpha;
 		} else {
@@ -340,7 +340,7 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 	
 	// Normal knob dragging scroll.
 	// We can't use hitTest because userInteractionEnabled = NO.
-	if([self.knob pointInside:[self convertPoint:_mouseDown toView:self.knob] withEvent:event]) {
+	if ([self.knob pointInside:[self convertPoint:_mouseDown toView:self.knob] withEvent:event]) {
 		_scrollerFlags.trackingInsideKnob = 1;
 	} else {
 		
@@ -350,13 +350,13 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 		CGRect visible = self.scrollView.visibleRect;
 		CGPoint contentOffset = self.scrollView.contentOffset;
 		
-		if(self.vertical) {
-			if(_mouseDown.y < _knobStartFrame.origin.y)
+		if (self.vertical) {
+			if (_mouseDown.y < _knobStartFrame.origin.y)
 				contentOffset.y += visible.size.height;
 			else
 				contentOffset.y -= visible.size.height;
 		} else {
-			if(_mouseDown.x < _knobStartFrame.origin.x)
+			if (_mouseDown.x < _knobStartFrame.origin.x)
 				contentOffset.x += visible.size.width;
 			else
 				contentOffset.x -= visible.size.width;
@@ -379,14 +379,14 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 
 - (void)mouseDragged:(NSEvent *)event {
 	// Normal knob dragging.
-	if(_scrollerFlags.trackingInsideKnob) {
+	if (_scrollerFlags.trackingInsideKnob) {
 		CGPoint p = [self localPointForEvent:event];
 		CGSize diff = CGSizeMake(p.x - _mouseDown.x, p.y - _mouseDown.y);
 		CGFloat proportion = [self adjustedKnobProportionForDifference:diff];
 		CGFloat maxContentOffset = [self adjustedMaximumContentOffet];
 		
 		CGPoint scrollOffset = self.scrollView.contentOffset;
-		if(self.vertical)
+		if (self.vertical)
 			scrollOffset.y = roundf(-proportion * maxContentOffset);
 		else
 			scrollOffset.x = roundf(-proportion * maxContentOffset);
@@ -404,7 +404,7 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 	CGSize contentSize = self.scrollView.contentSize;
 	
 	CGFloat rangeOfMotion, maxOffset, currentOffset;
-	if(self.vertical) {
+	if (self.vertical) {
 		rangeOfMotion = trackBounds.size.height - knobLength;
 		maxOffset = contentSize.height - visible.size.height;
 		currentOffset = visible.origin.y;
@@ -417,17 +417,17 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 	CGFloat offsetProportion = 1.0 - (maxOffset - currentOffset) / maxOffset;
 	CGFloat knobOffset = offsetProportion * rangeOfMotion;
 	
-	if(isnan(knobOffset)) {
+	if (isnan(knobOffset)) {
 		knobOffset = 0.0f;
-	} else if(self.vertical) {
-		if(knobOffset + knobLength > trackBounds.size.height)
+	} else if (self.vertical) {
+		if (knobOffset + knobLength > trackBounds.size.height)
 			knobOffset = trackBounds.size.height - knobLength;
-		else if(knobOffset < trackBounds.origin.y)
+		else if (knobOffset < trackBounds.origin.y)
 			knobOffset = trackBounds.origin.y;
 	} else {
-		if(knobOffset + knobLength > trackBounds.size.width)
+		if (knobOffset + knobLength > trackBounds.size.width)
 			knobOffset = trackBounds.size.width - knobLength;
-		else if(knobOffset < trackBounds.origin.x)
+		else if (knobOffset < trackBounds.origin.x)
 			knobOffset = trackBounds.origin.x;
 	}
 	
@@ -440,14 +440,14 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 	CGSize contentSize = self.scrollView.contentSize;
 	
 	CGFloat knobLength = TUIScrollerMinimumKnobSize;
-	if(self.vertical)
+	if (self.vertical)
 		knobLength = trackBounds.size.height * (visible.size.height / contentSize.height);
 	else
 		knobLength = trackBounds.size.width * (visible.size.width / contentSize.width);
 	
-	if(knobLength < TUIScrollerMinimumKnobSize)
+	if (knobLength < TUIScrollerMinimumKnobSize)
 		knobLength = TUIScrollerMinimumKnobSize;
-	if(isnan(knobLength))
+	if (isnan(knobLength))
 		knobLength = 0.0;
 	
 	return knobLength;
@@ -458,7 +458,7 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 	
 	CGRect knobFrame = _knobStartFrame;
 	CGFloat maxKnobOffset, knobOffset = 0.0;
-	if(self.vertical) {
+	if (self.vertical) {
 		knobFrame.origin.y += diff.height;
 		knobOffset = knobFrame.origin.y;
 		maxKnobOffset = trackBounds.size.height - knobFrame.size.height;
@@ -475,7 +475,7 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 	CGRect visible = self.scrollView.visibleRect;
 	CGSize contentSize = self.scrollView.contentSize;
 	
-	if(self.vertical)
+	if (self.vertical)
 		return (contentSize.height - visible.size.height);
 	else
 		return (contentSize.width - visible.size.width);

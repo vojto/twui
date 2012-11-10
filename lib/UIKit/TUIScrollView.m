@@ -66,7 +66,7 @@ static BOOL isAtleastMountainLion = NO;
 
 // Apply Lion or Mountain Lion specific features.
 + (void)initialize {
-	if(self.class != TUIScrollView.class)
+	if (self.class != TUIScrollView.class)
 		return;
 	
 	SInt32 major = 0;
@@ -104,7 +104,7 @@ static BOOL isAtleastMountainLion = NO;
 
 - (id)initWithFrame:(CGRect)frame
 {
-	if((self = [super initWithFrame:frame]))
+	if ((self = [super initWithFrame:frame]))
 	{
 		_layer.masksToBounds = NO; // differs from UIKit
 		
@@ -257,11 +257,11 @@ static BOOL isAtleastMountainLion = NO;
 
 - (void)setContentInset:(TUIEdgeInsets)i
 {
-	if(!TUIEdgeInsetsEqualToEdgeInsets(i, _contentInset)) {
+	if (!TUIEdgeInsetsEqualToEdgeInsets(i, _contentInset)) {
 		_contentInset = i;
-		if(self._pulling){
+		if (self._pulling){
 			_scrollViewFlags.didChangeContentInset = 1;
-		}else if(!self.dragging) {
+		}else if (!self.dragging) {
 			self.contentOffset = self.contentOffset;
 		}
 	}
@@ -328,7 +328,7 @@ static CVReturn scrollCallback(CVDisplayLinkRef displayLink, const CVTimeStamp *
 - (void)willMoveToWindow:(TUINSWindow *)newWindow
 {
 	[super willMoveToWindow:newWindow];
-	if(!newWindow) {
+	if (!newWindow) {
 		x = YES;
 		[self _stopDisplayLink];
 	}
@@ -342,40 +342,40 @@ static CVReturn scrollCallback(CVDisplayLinkRef displayLink, const CVTimeStamp *
 	s.height += _contentInset.top;
 	
 	CGFloat mx = offset.x + s.width;
-	if(s.width > b.size.width) {
-		if(mx < b.size.width) {
+	if (s.width > b.size.width) {
+		if (mx < b.size.width) {
 			offset.x = b.size.width - s.width;
 		}
-		if(offset.x > 0.0) {
+		if (offset.x > 0.0) {
 			offset.x = 0.0;
 		}
 	} else {
-		if(mx > b.size.width) {
+		if (mx > b.size.width) {
 			offset.x = b.size.width - s.width;
 		}
-		if(offset.x < 0.0) {
+		if (offset.x < 0.0) {
 			offset.x = 0.0;
 		}
 	}
 	
 	CGFloat my = offset.y + s.height;
-	if(s.height > b.size.height) { // content bigger than bounds
-		if(my < b.size.height) {
+	if (s.height > b.size.height) { // content bigger than bounds
+		if (my < b.size.height) {
 			offset.y = b.size.height - s.height;
 		}
-		if(offset.y > 0.0) {
+		if (offset.y > 0.0) {
 			offset.y = 0.0;
 		}
 	} else { // content smaller than bounds
-		if(0) { // let it move around in bounds
-			if(my > b.size.height) {
+		if (0) { // let it move around in bounds
+			if (my > b.size.height) {
 				offset.y = b.size.height - s.height;
 			}
-			if(offset.y < 0.0) {
+			if (offset.y < 0.0) {
 				offset.y = 0.0;
 			}
 		}
-		if(1) { // pin to top
+		if (1) { // pin to top
 			offset.y = b.size.height - s.height;
 		}
 	}
@@ -385,7 +385,7 @@ static CVReturn scrollCallback(CVDisplayLinkRef displayLink, const CVTimeStamp *
 
 - (void)setResizeKnobSize:(CGSize)s
 {
-	if([self.class requiresLegacyScrollers])
+	if ([self.class requiresLegacyScrollers])
 		resizeKnobSize = s;
 }
 
@@ -591,8 +591,8 @@ static CGFloat lerp(CGFloat a, CGFloat b, CGFloat t)
 
 static CGFloat clamp(CGFloat x, CGFloat min, CGFloat max)
 {
-	if(x < min) return min;
-	if(x > max) return max;
+	if (x < min) return min;
+	if (x > max) return max;
 	return x;
 }
 
@@ -630,7 +630,7 @@ static CGPoint PointLerp(CGPoint a, CGPoint b, CGFloat t)
 
 - (CGPoint)pullOffset
 {
-	if(_scrollViewFlags.bounceEnabled){
+	if (_scrollViewFlags.bounceEnabled){
 		return CGPointMake((_pull.xPulling) ? _pull.x : 0, (_pull.yPulling) ? _pull.y : 0);
 	}else{
 		return CGPointZero;
@@ -639,7 +639,7 @@ static CGPoint PointLerp(CGPoint a, CGPoint b, CGFloat t)
 
 - (CGPoint)bounceOffset
 {
-	if(_scrollViewFlags.bounceEnabled){
+	if (_scrollViewFlags.bounceEnabled){
 		return _bounce.bouncing ? CGPointMake(_bounce.x, _bounce.y) : CGPointZero;
 	}else{
 		return CGPointZero;
@@ -652,7 +652,7 @@ static CGPoint PointLerp(CGPoint a, CGPoint b, CGFloat t)
 	p.x = round(-p.x - self.bounceOffset.x - self.pullOffset.x);
 	p.y = round(-p.y - self.bounceOffset.y - self.pullOffset.y);
 	[((CAScrollLayer *)self.layer) scrollToPoint:p];
-	if(_scrollViewFlags.delegateScrollViewDidScroll){
+	if (_scrollViewFlags.delegateScrollViewDidScroll){
 		[_delegate scrollViewDidScroll:self];
 	}
 }
@@ -683,9 +683,9 @@ static CGPoint PointLerp(CGPoint a, CGPoint b, CGFloat t)
 }
 
 - (void)stopThrowing {
-	if(_scrollViewFlags.animationMode == AnimationModeThrow) {
+	if (_scrollViewFlags.animationMode == AnimationModeThrow) {
 		// ignore - let the bounce finish (_updateBounce will kill the display link when it's ready)
-		if(!_bounce.bouncing)
+		if (!_bounce.bouncing)
 			[self _stopDisplayLink];
 	}
 }
@@ -762,9 +762,9 @@ static CGPoint PointLerp(CGPoint a, CGPoint b, CGFloat t)
 
 - (BOOL)isScrollingToTop
 {
-	if(displayLink) {
-		if(_scrollViewFlags.animationMode == AnimationModeScrollTo) {
-			if(roundf(destinationOffset.y) == roundf([self topDestinationOffset]))
+	if (displayLink) {
+		if (_scrollViewFlags.animationMode == AnimationModeScrollTo) {
+			if (roundf(destinationOffset.y) == roundf([self topDestinationOffset]))
 				return YES;
 		}
 	}
@@ -773,7 +773,7 @@ static CGPoint PointLerp(CGPoint a, CGPoint b, CGFloat t)
 
 - (void)setContentOffset:(CGPoint)contentOffset animated:(BOOL)animated
 {
-	if(animated) {
+	if (animated) {
 		destinationOffset = contentOffset;
 		[self _startDisplayLink:AnimationModeScrollTo];
 	} else {
@@ -793,7 +793,7 @@ static CGPoint PointLerp(CGPoint a, CGPoint b, CGFloat t)
  * @param animated animate the scroll or not (this is currently ignored and the scroll is always animated)
  */
 - (void)beginContinuousScrollForDragAtPoint:(CGPoint)dragLocation animated:(BOOL)animated {
-	if(dragLocation.y <= TUIScrollViewContinuousScrollDragBoundary || dragLocation.y >= (self.bounds.size.height - TUIScrollViewContinuousScrollDragBoundary)){
+	if (dragLocation.y <= TUIScrollViewContinuousScrollDragBoundary || dragLocation.y >= (self.bounds.size.height - TUIScrollViewContinuousScrollDragBoundary)){
 		// note the drag offset
 		_dragScrollLocation = dragLocation;
 		// begin a continuous scroll
@@ -811,7 +811,7 @@ static CGPoint PointLerp(CGPoint a, CGPoint b, CGFloat t)
  * @param animated animate the scroll or not (this is currently ignored and the scroll is always animated)
  */
 - (void)endContinuousScrollAnimated:(BOOL)animated {
-	if(_scrollViewFlags.animationMode == AnimationModeScrollContinuous){
+	if (_scrollViewFlags.animationMode == AnimationModeScrollContinuous){
 		[self _stopDisplayLink];
 	}
 }
@@ -819,7 +819,7 @@ static CGPoint PointLerp(CGPoint a, CGPoint b, CGFloat t)
 static float clampBounce(float x) {
 	x *= 0.4;
 	float m = 60 * 60;
-	if(x > 0.0f)
+	if (x > 0.0f)
 		return MIN(x, m);
 	else
 		return MAX(x, -m);
@@ -827,7 +827,7 @@ static float clampBounce(float x) {
 
 - (void)_startBounce
 {
-	if(!_bounce.bouncing) {
+	if (!_bounce.bouncing) {
 		_bounce.bouncing = YES;
 		_bounce.x = 0.0f;
 		_bounce.y = 0.0f;
@@ -839,7 +839,7 @@ static float clampBounce(float x) {
 
 - (void)_updateBounce
 {
-	if(_bounce.bouncing) {
+	if (_bounce.bouncing) {
 		CFAbsoluteTime t = CFAbsoluteTimeGetCurrent();
 		double dt = t - _bounce.t;
 		
@@ -853,9 +853,9 @@ static float clampBounce(float x) {
 		F.y = -_bounce.y * tightness;
 		
 		// damper
-		if(fabsf(_bounce.x) > 0.0)
+		if (fabsf(_bounce.x) > 0.0)
 			F.x -= _bounce.vx * dampiness;
-		if(fabsf(_bounce.y) > 0.0)
+		if (fabsf(_bounce.y) > 0.0)
 			F.y -= _bounce.vy * dampiness;
 		
 		_bounce.vx += F.x; // mass=1
@@ -866,7 +866,7 @@ static float clampBounce(float x) {
 		
 		_bounce.t = t;
 		
-		if(fabsf(_bounce.vy) < 1.0 && fabsf(_bounce.y) < 1.0 && fabsf(_bounce.vx) < 1.0 && fabsf(_bounce.x) < 1.0) {
+		if (fabsf(_bounce.vy) < 1.0 && fabsf(_bounce.y) < 1.0 && fabsf(_bounce.vx) < 1.0 && fabsf(_bounce.x) < 1.0) {
 			[self _stopDisplayLink];
 			if (_scrollViewFlags.delegateScrollViewDidEndDecelerating) {
 				[_delegate scrollViewDidEndDecelerating:self];
@@ -881,13 +881,13 @@ static float clampBounce(float x) {
 {
 	[self _updateBounce]; // can't do after _startBounce otherwise dt will be crazy
 	
-	if(self.nsWindow == nil) {
+	if (self.nsWindow == nil) {
 		NSLog(@"Warning: no window %d (should be 1)", x);
 		[self _stopDisplayLink];
 		return;
 	}
 	
-	switch(_scrollViewFlags.animationMode) {
+	switch (_scrollViewFlags.animationMode) {
 		case AnimationModeThrow: {
 			
 			CGPoint o = _unroundedContentOffset;
@@ -897,7 +897,7 @@ static float clampBounce(float x) {
 			o.y = o.y - _throw.vy * dt;
 			
 			CGPoint fixedOffset = [self _fixProposedContentOffset:o];
-			if(!CGPointEqualToPoint(fixedOffset, o)) {
+			if (!CGPointEqualToPoint(fixedOffset, o)) {
 				[self _startBounce];
 			}
 			
@@ -907,10 +907,10 @@ static float clampBounce(float x) {
 			_throw.vy *= decelerationRate;
 			_throw.t = t;
 			
-			if(_throw.throwing && !self._pulling && !_bounce.bouncing) {
+			if (_throw.throwing && !self._pulling && !_bounce.bouncing) {
 				// may happen in the case where our we scrolled, then stopped, then lifted finger (didn't do a system-started throw, but display link started anyway to do something else)
 				// todo - handle this before it happens, but keep this sanity check
-				if(MAX(fabsf(_throw.vx), fabsf(_throw.vy)) < 0.1) {
+				if (MAX(fabsf(_throw.vx), fabsf(_throw.vy)) < 0.1) {
 					[self _stopDisplayLink];
 				}
 			}
@@ -926,7 +926,7 @@ static float clampBounce(float x) {
 			o = [self _fixProposedContentOffset:o];
 			[self _setContentOffset:o];
 			
-			if((fabsf(o.x - lastOffset.x) < 0.1) && (fabsf(o.y - lastOffset.y) < 0.1)) {
+			if ((fabsf(o.x - lastOffset.x) < 0.1) && (fabsf(o.y - lastOffset.y) < 0.1)) {
 				[self _stopDisplayLink];
 				[self setContentOffset:destinationOffset];
 			}
@@ -937,10 +937,10 @@ static float clampBounce(float x) {
 			CGFloat direction;
 			CGFloat distance;
 			
-			if(_dragScrollLocation.y <= TUIScrollViewContinuousScrollDragBoundary){
+			if (_dragScrollLocation.y <= TUIScrollViewContinuousScrollDragBoundary){
 				distance = MAX(0, MIN(TUIScrollViewContinuousScrollDragBoundary, _dragScrollLocation.y));
 				direction = 1;
-			}else if(_dragScrollLocation.y >= (self.bounds.size.height - TUIScrollViewContinuousScrollDragBoundary)){
+			}else if (_dragScrollLocation.y >= (self.bounds.size.height - TUIScrollViewContinuousScrollDragBoundary)){
 				distance = MAX(0, MIN(TUIScrollViewContinuousScrollDragBoundary, self.bounds.size.height - _dragScrollLocation.y));
 				direction = -1;
 			}else{
@@ -960,19 +960,19 @@ static float clampBounce(float x) {
 
 - (void)scrollRectToVisible:(CGRect)rect animated:(BOOL)animated {
 	CGRect visible = self.visibleRect;
-	if(rect.origin.y < visible.origin.y) {
+	if (rect.origin.y < visible.origin.y) {
 		// scroll down, have rect be flush with bottom of visible view
 		[self setContentOffset:CGPointMake(self.contentOffset.x, -rect.origin.y)
 					  animated:animated];
-	} else if(rect.origin.y + rect.size.height > visible.origin.y + visible.size.height) {
+	} else if (rect.origin.y + rect.size.height > visible.origin.y + visible.size.height) {
 		// scroll up, rect to be flush with top of view
 		[self setContentOffset:CGPointMake(self.contentOffset.x, -rect.origin.y + visible.size.height - rect.size.height)
 					  animated:animated];
-	} else if(rect.origin.x < visible.origin.x) {
+	} else if (rect.origin.x < visible.origin.x) {
 		// scroll right
 		[self setContentOffset:CGPointMake(-rect.origin.x, self.contentOffset.y)
 					  animated:animated];
-	} else if(rect.origin.x + rect.size.width > visible.origin.x + visible.size.width) {
+	} else if (rect.origin.x + rect.size.width > visible.origin.x + visible.size.width) {
 		// scroll left
 		[self setContentOffset:CGPointMake(-rect.origin.x + visible.size.width - rect.size.width, self.contentOffset.y)
 					  animated:animated];
@@ -1046,11 +1046,11 @@ static float clampBounce(float x) {
 - (void)beginGestureWithEvent:(NSEvent *)event
 {
 	
-	if(_scrollViewFlags.delegateScrollViewWillBeginDragging){
+	if (_scrollViewFlags.delegateScrollViewWillBeginDragging){
 		[_delegate scrollViewWillBeginDragging:self];
 	}
 	
-	if(_scrollViewFlags.bounceEnabled) {
+	if (_scrollViewFlags.bounceEnabled) {
 		_throw.throwing = 0;
 		_scrollViewFlags.gestureBegan = 1; // this won't happen if window isn't key on 10.6, lame
 	}
@@ -1060,18 +1060,18 @@ static float clampBounce(float x) {
 - (void)_startThrow
 {
 	
-	if(!self._pulling){
-		if(fabsf(_lastScroll.dy) < 2.0 && fabsf(_lastScroll.dx) < 2.0){
+	if (!self._pulling){
+		if (fabsf(_lastScroll.dy) < 2.0 && fabsf(_lastScroll.dx) < 2.0){
 			return; // don't bother throwing
 		}
 	}
 	
-	if(!_throw.throwing) {
+	if (!_throw.throwing) {
 		_throw.throwing = YES;
 		
 		CFAbsoluteTime t = CFAbsoluteTimeGetCurrent();
 		CFTimeInterval dt = t - _lastScroll.t;
-		if(dt < 1 / 60.0) dt = 1 / 60.0;
+		if (dt < 1 / 60.0) dt = 1 / 60.0;
 		
 		_throw.vx = _lastScroll.dx / dt;
 		_throw.vy = _lastScroll.dy / dt;
@@ -1081,21 +1081,21 @@ static float clampBounce(float x) {
 		
 		BOOL pulling = self._pulling; // prefetch the pulling state before resetting it
 		
-		if(_pull.xPulling) {
+		if (_pull.xPulling) {
 			_pull.xPulling = NO;
-			if(signbit(_throw.vx) != signbit(_pull.x)) _throw.vx = 0.0;
+			if (signbit(_throw.vx) != signbit(_pull.x)) _throw.vx = 0.0;
 			[self _startBounce];
 			_bounce.x = _pull.x;
 		}
 		
-		if(_pull.yPulling) {
+		if (_pull.yPulling) {
 			_pull.yPulling = NO;
-			if(signbit(_throw.vy) != signbit(_pull.y)) _throw.vy = 0.0;
+			if (signbit(_throw.vy) != signbit(_pull.y)) _throw.vy = 0.0;
 			[self _startBounce];
 			_bounce.y = _pull.y;
 		}
 		
-		if(pulling && _scrollViewFlags.didChangeContentInset){
+		if (pulling && _scrollViewFlags.didChangeContentInset){
 			_scrollViewFlags.didChangeContentInset = 0;
 			_bounce.x += _contentInset.left;
 			_bounce.y += _contentInset.top;
@@ -1110,15 +1110,15 @@ static float clampBounce(float x) {
 - (void)endGestureWithEvent:(NSEvent *)event
 {
 	
-	if(_scrollViewFlags.delegateScrollViewDidEndDragging){
+	if (_scrollViewFlags.delegateScrollViewDidEndDragging){
 		[_delegate scrollViewDidEndDragging:self];
 	}
 	
-	if(_scrollViewFlags.bounceEnabled) {
+	if (_scrollViewFlags.bounceEnabled) {
 		_scrollViewFlags.gestureBegan = 0;
 		[self _startThrow];
 		
-		if([self.class requiresElasticSrolling]) {
+		if ([self.class requiresElasticSrolling]) {
 			_scrollViewFlags.ignoreNextScrollPhaseNormal_10_7 = 1;
 		}
 	}
@@ -1127,21 +1127,21 @@ static float clampBounce(float x) {
 
 - (void)scrollWheel:(NSEvent *)event
 {
-	if(_contentSize.height <= CGRectGetHeight(self.bounds)) {
+	if (_contentSize.height <= CGRectGetHeight(self.bounds)) {
 		[super scrollWheel:event];
 	}
 	
-	if(self.scrollEnabled)
+	if (self.scrollEnabled)
 	{
 		int phase = ScrollPhaseNormal;
 		
-		if([self.class requiresElasticSrolling]) {
+		if ([self.class requiresElasticSrolling]) {
 			SEL s = @selector(momentumPhase);
-			if([event respondsToSelector:s]) {
+			if ([event respondsToSelector:s]) {
 				NSInteger (*imp)(id,SEL) = (NSInteger(*)(id,SEL))[event methodForSelector:s];
 				NSInteger lionPhase = imp(event, s);
 				
-				switch(lionPhase) {
+				switch (lionPhase) {
 					case 1:
 						phase = ScrollPhaseThrowingBegan;
 						break;
@@ -1155,15 +1155,15 @@ static float clampBounce(float x) {
 			}
 		} else {
 			SEL s = @selector(_scrollPhase);
-			if([event respondsToSelector:s]) {
+			if ([event respondsToSelector:s]) {
 				int (*imp)(id,SEL) = (int(*)(id,SEL))[event methodForSelector:s];
 				phase = imp(event, s);
 			}
 		}
 		
-		switch(phase) {
+		switch (phase) {
 			case ScrollPhaseNormal: {
-				if(_scrollViewFlags.ignoreNextScrollPhaseNormal_10_7) {
+				if (_scrollViewFlags.ignoreNextScrollPhaseNormal_10_7) {
 					_scrollViewFlags.ignoreNextScrollPhaseNormal_10_7 = 0;
 					return;
 				}
@@ -1179,19 +1179,19 @@ static float clampBounce(float x) {
 				double dx = 0.0;
 				double dy = 0.0;
 				
-				if(isContinuous) {
-					if(_scrollViewFlags.alwaysBounceHorizontal || [self _horizontalScrollerNeededForContentSize:self.contentSize])
+				if (isContinuous) {
+					if (_scrollViewFlags.alwaysBounceHorizontal || [self _horizontalScrollerNeededForContentSize:self.contentSize])
 						dx = CGEventGetDoubleValueField(cgEvent, kCGScrollWheelEventPointDeltaAxis2);
-					if(_scrollViewFlags.alwaysBounceVertical || [self _verticalScrollerNeededForContentSize:self.contentSize])
+					if (_scrollViewFlags.alwaysBounceVertical || [self _verticalScrollerNeededForContentSize:self.contentSize])
 						dy = CGEventGetDoubleValueField(cgEvent, kCGScrollWheelEventPointDeltaAxis1);
 				} else {
 					CGEventSourceRef source = CGEventCreateSourceFromEvent(cgEvent);
-					if(source) {
+					if (source) {
 						const double pixelsPerLine = CGEventSourceGetPixelsPerLine(source);
 						
-						if(_scrollViewFlags.alwaysBounceHorizontal || [self _horizontalScrollerNeededForContentSize:self.contentSize])
+						if (_scrollViewFlags.alwaysBounceHorizontal || [self _horizontalScrollerNeededForContentSize:self.contentSize])
 							dx = CGEventGetDoubleValueField(cgEvent, kCGScrollWheelEventFixedPtDeltaAxis2) * pixelsPerLine;
-						if(_scrollViewFlags.alwaysBounceVertical || [self _verticalScrollerNeededForContentSize:self.contentSize])
+						if (_scrollViewFlags.alwaysBounceVertical || [self _verticalScrollerNeededForContentSize:self.contentSize])
 							dy = CGEventGetDoubleValueField(cgEvent, kCGScrollWheelEventFixedPtDeltaAxis1) * pixelsPerLine;
 						CFRelease(source);
 					} else {
@@ -1199,7 +1199,7 @@ static float clampBounce(float x) {
 					}
 				}
 				
-				if(MAX(fabsf(dx), fabsf(dy)) > 0.00001) { // ignore 0.0, 0.0
+				if (MAX(fabsf(dx), fabsf(dy)) > 0.00001) { // ignore 0.0, 0.0
 					_lastScroll.dx = dx;
 					_lastScroll.dy = dy;
 					_lastScroll.t = CFAbsoluteTimeGetCurrent();
@@ -1207,8 +1207,8 @@ static float clampBounce(float x) {
 				
 				CGPoint o = _unroundedContentOffset;
 				
-				if(!_pull.xPulling) o.x = o.x + dx;
-				if(!_pull.yPulling) o.y = o.y - dy;
+				if (!_pull.xPulling) o.x = o.x + dx;
+				if (!_pull.yPulling) o.y = o.y - dy;
 				
 				BOOL xPulling = NO;
 				BOOL yPulling = NO;
@@ -1223,30 +1223,30 @@ static float clampBounce(float x) {
 					yPulling = fixedOffset.y != pull.y;
 				}
 				
-				if(_scrollViewFlags.gestureBegan){
+				if (_scrollViewFlags.gestureBegan){
 					float maxManualPull = 30.0;
 					
-					if(_pull.xPulling){
+					if (_pull.xPulling){
 						CGFloat xCounter = pow(M_E, -1.0 / maxManualPull * fabsf(_pull.x));
 						// don't counter on un-pull
-						if(signbit(_pull.x) != signbit(dx))
+						if (signbit(_pull.x) != signbit(dx))
 							xCounter = 1;
 						// update x-axis pulling
-						if(xPulling)
+						if (xPulling)
 							_pull.x += dx * xCounter;
-					}else if(xPulling){
+					}else if (xPulling){
 						_pull.x = dx;
 					}
 					
-					if(_pull.yPulling){
+					if (_pull.yPulling){
 						CGFloat yCounter = pow(M_E, -1.0 / maxManualPull * fabsf(_pull.y));
 						// don't counter on un-pull
-						if(signbit(_pull.y) == signbit(dy))
+						if (signbit(_pull.y) == signbit(dy))
 							yCounter = 1; // don't counter
 						// update y-axis pulling
-						if(yPulling)
+						if (yPulling)
 							_pull.y -= dy * yCounter;
-					}else if(yPulling){
+					}else if (yPulling){
 						_pull.y = -dy;
 					}
 					
@@ -1265,8 +1265,8 @@ static float clampBounce(float x) {
 				break;
 			}
 			case ScrollPhaseThrowingEnded: {
-				if(_scrollViewFlags.animationMode == AnimationModeThrow) { // otherwise we may have started a scrollToTop:animated:, don't want to stop that)
-					if(_bounce.bouncing) {
+				if (_scrollViewFlags.animationMode == AnimationModeThrow) { // otherwise we may have started a scrollToTop:animated:, don't want to stop that)
+					if (_bounce.bouncing) {
 						// ignore - let the bounce finish (_updateBounce will kill the display link when it's ready)
 					} else {
 						[self _stopDisplayLink];
@@ -1282,7 +1282,7 @@ static float clampBounce(float x) {
 }
 
 - (void)mouseDown:(NSEvent *)event onSubview:(TUIView *)subview {
-	if(subview == self.verticalScroller || subview == self.horizontalScroller){
+	if (subview == self.verticalScroller || subview == self.horizontalScroller){
 		_scrollViewFlags.mouseDownInScroller = YES;
 		[self _updateScrollersAnimated:YES];
 	}
@@ -1291,7 +1291,7 @@ static float clampBounce(float x) {
 }
 
 - (void)mouseUp:(NSEvent *)event fromSubview:(TUIView *)subview {
-	if(subview == self.verticalScroller || subview == self.horizontalScroller){
+	if (subview == self.verticalScroller || subview == self.horizontalScroller){
 		_scrollViewFlags.mouseDownInScroller = NO;
 		[self _updateScrollersAnimated:YES];
 	}
@@ -1302,7 +1302,7 @@ static float clampBounce(float x) {
 - (void)mouseEntered:(NSEvent *)event onSubview:(TUIView *)subview {
 	[super mouseEntered:event onSubview:subview];
 	
-	if(!_scrollViewFlags.mouseInside){
+	if (!_scrollViewFlags.mouseInside){
 		_scrollViewFlags.mouseInside = YES;
 	}
 }
@@ -1314,13 +1314,13 @@ static float clampBounce(float x) {
 	CGRect visible = [self visibleRect];
 	CGPoint updatedLocation = CGPointMake(location.x, location.y + visible.origin.y);
 	
-	if(_scrollViewFlags.mouseInside && ![self pointInside:updatedLocation withEvent:event]){
+	if (_scrollViewFlags.mouseInside && ![self pointInside:updatedLocation withEvent:event]){
 		_scrollViewFlags.mouseInside = NO;
 	}
 }
 
 - (BOOL)performKeyAction:(NSEvent *)event {
-	switch([[event charactersIgnoringModifiers] characterAtIndex:0]) {
+	switch ([[event charactersIgnoringModifiers] characterAtIndex:0]) {
 		case 63276: // page up
 			[self pageUp:nil];
 			return YES;
@@ -1334,7 +1334,7 @@ static float clampBounce(float x) {
 			[self scrollToBottomAnimated:YES];
 			return YES;
 		case 32: // spacebar
-			if([NSEvent modifierFlags] & NSShiftKeyMask)
+			if ([NSEvent modifierFlags] & NSShiftKeyMask)
 				[self pageUp:nil];
 			else
 				[self pageDown:nil];

@@ -141,7 +141,7 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 }
 
 - (void)_hideKnob {
-	if(_scrollerFlags.hover || _scrollerFlags.active) {
+	if(_scrollerFlags.hover || _scrollerFlags.active || self.scrollView.dragging || self.scrollView.decelerating) {
 		[self _refreshKnobTimer];
 		return;
 	}
@@ -216,13 +216,13 @@ static NSTimeInterval const TUIScrollerDisplayDuration = 0.75f;
 	if(self.vertical) {
 		oldKnobWidth = self.knob.frame.size.width;
 		frame = CGRectMake(TUIScrollerKnobInset, knobOffset, self.updatedScrollerWidth - TUIScrollerKnobInset, knobLength);
-		frame = CGRectInset(frame, 2, 4);
+		frame = CGRectInset(frame, 2, 3);
 		
 		self.knob.layer.position = CGPointMake(CGRectGetMaxX(frame), CGRectGetMidY(frame));
 	} else {
 		oldKnobWidth = self.knob.frame.size.height;
 		frame = CGRectMake(knobOffset, TUIScrollerKnobInset, knobLength, self.updatedScrollerWidth - TUIScrollerKnobInset);
-		frame = CGRectInset(frame, 4, 2);
+		frame = CGRectInset(frame, 2, 2);
 		
 		self.knob.layer.position = CGPointMake(CGRectGetMidX(frame), CGRectGetMinY(frame));
 	}

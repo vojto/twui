@@ -70,8 +70,6 @@ typedef enum {
 	NSArray                     * _sectionInfo;
 	
 	TUIView                     * _pullDownView;
-	TUIView						* _headerView;
-	TUIView						* _footerView;
 	
 	CGSize                        _lastSize;
 	CGFloat                       _contentHeight;

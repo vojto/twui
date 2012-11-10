@@ -288,7 +288,7 @@ typedef struct {
 		[sections addObject:section];
 	}
 	
-	_contentHeight = (offset - self.contentInset.bottom) + _footerView.bounds.size.height;
+	_contentHeight = (offset - self.contentInset.bottom) + self.footerView.bounds.size.height;
 	_sectionInfo = sections;
 	
 }
@@ -649,11 +649,11 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 }
 
 - (void)setFooterView:(TUIView *)footerView {
-	[_footerView removeFromSuperview];
+	[self.footerView removeFromSuperview];
 	_footerView = footerView;
 	
-	[self addSubview:_footerView];
-	_footerView.hidden = YES;
+	[self addSubview:self.footerView];
+	self.footerView.hidden = YES;
 }
 
 - (BOOL)_preLayoutCells
@@ -916,20 +916,14 @@ static NSInteger SortCells(TUITableViewCell *a, TUITableViewCell *b, void *ctx)
 		}
 	}
 	
-	if (_footerView) {
-		CGRect footerViewRect = CGRectMake(0, 0, visible.size.width, _footerView.frame.size.height);
+	if (self.footerView) {
+		CGRect footerViewRect = CGRectMake(0, 0, visible.size.width, self.footerView.frame.size.height);
 		if(CGRectIntersectsRect(footerViewRect, visible)) {
-			_footerView.frame = footerViewRect;
-			[_footerView setNeedsLayout];
-			
-			if(_footerView.hidden) {
-				// show
-				_footerView.hidden = NO;
-			}
+			self.footerView.frame = footerViewRect;
+			[self.footerView setNeedsLayout];
+			self.footerView.hidden = NO;
 		} else {
-			if(!_footerView.hidden) {
-				_footerView.hidden = YES;
-			}
+			self.footerView.hidden = YES;
 		}
 	}
 }

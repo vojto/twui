@@ -17,10 +17,11 @@
 #import "TUIKit.h"
 
 @interface ExampleTableViewCell : TUITableViewCell
+{
+	TUITextRenderer *textRenderer;
+}
 
 @property (nonatomic, copy) NSAttributedString *attributedString;
-
 @property (nonatomic, strong) TUIView *textFieldContainer;
-@property (nonatomic, strong, readonly) TUITextRenderer *textRenderer;
 
 @end

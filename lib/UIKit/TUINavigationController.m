@@ -16,7 +16,6 @@
 @end
 
 #define kPushPopDuration .5
-#define kPushDelay .1
 
 @implementation TUINavigationController
 

@@ -71,18 +71,19 @@
 
 	[self.view addSubview:viewController.view];
 	
-	[TUIView animateWithDuration:kPushDelay animations:^{
-		//If we assign the frame manually, it 'pops' in
-		viewController.view.frame = [self _offscreenRightFrame];
+	//Make sure the app draws the frame offscreen instead of just 'popping' it in
+	[CATransaction begin];
+	viewController.view.frame = [self _offscreenRightFrame];
+	[CATransaction flush];
+	[CATransaction commit];
+
+	[TUIView animateWithDuration:duration animations:^{
+		last.view.frame = [self _offscreenLeftFrame];
+		viewController.view.frame = self.view.bounds;
 	} completion:^(BOOL finished) {
-		[TUIView animateWithDuration:duration animations:^{
-			last.view.frame = [self _offscreenLeftFrame];
-			viewController.view.frame = self.view.bounds;
-		} completion:^(BOOL finished) {
-			[last.view removeFromSuperview];
-			[viewController viewDidAppear:animated];
-			[last viewDidDisappear:animated];
-		}];
+		[last.view removeFromSuperview];
+		[viewController viewDidAppear:animated];
+		[last viewDidDisappear:animated];
 	}];
 }
 

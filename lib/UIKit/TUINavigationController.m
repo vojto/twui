@@ -55,8 +55,33 @@ static CGFloat const TUINavigationControllerAnimationDuration = 0.5f;
 #pragma mark - Methods
 
 - (void)setViewControllers:(NSArray *)viewControllers animated:(BOOL)animated {	
-	[_stack removeAllObjects];
+    CGFloat duration = animated ? TUINavigationControllerAnimationDuration : 0;
+    
+    TUIViewController *viewController = [viewControllers lastObject];
+    BOOL containedAlready = ([_stack containsObject:viewController]);
+    
+    [CATransaction begin];
+    //Push if it's not in the stack, pop back if it is
+    [self.view addSubview:viewController.view];
+	viewController.view.frame = containedAlready ? [self _offscreenLeftFrame] : [self _offscreenRightFrame];
+	[CATransaction flush];
+	[CATransaction commit];
+    
+    TUIViewController *last = [self topViewController];
+    
+    [_stack removeAllObjects];
 	[_stack addObjectsFromArray:viewControllers];
+    
+	[TUIView animateWithDuration:duration animations:^{
+		last.view.frame = containedAlready ? [self _offscreenRightFrame] : [self _offscreenLeftFrame];
+		viewController.view.frame = self.view.bounds;
+	} completion:^(BOOL finished) {
+		[last.view removeFromSuperview];
+		[viewController viewDidAppear:animated];
+		[last viewDidDisappear:animated];
+	}];
+
+    
 }
 
 - (void)pushViewController:(TUIViewController *)viewController animated:(BOOL)animated {

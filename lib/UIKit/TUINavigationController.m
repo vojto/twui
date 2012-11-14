@@ -89,9 +89,11 @@ static CGFloat const TUINavigationControllerAnimationDuration = 0.5f;
 - (TUIViewController *)popViewControlerAnimated:(BOOL)animated {
 	if ([_stack count] <= 1) {
 		NSLog(@"Not enough view controllers on stack to pop");
-		return @[];
+		return nil;
 	}
+    TUIViewController *popped = [_stack lastObject];
 	[self popToViewController:[_stack objectAtIndex:([_stack count] - 2)] animated:animated];
+    return popped;
 }
 
 - (NSArray *)popToRootViewControllerAnimated:(BOOL)animated {

@@ -1,4 +1,4 @@
- //
+//
 //  TUINavigationController.m
 //  TwUI
 //
@@ -55,23 +55,23 @@ static CGFloat const TUINavigationControllerAnimationDuration = 0.5f;
 #pragma mark - Methods
 
 - (void)setViewControllers:(NSArray *)viewControllers animated:(BOOL)animated {	
-    CGFloat duration = animated ? TUINavigationControllerAnimationDuration : 0;
-    
-    TUIViewController *viewController = [viewControllers lastObject];
-    BOOL containedAlready = ([_stack containsObject:viewController]);
-    
-    [CATransaction begin];
-    //Push if it's not in the stack, pop back if it is
-    [self.view addSubview:viewController.view];
+	CGFloat duration = animated ? TUINavigationControllerAnimationDuration : 0;
+
+	TUIViewController *viewController = [viewControllers lastObject];
+	BOOL containedAlready = ([_stack containsObject:viewController]);
+	
+	[CATransaction begin];
+	//Push if it's not in the stack, pop back if it is
+	[self.view addSubview:viewController.view];
 	viewController.view.frame = containedAlready ? TUINavigationOffscreenLeftFrame(self.view.bounds) : TUINavigationOffscreenRightFrame(self.view.bounds);
 	[CATransaction flush];
 	[CATransaction commit];
-    
-    TUIViewController *last = [self topViewController];
-    
-    [_stack removeAllObjects];
+
+	TUIViewController *last = [self topViewController];
+
+	[_stack removeAllObjects];
 	[_stack addObjectsFromArray:viewControllers];
-    
+	
 	[TUIView animateWithDuration:duration animations:^{
 		last.view.frame = containedAlready ? TUINavigationOffscreenRightFrame(self.view.bounds) : TUINavigationOffscreenLeftFrame(self.view.bounds);
 		viewController.view.frame = self.view.bounds;
@@ -80,8 +80,6 @@ static CGFloat const TUINavigationControllerAnimationDuration = 0.5f;
 		[viewController viewDidAppear:animated];
 		[last viewDidDisappear:animated];
 	}];
-
-    
 }
 
 - (void)pushViewController:(TUIViewController *)viewController animated:(BOOL)animated {
@@ -116,9 +114,9 @@ static CGFloat const TUINavigationControllerAnimationDuration = 0.5f;
 		NSLog(@"Not enough view controllers on stack to pop");
 		return nil;
 	}
-    TUIViewController *popped = [_stack lastObject];
+	TUIViewController *popped = [_stack lastObject];
 	[self popToViewController:[_stack objectAtIndex:([_stack count] - 2)] animated:animated];
-    return popped;
+	return popped;
 }
 
 - (NSArray *)popToRootViewControllerAnimated:(BOOL)animated {

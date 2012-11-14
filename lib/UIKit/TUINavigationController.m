@@ -15,7 +15,7 @@
 
 @end
 
-#define kPushPopDuration .5
+static CGFloat const TUINavigationControllerAnimationDuration = 0.5f;
 
 @implementation TUINavigationController
 
@@ -37,7 +37,7 @@
 	[visible viewWillAppear:NO];
 	[self.view addSubview:visible.view];
 	visible.view.frame = self.view.bounds;
-	visible.view.autoresizingMask = TUIViewAutoresizingFlexibleHeight | TUIViewAutoresizingFlexibleWidth;
+	visible.view.autoresizingMask = TUIViewAutoresizingFlexibleSize;
 	[visible viewDidAppear:YES];
 
 }
@@ -63,7 +63,7 @@
 
 	TUIViewController *last = [self topViewController];
 	[_stack addObject:viewController];
-	CGFloat duration = animated ? kPushPopDuration : 0;
+	CGFloat duration = animated ? TUINavigationControllerAnimationDuration : 0;
 		
 	[last viewWillDisappear:animated];
 	[viewController viewWillAppear:animated];
@@ -86,10 +86,10 @@
 	}];
 }
 
-- (void)popViewControlerAnimated:(BOOL)animated {
+- (TUIViewController *)popViewControlerAnimated:(BOOL)animated {
 	if ([_stack count] <= 1) {
-		[NSException raise:NSInvalidArgumentException format:@"Stack has one or less view controllers"];
-		return;
+		NSLog(@"Not enough view controllers on stack to pop");
+		return @[];
 	}
 	[self popToViewController:[_stack objectAtIndex:([_stack count] - 2)] animated:animated];
 }
@@ -119,7 +119,7 @@
 	[self.view addSubview:viewController.view];
 	viewController.view.frame = [self _offscreenLeftFrame];
 	
-	CGFloat duration = animated ? kPushPopDuration : 0;
+	CGFloat duration = animated ? TUINavigationControllerAnimationDuration : 0;
 
 	[last viewWillDisappear:animated];
 	[viewController viewWillAppear:animated];

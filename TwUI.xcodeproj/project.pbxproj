@@ -26,6 +26,7 @@
 		48A10E8B15B77A46007F9EE3 /* TUIView+Layout.h in Headers */ = {isa = PBXBuildFile; fileRef = 48A10E8A15B77A46007F9EE3 /* TUIView+Layout.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5000874016524B1C0067ED42 /* TUINavigationController.h in Headers */ = {isa = PBXBuildFile; fileRef = 5000873F16524B1C0067ED42 /* TUINavigationController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5000874916524B1F0067ED42 /* TUINavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5000874816524B1F0067ED42 /* TUINavigationController.m */; };
+		5000874A1652C4380067ED42 /* TUINavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5000874816524B1F0067ED42 /* TUINavigationController.m */; };
 		5E6ECEB313BE791600109598 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EE9839C13BE7650005F430D /* ApplicationServices.framework */; };
 		5E6ECEB413BE791600109598 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB5E31B613BE6F49004B7899 /* QuartzCore.framework */; };
 		5E6ECEB613BE791C00109598 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EE9839C13BE7650005F430D /* ApplicationServices.framework */; };
@@ -1329,6 +1330,7 @@
 				D05D23A515BF7239000ED14F /* NSImage+TUIExtensions.m in Sources */,
 				D0EA12F615C34FEA00FAA603 /* NSColor+TUIExtensions.m in Sources */,
 				488A5838162FBE9B006CBF8B /* TUITableViewController.m in Sources */,
+				5000874A1652C4380067ED42 /* TUINavigationController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

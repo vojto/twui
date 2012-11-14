@@ -63,7 +63,7 @@ static CGFloat const TUINavigationControllerAnimationDuration = 0.5f;
     [CATransaction begin];
     //Push if it's not in the stack, pop back if it is
     [self.view addSubview:viewController.view];
-	viewController.view.frame = containedAlready ? [self _offscreenLeftFrame] : [self _offscreenRightFrame];
+	viewController.view.frame = containedAlready ? TUINavigationOffscreenLeftFrame(self.view.bounds) : TUINavigationOffscreenRightFrame(self.view.bounds);
 	[CATransaction flush];
 	[CATransaction commit];
     
@@ -73,7 +73,7 @@ static CGFloat const TUINavigationControllerAnimationDuration = 0.5f;
 	[_stack addObjectsFromArray:viewControllers];
     
 	[TUIView animateWithDuration:duration animations:^{
-		last.view.frame = containedAlready ? [self _offscreenRightFrame] : [self _offscreenLeftFrame];
+		last.view.frame = containedAlready ? TUINavigationOffscreenRightFrame(self.view.bounds) : TUINavigationOffscreenLeftFrame(self.view.bounds);
 		viewController.view.frame = self.view.bounds;
 	} completion:^(BOOL finished) {
 		[last.view removeFromSuperview];
@@ -97,12 +97,12 @@ static CGFloat const TUINavigationControllerAnimationDuration = 0.5f;
 	
 	//Make sure the app draws the frame offscreen instead of just 'popping' it in
 	[CATransaction begin];
-	viewController.view.frame = [self _offscreenRightFrame];
+	viewController.view.frame = TUINavigationOffscreenRightFrame(self.view.bounds);
 	[CATransaction flush];
 	[CATransaction commit];
 
 	[TUIView animateWithDuration:duration animations:^{
-		last.view.frame = [self _offscreenLeftFrame];
+		last.view.frame = TUINavigationOffscreenLeftFrame(self.view.bounds);
 		viewController.view.frame = self.view.bounds;
 	} completion:^(BOOL finished) {
 		[last.view removeFromSuperview];
@@ -144,7 +144,7 @@ static CGFloat const TUINavigationControllerAnimationDuration = 0.5f;
 	
 	
 	[self.view addSubview:viewController.view];
-	viewController.view.frame = [self _offscreenLeftFrame];
+	viewController.view.frame = TUINavigationOffscreenLeftFrame(self.view.bounds);
 	
 	CGFloat duration = animated ? TUINavigationControllerAnimationDuration : 0;
 
@@ -152,7 +152,7 @@ static CGFloat const TUINavigationControllerAnimationDuration = 0.5f;
 	[viewController viewWillAppear:animated];
 	
 	[TUIView animateWithDuration:duration animations:^{
-		last.view.frame = [self _offscreenRightFrame];
+		last.view.frame = TUINavigationOffscreenRightFrame(self.view.bounds);
 		viewController.view.frame = self.view.bounds;
 	} completion:^(BOOL finished) {
 		[last.view removeFromSuperview];
@@ -166,15 +166,13 @@ static CGFloat const TUINavigationControllerAnimationDuration = 0.5f;
 
 #pragma mark - Private
 
-- (CGRect)_offscreenLeftFrame {
-	CGRect bounds = self.view.bounds;
+static CGRect TUINavigationOffscreenLeftFrame(CGRect bounds) {
 	CGRect offscreenLeft = bounds;
 	offscreenLeft.origin.x -= bounds.size.width;
 	return offscreenLeft;
 }
 
-- (CGRect)_offscreenRightFrame {
-	CGRect bounds = self.view.bounds;
+static CGRect TUINavigationOffscreenRightFrame(CGRect bounds) {
 	CGRect offscreenRight = bounds;
 	offscreenRight.origin.x += bounds.size.width;
 	return offscreenRight;

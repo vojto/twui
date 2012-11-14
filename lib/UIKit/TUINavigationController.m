@@ -105,7 +105,7 @@ static CGFloat const TUINavigationControllerAnimationDuration = 0.5f;
 
 - (NSArray *)popToViewController:(TUIViewController *)viewController animated:(BOOL)animated {
 	if ([_stack containsObject:viewController] == NO) {
-		[NSException raise:NSInvalidArgumentException format:@"View controller %@ is not in stack", viewController];
+		NSLog(@"View controller %@ is not in stack", viewController);
 		return @[];
 	}
 	

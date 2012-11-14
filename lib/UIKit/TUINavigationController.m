@@ -166,13 +166,13 @@ static CGFloat const TUINavigationControllerAnimationDuration = 0.5f;
 
 #pragma mark - Private
 
-static CGRect TUINavigationOffscreenLeftFrame(CGRect bounds) {
+static inline CGRect TUINavigationOffscreenLeftFrame(CGRect bounds) {
 	CGRect offscreenLeft = bounds;
 	offscreenLeft.origin.x -= bounds.size.width;
 	return offscreenLeft;
 }
 
-static CGRect TUINavigationOffscreenRightFrame(CGRect bounds) {
+static inline CGRect TUINavigationOffscreenRightFrame(CGRect bounds) {
 	CGRect offscreenRight = bounds;
 	offscreenRight.origin.x += bounds.size.width;
 	return offscreenRight;
